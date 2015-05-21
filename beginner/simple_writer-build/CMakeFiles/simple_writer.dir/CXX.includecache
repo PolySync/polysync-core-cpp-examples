@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/opt/polysync_cpp_api/polysync_cpp_api/examples/beginner/simple_writer/main.cpp
+iostream
+-
+message.h
+-
+node.h
+-
+
