@@ -1,6 +1,6 @@
 #include <iostream>
-#include <node.h>
-#include <message.h>
+#include <polysync_message.hpp>
+#include <polysync_node.hpp>
 
 int main()
 {
