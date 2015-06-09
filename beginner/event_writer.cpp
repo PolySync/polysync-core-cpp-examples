@@ -1,8 +1,7 @@
 #include <iostream>
 
-#include <node.h>
-#include <message.h>
-#include "polysync_core.h"
+#include <polysync_node.hpp>
+#include <polysync_message.hpp>
 
 using namespace std;
 
@@ -27,7 +26,6 @@ int main()
             id = 500;
         }
 
-        //new message, no need to allocate heap memory using "new"
         polysync::message::Event msg;
         msg.setId( id++ );
         msg.setValue( value );

@@ -1,7 +1,7 @@
 #ifndef OCCUPANCYGRID_H
 #define OCCUPANCYGRID_H
 
-#include <node.h>
+#include <polysync_node.hpp>
 #include <array>
 
 #define ESR_SN 59138

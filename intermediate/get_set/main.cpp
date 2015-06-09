@@ -1,6 +1,6 @@
 #include <iostream>
-#include <node.h>
-#include <message.h>
+#include <polysync_node.hpp>
+#include <polysync_message.hpp>
 
 //Check a message to see if it came from an ESR
 bool isESR( const polysync::message::ParameterStream& msg )
