@@ -5,6 +5,36 @@
 
 using namespace std;
 
+/*******************************************************************************
+ * Convenience Method Prototypes
+ ******************************************************************************/
+void setObjectValues( ps_object &object, ps_object_classification_kind &kind );
+void setRadarTargetValues( ps_radar_target &target, int index );
+void setLidarPointValues( ps_lidar_point &point, int index );
+/*******************************************************************************
+ * END Convenience Method Prototypes
+ ******************************************************************************/
+
+
+
+
+/*******************************************************************************
+ * Publish Method Prototypes
+ ******************************************************************************/
+void publishObjectsMessage( polysync::NodeReference nodeRef,
+                            ps_object_classification_kind &kind );
+void publishRadarTargetsMessage( polysync::NodeReference nodeRef );
+void publishLidarPointsMessage( polysync::NodeReference nodeRef );
+/*******************************************************************************
+ * END Publish Method Prototypes
+ ******************************************************************************/
+
+
+
+
+/*******************************************************************************
+ * Execution loop
+ ******************************************************************************/
 int main()
 {
     // Creating a node initializes PolySync
@@ -14,64 +44,18 @@ int main()
     auto nodeRef = node.reference();
 
     // Initialize classifcation kind
-    auto classifictionIndex = OBJECT_CLASSIFICATION_CAR;
+    auto kind = OBJECT_CLASSIFICATION_CAR;
 
     while( 1 )
     {
-        // Create a message
-        polysync::ObjectsMessage message( nodeRef );
+        // Publish polysync::ObjectsMessage
+        publishObjectsMessage( nodeRef, kind );
 
-        // Set length of the output buffer
-        message.setObjectsOutputBufferLength( 1 );
+        // Publish polysync::RadarTargetsMessage
+        publishRadarTargetsMessage( nodeRef );
 
-        // Populate an object for the output buffer
-        ps_object o;
-
-        // Set x,y,z size of object
-        o.size[ 0 ] = 5;
-        o.size[ 1 ] = 5;
-        o.size[ 2 ] = 5;
-
-        // Alternate object classification kind
-        if( classifictionIndex == OBJECT_CLASSIFICATION_CAR )
-        {
-            o.classification = index;
-            o.position[0] = 5;
-            o.position[1] = 5;
-            o.position[2] = 1;
-            o.id = 0;
-
-            o.course_angle = 90.0;
-            classifictionIndex = OBJECT_CLASSIFICATION_PEDESTRIAN;
-        }
-        else if( classifictionIndex == OBJECT_CLASSIFICATION_PEDESTRIAN )
-        {
-            o.classification = index;
-            o.position[0] = 5;
-            o.position[1] = -5;
-            o.position[2] = 1;
-            o.id = 0;
-
-            o.course_angle = -90.0;
-            classifictionIndex = OBJECT_CLASSIFICATION_BIKE;
-        }
-        else if( classifictionIndex == OBJECT_CLASSIFICATION_BIKE )
-        {
-            o.classification = index;
-            o.position[0] = 5;
-            o.position[1] = 0;
-            o.position[2] = 1;
-            o.id = 0;
-
-            o.course_angle = 0;
-            classifictionIndex = OBJECT_CLASSIFICATION_CAR;
-        }
-
-        // Place object to the object buffer in the message
-        message.objectsBufferPushBack( o );
-
-        // Publish message to the bus
-        polysync::message::publish( nodeRef, message );
+        // Publish polysync::LidarPointsMessage
+        publishLidarPointsMessage( nodeRef );
 
         // Slow the loop down by sleeping for one second
         sleep( 1 );
@@ -79,4 +63,180 @@ int main()
 
     return 0;
 }
+/*******************************************************************************
+ * END Execution Loop
+ ******************************************************************************/
+
+
+
+
+/*******************************************************************************
+ * Publish Methods
+ ******************************************************************************/
+void publishObjectsMessage( polysync::NodeReference nodeRef,
+                            ps_object_classification_kind &kind )
+{
+    // Create a message
+    polysync::ObjectsMessage message( nodeRef );
+
+    // Set length of the output buffer
+    message.setObjectsOutputBufferLength( 1 );
+
+    // Populate an object for the output buffer
+    ps_object object;
+    setObjectValues( object, kind );
+
+    // Place object to the object buffer in the message
+    message.objectsBufferPushBack( object );
+
+    // Publish message to the bus
+    polysync::message::publish( nodeRef, message );
+}
+
+void publishRadarTargetsMessage( polysync::NodeReference nodeRef )
+{
+    // Create a message
+    polysync::RadarTargetsMessage message( nodeRef );
+
+    auto bufferLength = 10;
+
+    // Set length of the output buffer
+    message.setTargetsOutputBufferLength( bufferLength );
+
+    for( auto i = 0; i < bufferLength; ++i )
+    {
+        // Populate an object for the output buffer
+        ps_radar_target target;
+        setRadarTargetValues( target, i );
+
+        // Place object to the object buffer in the message
+        message.targetsBufferPushBack( target );
+    }
+    // Publish message to the bus
+    polysync::message::publish( nodeRef, message );
+}
+
+void publishLidarPointsMessage( polysync::NodeReference nodeRef )
+{
+    // Create a message
+    polysync::LidarPointsMessage message( nodeRef );
+
+    // Set buffer length
+    auto bufferLength = 100;
+
+    // Set length of the output buffer
+    message.setPointsOutputBufferLength( bufferLength );
+
+    for( auto i = 0; i < bufferLength; ++i )
+    {
+        // Populate an object for the output buffer
+        ps_lidar_point point;
+        setLidarPointValues( point, i );
+
+        // Place object to the object buffer in the message
+        message.pointsBufferPushBack( point );
+    }
+
+    // Publish message to the bus
+    polysync::message::publish( nodeRef, message );
+}
+/*******************************************************************************
+ * END Publish Methods
+ ******************************************************************************/
+
+
+
+
+/*******************************************************************************
+ * Convenience Methods
+ ******************************************************************************/
+void setObjectValues( ps_object &object, ps_object_classification_kind &kind )
+{
+    // Alternate object classification kind
+    if( kind == OBJECT_CLASSIFICATION_CAR )
+    {
+        object.classification = kind;
+
+        // World position relative to origin
+        object.position[ 0 ] = 5;
+        object.position[ 1 ] = 5;
+        object.position[ 2 ] = 1;
+
+        // Set x,y,z size of object
+        object.size[ 0 ] = 3;
+        object.size[ 1 ] = 2;
+        object.size[ 2 ] = 1.5;
+
+        object.id = 0;
+
+        object.course_angle = 90.0;
+        kind = OBJECT_CLASSIFICATION_PEDESTRIAN;
+    }
+    else if( kind == OBJECT_CLASSIFICATION_PEDESTRIAN )
+    {
+        object.classification = kind;
+
+        // World position relative to origin
+        object.position[ 0 ] = 5;
+        object.position[ 1 ] = -5;
+        object.position[ 2 ] = 1;
+
+        // Set x,y,z size of object
+        object.size[ 0 ] = 0.35;
+        object.size[ 1 ] = 0.5;
+        object.size[ 2 ] = 2;
+
+        object.id = 0;
+
+        object.course_angle = -90.0;
+        kind = OBJECT_CLASSIFICATION_BIKE;
+    }
+    else if( kind == OBJECT_CLASSIFICATION_BIKE )
+    {
+        object.classification = kind;
+
+        // World position relative to origin
+        object.position[ 0 ] = 5;
+        object.position[ 1 ] = 0;
+        object.position[ 2 ] = 1;
+
+        // Set x,y,z size of object
+        object.size[ 0 ] = 2;
+        object.size[ 1 ] = 0.5;
+        object.size[ 2 ] = 1.5;
+
+        object.id = 0;
+
+        object.course_angle = 0;
+        kind = OBJECT_CLASSIFICATION_CAR;
+    }
+}
+
+void setRadarTargetValues( ps_radar_target &target, int index )
+{
+    target.id = index;
+
+    // World position relative to origin
+    target.position[ 0 ] = index;
+    target.position[ 1 ] = -index;
+    target.position[ 2 ] = index;
+
+    target.amplitude = 4.0;
+
+    // Will not draw if == TRACK_STATUS_INVALID
+    target.track_status = TRACK_STATUS_ACTIVE;
+}
+
+void setLidarPointValues( ps_lidar_point &point, int index )
+{
+    // World position relative to origin
+    point.position[ 0 ] = index;
+    point.position[ 1 ] = index;
+    point.position[ 2 ] = index;
+}
+/*******************************************************************************
+ * END Convenience Methods
+ ******************************************************************************/
+
+
 
