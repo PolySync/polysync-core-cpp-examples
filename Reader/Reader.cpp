@@ -84,32 +84,29 @@ void Reader::printMessage( polysync::Message *message )
     if( message->messageType() ==
             _typeNameMap.at( "ps_objects_msg" ) )
     {
-        printSensorData< polysync::ObjectsMessage >(
-            message, "ps_objects_msg" );
+        printSensorData< polysync::ObjectsMessage >( message );
     }
     else if( message->messageType() ==
              _typeNameMap.at( "ps_radar_targets_msg" ) )
     {
-        printSensorData< polysync::RadarTargetsMessage >(
-            message, "ps_radar_targets_msg" );
+        printSensorData< polysync::RadarTargetsMessage >( message );
     }
     else if( message->messageType() ==
              _typeNameMap.at( "ps_lidar_points_msg" ) )
     {
-        printSensorData< polysync::LidarPointsMessage >(
-            message, "ps_lidar_points_msg" );
+        printSensorData< polysync::LidarPointsMessage >( message );
     }
 }
 
 template< typename T >
-void Reader::printSensorData( polysync::Message *message, string typeName )
+void Reader::printSensorData( polysync::Message *message )
 {
     // Safe cast, if it fails. Our class is not a sub-class os polysync::Message
     if( auto castedMessage = dynamic_cast< T* >( message ) )
     {
         auto sensorDescriptor = castedMessage->getSensorDescriptor();
 
-        cout << typeName << endl;
+        cout << message->messageTypeString() << endl;
         cout << '\t' << "Sensor ID: " << sensorDescriptor.id << endl;
         cout << '\t' << "Sensor Type: " << sensorDescriptor.type << endl;
     }

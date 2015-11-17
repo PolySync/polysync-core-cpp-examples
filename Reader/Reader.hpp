@@ -70,6 +70,5 @@ private:
      */
     template< typename T >
     void                                    printSensorData(
-                                                polysync::Message *message,
-                                                string typeName );
+                                                polysync::Message *message );
 };
