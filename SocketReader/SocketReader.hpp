@@ -23,12 +23,14 @@ using namespace std;
  *
  * @note Run the Writer example if you need to make data availabe on bus.
  */
-class SocketReader : Reader 
+class SocketReader : polysync::Socket
 {
+
 public:
 
     // constructor
     explicit SocketReader();
+    SocketReader( int domain, int type, int protocol );
 
     // destructor
     ~SocketReader();
@@ -37,9 +39,19 @@ public:
 
     void    receiveSocket();
 
+
+
+protected:
+
+    int domain = AF_INET;
+    int protocol = IPPROTO_UDP;
+    int type = SOCK_DGRAM;
+
+
+
 private:
 
-    polysync::Socket  *Socket = nullptr;
+    //polysync::Socket  *Socket = nullptr;
 
 };
 

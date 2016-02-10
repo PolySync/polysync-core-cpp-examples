@@ -3,14 +3,19 @@
 
 
 
-SocketReader::SocketReader()
+SocketReader::SocketReader( int domain, int protocol, int type )
+    : SocketReader( domain, protocol, type )
 {
-    int domain = AF_INET;
 
-    int protocol = IPPROTO_UDP;
-    int type = SOCK_DGRAM;
+    //polysync::socket::init( domain, type, protocol );
 
-    polysync::socket::init( Socket, domain, type, protocol );
+    polysync::Socket socket;
+
+    socket.domain = domain;
+
+//    socket.domain = domain;
+    //socket.protocol = protocol;
+    //socket.type = type;
 
 //    std::vector< char* > addr;
 //    addr.assign("127.0.0.1");
@@ -22,7 +27,8 @@ SocketReader::SocketReader()
 
 SocketReader::~SocketReader()
 {
-    polysync::socket::release( Socket );
+    //polysync::socket::release();
+
 }
 
 
@@ -30,7 +36,7 @@ SocketReader::~SocketReader()
 void SocketReader::connectUdpSocket()
 {
     // connect to UDP socket
-    polysync::socket::connect( Socket );
+    //polysync::socket::connect( Socket );
 }
 
 
@@ -47,7 +53,7 @@ void SocketReader::receiveSocket()
     polysync::Timestamp rxTimestamp;
 
     // recevice the data to be parsed/printed later
-    polysync::socket::receive( Socket, buffer, bufferLength, bytesRead, rxTimestamp);
+    //polysync::socket::receive( Socket, buffer, bufferLength, bytesRead, rxTimestamp);
 
    if( bytesRead > 0 )
    {
