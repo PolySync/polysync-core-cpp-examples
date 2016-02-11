@@ -62,7 +62,7 @@ int main()
     // number of bytes sent from socket.send()
     auto bytesSent = 0;
 
-    // busy read loop
+    // busy write loop
     while( errExit >= 0 )
     {
         bytesSent = 0;
