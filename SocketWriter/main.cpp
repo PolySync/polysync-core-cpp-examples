@@ -67,19 +67,13 @@ int main()
     {
         bytesSent = 0;
 
-        std::cout << "Size: " << socketSendBuffer.size() << std::endl;
-
         bytesSent = socket.send( socketSendBuffer );
 
-        if( bytesSent <= 0 )
-        {
-            // signal exit
-            std::cout << "Error: " << bytesSent << std::endl;
+        //
+        // handle DTC exceptions thrown here
 
-            // signal exit
-            errExit = -1;
-        }
 
+        //
         // do something with the data
 
     }

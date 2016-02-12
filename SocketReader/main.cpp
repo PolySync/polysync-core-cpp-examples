@@ -68,20 +68,16 @@ int main()
 
         bytesRead = socket.receive( socketRecvBuffer, timestamp );
 
-        if( bytesRead < 0 )
-        {
-            // signal exit
-            errExit = -1;
-        }
+        //
+        // handle DTC exceptions thrown here
 
+
+        //
         // do something with the data
 
     }
-
 
     socket.release();
 
     return 0;
 }
-
-
