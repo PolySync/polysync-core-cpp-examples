@@ -66,7 +66,7 @@ private:
 
     /**
      * @brief filterLidarPoints
-     * Filter Lidar data for points of interest (to be defined later...).
+     * Filter LiDAR data for points of interest
      */
     template< typename T >
     void                                    filterLidarPoints(

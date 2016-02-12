@@ -1,9 +1,10 @@
 #include <iostream>
 #include "LidarReader.hpp"
 
+
+
 Reader::Reader()
-    :
-      polysync::Node( "LidarReader" )
+    : polysync::Node( "LidarReader" )
 {
     buildTypeList();
     registerListeners();
@@ -44,7 +45,7 @@ void Reader::buildTypeList()
 
 void Reader::registerListeners()
 {
-    cout << endl << "Registering Callback To: " << endl;
+    cout << endl << "Registering callback to: " << endl;
     for( auto type : _typeNameMap )
     {
         if( type.first == "ps_lidar_points_msg" )
@@ -58,7 +59,7 @@ void Reader::registerListeners()
             != DTC_NONE )
             {
                 polysync::logMessage( LOG_LEVEL_ERROR,
-                { "Example Reader failed to register listener: ",
+                { "Failed to register listener: ",
                   std::to_string( type.second ) } );
             }
         }
@@ -86,7 +87,6 @@ void Reader::printMessage( polysync::Message *message )
     // you can filter for specific message types here
     // this example only listens for LiDAR point messages
 
-    cout << endl;
    if( message->messageType() ==
              _typeNameMap.at( "ps_lidar_points_msg" ) )
     {
@@ -103,9 +103,12 @@ template< typename T >
 void Reader::filterLidarPoints( polysync::Message *message )
 {
 
-    // Safe cast, if it fails. Our class is not a sub-class os polysync::Message
+    // safe cast
     if( auto castedMessage = static_cast< T* >( message ) )
     {
+
+        // class definition:
+        // file:///usr/local/polysync/doc/cpp_api_docs/html/d0/d17/classpolysync_1_1_lidar_points_message.html
         std::vector< ps_lidar_point > lidarPoints = castedMessage->getPoints();
 
         // iterate through our local vector of ps_lidar_pts
