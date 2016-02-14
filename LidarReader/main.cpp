@@ -6,9 +6,9 @@ using namespace std;
 
 int main()
 {
-    Reader reader;
+    LidarReader lidarReader;
 
-    reader.execute();
+    lidarReader.execute();
 
     return 0;
 }

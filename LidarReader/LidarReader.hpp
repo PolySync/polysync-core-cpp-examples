@@ -9,19 +9,18 @@
 using namespace std;
 
 /**
- * @brief The Reader class
+ * @brief The LidarReader class
  * Subclass of polysync::Node. The base class handles registering to the bus.
  * Dynamically gather type data. Register to types. Print data as it comes in.
  *
- * @note Run the Writer example if you need to make data availabe on bus.
  */
-class Reader : public polysync::Node
+class LidarReader : public polysync::Node
 {
 public:
     /**
      * @brief LidarReader constructor
      */
-    explicit                                Reader();
+    explicit                                LidarReader();
 
     /**
      * @brief exec Begins the Backend execution loop
@@ -47,8 +46,7 @@ private:
 
     /**
      * @brief registerListeners
-     * Register polysync::Node::polysyncCallback() to receive ps_objects_msg,
-     * ps_radar_targets_msg, and ps_lidar_points_msg
+     * Register polysync::Node::polysyncCallback() to receive ps_lidar_points_msg
      */
     void                                    registerListeners();
 
@@ -58,11 +56,6 @@ private:
      */
     void                                    printTypes();
 
-    /**
-     * @brief printMessage
-     * @param [in] Base class object pointer to cast and access data.
-     */
-    void                                    printMessage( polysync::Message * );
 
     /**
      * @brief filterLidarPoints

@@ -3,7 +3,7 @@
 
 
 
-Reader::Reader()
+LidarReader::LidarReader()
     : polysync::Node( "LidarReader" )
 {
     buildTypeList();
@@ -14,19 +14,19 @@ Reader::Reader()
 
 
 
-void Reader::buildTypeList()
+void LidarReader::buildTypeList()
 {
-    ulong count = 0;
-    polysync::message::getCount( reference(), count );
+    ulong messageCount = 0;
+    polysync::message::getCount( reference(), messageCount );
 
     // register backend to listen for all available types
-    for( auto i = 1; i < count+1; ++i )
+    for( auto i = 1; i < messageCount+1; ++i )
     {
         int ret = DTC_NONE;
-        string name;
+        string psMessageName;
         if( ( ret = polysync::message::getNameByType( reference(),
                                                       i,
-                                                      name,
+                                                      psMessageName,
                                                       128 ) )
         != DTC_NONE )
         {
@@ -36,15 +36,18 @@ void Reader::buildTypeList()
         }
         else
         {
-            _typeNameMap.insert( { name, i } );
+            _typeNameMap.insert( { psMessageName, i } );
         }
     }
 }
 
 
 
-void Reader::registerListeners()
+void LidarReader::registerListeners()
 {
+    // you can filter for specific message types here
+    // this example only listens for LiDAR point messages
+
     cout << endl << "Registering callback to: " << endl;
     for( auto type : _typeNameMap )
     {
@@ -66,7 +69,7 @@ void Reader::registerListeners()
     }
 }
 
-void Reader::printTypes()
+void LidarReader::printTypes()
 {
     // print the loaded PolySync Data Model message names and their associated value
     cout << endl << "Existing Data Model Types: " << endl;
@@ -82,25 +85,8 @@ void Reader::printTypes()
 
 
 
-void Reader::printMessage( polysync::Message *message )
-{
-    // you can filter for specific message types here
-    // this example only listens for LiDAR point messages
-
-   if( message->messageType() ==
-             _typeNameMap.at( "ps_lidar_points_msg" ) )
-    {
-
-    // access and filter lidar sensor data
-    filterLidarPoints < polysync::LidarPointsMessage >( message );
-
-    }
-}
-
-
-
 template< typename T >
-void Reader::filterLidarPoints( polysync::Message *message )
+void LidarReader::filterLidarPoints( polysync::Message *message )
 {
 
     // safe cast
@@ -136,7 +122,7 @@ void Reader::filterLidarPoints( polysync::Message *message )
 
 
 
-void Reader::execute()
+void LidarReader::execute()
 {
     while( 1 )
     {
@@ -146,10 +132,11 @@ void Reader::execute()
         // validate message
         if( message )
         {
-            printMessage( message.get() );
+            // access and filter lidar sensor data
+            filterLidarPoints < polysync::LidarPointsMessage >( message.get() );
         }
 
-        // sleep for 1/10 of a second (Default)
+        // sleep for 1/10 of a second (default)
         polysync::sleepMicro( _sleepInterval );
     }
 }
