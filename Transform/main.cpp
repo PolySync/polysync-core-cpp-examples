@@ -1,5 +1,5 @@
 /*
- * PolySync Single Tranform C++ API example application
+ * PolySync Single Transform C++ API example application
  *      Transform from one coordinate system to another using the Transform API
  *
  * Transform Class definition
