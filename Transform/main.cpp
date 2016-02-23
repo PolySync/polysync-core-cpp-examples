@@ -40,7 +40,7 @@ int main()
         struct Point startPoint { 3.3, 2.2, 1.1 };
         struct Point endPoint { 0.0, 0.0, 0.0 };
 
-        // Apply the entire transformation to the
+        // Apply the entire transformation from the start to the end point
         transform.apply( startPoint, endPoint );
 
         // Display the results of the transform
