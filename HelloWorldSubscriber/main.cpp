@@ -75,10 +75,10 @@ public:
      * @param std::shared_ptr< Message > - variable containing the message
      * @return void
      */
-    virtual void messageEvent( std::shared_ptr< polysync::Message > message)
+    virtual void messageEvent( std::shared_ptr< polysync::Message > message )
     {
         using namespace polysync::datamodel;
-        if ( auto byteArray = getSubclass< ByteArrayMessage >( message ) )
+        if( auto byteArray = getSubclass< ByteArrayMessage >( message ) )
         {  
             byteArray->print();
         }
@@ -98,7 +98,7 @@ public:
  * 
  * @return int - exit code
  */
-int main(int argc, char *argv[])
+int main( int argc, char *argv[] )
 {
     // Create an instance of the HelloWorldNode and connect it to PolySync
     HelloWorldSubscriberNode subscriberNode;

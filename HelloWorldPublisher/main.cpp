@@ -90,7 +90,7 @@ class HelloWorldPublisherNode : public polysync::Node
  * 
  * @return int - exit code
  */
-int main(int argc, char *argv[])
+int main( int argc, char *argv[] )
 {
     // Create an instance of the HelloWorldPublisherNode and connect it to PolySync
     HelloWorldPublisherNode publisherNode;
