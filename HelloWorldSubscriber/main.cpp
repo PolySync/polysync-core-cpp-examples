@@ -80,6 +80,10 @@ public:
         using namespace polysync::datamodel;
         if ( auto byteArray = getSubclass< ByteArrayMessage >( message ) )
         {  
+            for( auto byte : byteArray->getBytes() )
+            {
+                std::cout << byte << std::endl;
+            }
             byteArray->print();
         }
     }
