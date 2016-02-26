@@ -26,6 +26,11 @@ int main( int argc, char *argv[] )
     layout->addWidget( label );
     widget.show();
 
+    polysync::VideoFormat inFormat( PIXEL_FORMAT_YUYV, 640, 480, 30 );
+    polysync::VideoFormat outFormat( PIXEL_FORMAT_H264, 640, 480, 30 );
+
+    polysync::VideoEncoder encoder( inFormat, outFormat );
+    polysync::VideoDecoder decoder( outFormat, inFormat );
     try
     {
         auto videoDeviceList = polysync::getAvailableVideoDevices();
@@ -54,13 +59,15 @@ int main( int argc, char *argv[] )
                 auto buffer = videoDevice.getBuffer();
 
                 cout << "buffer.size(): " << buffer.size() << endl;
-                QImage img( videoDevice.getBuffer().data(),
-                            1000,
-                            1000,
+
+                std::vector< uchar > copyOfBuffer{ buffer };
+                QImage img( copyOfBuffer.data(),
+                            640,
+                            480,
                             QImage::Format::Format_RGB888 );
 
-                QPixmap map = QPixmap::fromImage( img.copy() );
-                label->setPixmap( map );
+                label->setPixmap( QPixmap::fromImage( img ) );
+//                polysync::sleepMicro( 1000000 );
             }
         }
     }
