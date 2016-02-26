@@ -66,7 +66,8 @@ class HelloWorldPublisherNode : public polysync::Node
 
         // Populate buffer
         message.setBytesLength( 5 );
-        message.setBytes( {'H', 'e', 'l', 'l', 'o'} );
+        message.setBytes( {'H', 'e', 'l', 'l', 'o', ' ',
+                           'W', 'o', 'r', 'l', 'd'} );
 
         // Publish to the PolySync bus
         message.publish();
