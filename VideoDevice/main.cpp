@@ -54,14 +54,18 @@ int main( int argc, char *argv[] )
 
             if( videoDevice.poll() )
             {
-                cout << "Polled frame size: " << videoDevice.getBufferLength() << endl;
+                auto bufferLength = videoDevice.getBufferLength();
+                encoder.encode( videoDevice.getBuffer() );
+                sleep( 4 );
 
-                auto buffer = videoDevice.getBuffer();
+                decoder.decode( encoder.getCopyOfEncodedBuffer( bufferLength ) );
+                sleep( 4 );
 
-                cout << "buffer.size(): " << buffer.size() << endl;
 
-                std::vector< uchar > copyOfBuffer{ buffer };
-                QImage img( copyOfBuffer.data(),
+                auto buffer = decoder.getCopyOfDecodedBuffer( bufferLength );
+
+                cout << "decoded buffer.size(): " << buffer.size() << endl;
+                QImage img( buffer.data(),
                             640,
                             480,
                             QImage::Format::Format_RGB888 );
