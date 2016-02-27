@@ -33,6 +33,9 @@ class HelloWorldNode : public polysync::Node
     void initStateEvent() override
     {
         cout << "Hello world!" << endl;
+
+        // Release node from PolySync exectution loop
+        disconnectPolySync();
     }
 };
 
@@ -40,8 +43,7 @@ class HelloWorldNode : public polysync::Node
  * @brief main
  *
  * Entry point for this tutorial application
- * The "connectToPolySync" is a blocking call, users must use Ctrl-C to exit
- * this function.
+ * The "connectPolySync" function begins the node's PolySync execution loop.
  *
  * @param argc - int, the number of parameters on the command-line
  * @param argv - char* [], the parsed command-line arguments
@@ -55,7 +57,7 @@ int main(int argc, char *argv[])
 
     // When the node has been created, it will cause an initStateEvent to
     // to be sent.
-    helloNode.connectToPolySync();
+    helloNode.connectPolySync();
 
     return 0;
 }
