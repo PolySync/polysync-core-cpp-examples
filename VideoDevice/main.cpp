@@ -8,10 +8,33 @@
 #include <QImage>
 #include <QLayout>
 #include <QLabel>
+#include <QTimer>
 
 #include <iostream>
 
 using namespace std;
+
+class VideoViewer : public QWidget
+{
+public:
+    VideoViewer(){}
+
+signals:
+
+public slots:
+    void slotReceiveEncodedBuffer( std::vector< uchar > encodedBuffer )
+    {
+
+    }
+
+private:
+    QLabel _label;
+    QHBoxLayout _layout;
+
+
+    polysync::VideoFormat inFormat{ PIXEL_FORMAT_YUYV, 640, 480, 30 };
+    polysync::VideoFormat outFormat{ PIXEL_FORMAT_H264, 640, 480, 30 };
+};
 
 int main( int argc, char *argv[] )
 {
@@ -58,20 +81,21 @@ int main( int argc, char *argv[] )
                 encoder.encode( videoDevice.getBuffer() );
                 sleep( 4 );
 
+                auto eBuffer = encoder.getCopyOfEncodedBuffer( bufferLength );
+                cout << "encoded buffer size(): " << buffer.size() << endl;
+
                 decoder.decode( encoder.getCopyOfEncodedBuffer( bufferLength ) );
                 sleep( 4 );
 
-
-                auto buffer = decoder.getCopyOfDecodedBuffer( bufferLength );
-
+                auto dBuffer = decoder.getCopyOfDecodedBuffer( bufferLength );
                 cout << "decoded buffer.size(): " << buffer.size() << endl;
-                QImage img( buffer.data(),
+
+                QImage img( dBuffer.data(),
                             640,
                             480,
                             QImage::Format::Format_RGB888 );
 
                 label->setPixmap( QPixmap::fromImage( img ) );
-//                polysync::sleepMicro( 1000000 );
             }
         }
     }
