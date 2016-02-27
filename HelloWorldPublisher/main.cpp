@@ -97,7 +97,7 @@ int main( int argc, char *argv[] )
     // When the node has been created, it will cause an initStateEvent to be
     // sent and then proceed into the okState.  connectToPolySync does not
     // return, use Ctrl-C to exit.
-    publisherNode.connectToPolySync();
+    publisherNode.connectPolySync();
 
     return 0;
 }

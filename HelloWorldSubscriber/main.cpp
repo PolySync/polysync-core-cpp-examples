@@ -83,7 +83,7 @@ public:
             byteArray->print();
         }
 
-        quit();
+        disconnectPolySync();
     }
 
 };
@@ -107,7 +107,7 @@ int main( int argc, char *argv[] )
 
     // When the node has been created, it will cause an initStateEvent to
     // to be sent.
-    subscriberNode.connectToPolySync();
+    subscriberNode.connectPolySync();
 
     return 0;
 }
