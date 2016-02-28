@@ -39,38 +39,43 @@ using namespace std;
 
 int main( int argc, char *argv[] )
 {
+    // Set the desired format for video device.
     polysync::VideoFormat deviceFormat{
         PIXEL_FORMAT_YUYV,
         640, 480,
         PSYNC_VIDEO_DEFAULT_FRAMES_PER_SECOND };
 
+    // Set format for encoder output
     polysync::VideoFormat encodedFormat{
         PIXEL_FORMAT_H264,
         640, 480,
         PSYNC_VIDEO_DEFAULT_FRAMES_PER_SECOND };
 
-    polysync::VideoEncoder encoder{ deviceFormat, encodedFormat };
-
+    // Set format for decoder output
     polysync::VideoFormat decodedFormat{
         PIXEL_FORMAT_RGB24,
         640,
         480,
         PSYNC_VIDEO_DEFAULT_FRAMES_PER_SECOND };
 
+    // Create encoder/decoder
+    polysync::VideoEncoder encoder{ deviceFormat, encodedFormat };
     polysync::VideoDecoder decoder{ encodedFormat, decodedFormat };
 
     try
     {
+        // Search system for possible devices
         auto videoDeviceList = polysync::getAvailableVideoDevices();
 
         if( videoDeviceList.size() > 0 )
         {
+            // Grab the first available device, likely /dev/video0 in Linux.
             auto videoDevice = videoDeviceList[ 0 ];
 
+            // Make sure the device supports our desired format
             if( ! videoDevice.formatIsSupported( deviceFormat ) )
             {
-                cout << "VideoFormat not supported."
-                     << endl;
+                cout << "VideoFormat not supported." << endl;
 
                 return 0;
             }
@@ -80,41 +85,34 @@ int main( int argc, char *argv[] )
             videoDevice.enableStreaming();
 
             ulong frameIndex{ 0 };
+
+            // Pull data from device
             while( videoDevice.poll() )
             {
-                cout << "Frame[ " << frameIndex << " ]: "
-                     << endl;
+                cout << "Frame[ " << frameIndex << " ]: " << endl;
 
-                cout << "    Raw Size: "
-                     << videoDevice.getBufferLength()
-                     << endl;
+                cout << "    Raw Size: " << videoDevice.getFrameSize() << endl;
 
-                encoder.encode( videoDevice.getBuffer() );
+                // Compress frame
+                encoder.encode( videoDevice.getFrame() );
+                auto encodedBuffer = encoder.getCopyOfEncodedBuffer();
+                auto encodedSize = encodedBuffer.size();
 
-                std::vector< uchar > eBuffer;
-                do
+                if( encodedSize > 0 )
                 {
-                    eBuffer = encoder.getCopyOfEncodedBuffer();
+                    cout << "    Encoded size: " << encodedSize << endl;
+
+                    decoder.decode( encodedBuffer );
+                    auto decodedBuffer = decoder.getCopyOfDecodedBuffer();
+
+                    auto decodedSize = decodedBuffer.size();
+                    if( decodedSize > 0 )
+                    {
+                        cout << "    Decoded size: " << decodedSize << endl;
+
+                        ++frameIndex;
+                    }
                 }
-                while( eBuffer.size() == 0 );
-
-                cout << "    Encoded size: "
-                     << eBuffer.size()
-                     << endl;
-
-                std::vector< uchar > dBuffer;
-                do
-                {
-                    decoder.decode( eBuffer );
-                    dBuffer = decoder.getCopyOfDecodedBuffer();
-                }
-                while( dBuffer.size() == 0 );
-
-                cout << "    Decoded size: "
-                     << dBuffer.size()
-                     << endl;
-
-                ++frameIndex;
             }
         }
     }
