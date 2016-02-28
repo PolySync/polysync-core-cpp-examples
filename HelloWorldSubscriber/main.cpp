@@ -90,8 +90,7 @@ public:
  * @brief main
  *
  * Entry point for this tutorial application
- * The "connectToPolySync" is a blocking call, users must use Ctrl-C to exit
- * this function.
+ * The "connectPolySync" begins this node's PolySync execution loop.
  *
  * @param argc - int, the number of parameters on the command-line
  * @param argv - char* [], the parsed command-line arguments
@@ -105,7 +104,7 @@ int main( int argc, char *argv[] )
 
     // When the node has been created, it will cause an initStateEvent to
     // to be sent.
-    subscriberNode.connectToPolySync();
+    subscriberNode.connectPolySync();
 
     return 0;
 }

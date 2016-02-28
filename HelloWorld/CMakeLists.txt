@@ -9,14 +9,10 @@ set( PSYNC_HOME
     )
 
 include_directories(
-    frontend/plugins/Utilities/include
     ${PSYNC_HOME}/include
     ${PSYNC_HOME}/pdm
-    ${PSYNC_HOME}/include/deps
     ${PSYNC_HOME}/include/deps/dcps/C/SAC
     ${PSYNC_HOME}/include/deps/sys
-    /usr/include/glib-2.0
-    /usr/lib/x86_64-linux-gnu/glib-2.0/include
     )
 
 
@@ -26,7 +22,6 @@ link_directories(
 
 add_executable(
     ${PROJECT_NAME}
-    ${RESOURCES}
     main.cpp
 )
 
