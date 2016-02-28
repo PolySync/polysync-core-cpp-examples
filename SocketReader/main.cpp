@@ -29,7 +29,7 @@ int main()
     auto errExit = 0;
 
     // timestamp to represent when data was read
-    polysync::Timestamp timestamp;
+    ps_timestamp timestamp;
     // socket buffer to receive data
     std::vector< uchar > socketRecvBuffer;
 
