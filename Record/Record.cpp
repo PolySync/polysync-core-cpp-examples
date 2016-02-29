@@ -49,10 +49,6 @@ using namespace std;
  */
 class RecordNode : public Node
 {
-    /**
-     * @brief Timestamp of when the recording began.
-     */
-    ps_timestamp startTime;
 
     /**
      * @brief @ref polysync::RecordSession used to start and stop the
@@ -74,13 +70,13 @@ class RecordNode : public Node
         recording = new RecordSession{ *this };
 
         // Set the @ref ps_rnr_session_id of this recording.
-        recording->setId( 42 );
+        ps_rnr_session_id sessionId;
+        cout << "Enter recording session id: ";
+        cin >> sessionId;
+        recording->setId( sessionId );
 
         // Start the recording.
         recording->start();
-
-        // Get time the recording started.
-        startTime = getTimestamp();
 
         cout << "Recording started." << endl;
     };
@@ -89,28 +85,28 @@ class RecordNode : public Node
      * @brief okStateEvent
      *
      * Override the base class functionality to end the recording after
-     * a minute has passed.
+     * receiving user input.
      */
     void okStateEvent() override
     {
-        // If a minute has passed (60000000 microseconds is 60 seconds).
-        if( (startTime + 60000000) < getTimestamp() )
+        string input;
+        do
         {
-            // Stop the recording session.
-            recording->stop();
-
-            // Clean up dynamic memory.
-            delete recording;
-
-            // Disconnect this Node.
-            disconnectPolySync();
-
-            cout << "Recording stoped." << endl;
+            cout << endl << "Enter 'q' to end recording: ";
+            cin >> input;
         }
+        while( input != "q" );
 
-        // The ok state is called periodically by the system.
-        // Sleeping will lessen the load on the system for this example.
-        polysync::sleepMicro( 1000000 );
+        // Stop the recording session.
+        recording->stop();
+
+        // Clean up dynamic memory.
+        delete recording;
+
+        // Disconnect this Node.
+        disconnectPolySync();
+
+        cout << "Recording stoped." << endl;
     }
 };
 
@@ -126,7 +122,7 @@ int main()
 
     // When the node has been connected, it will call
     // 'initStateEvent' once, and then continue to loop
-    // using 'okStateEvent' until a minute has passed.
+    // using 'okStateEvent' until user provides input.
     recordingNode.connectPolySync();
 
     return 0;

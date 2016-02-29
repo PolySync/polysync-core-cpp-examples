@@ -71,11 +71,14 @@ class ReplayNode : public Node
         // Set the @ref ps_rnr_session_id of this replay session.
         // Check that the log session id below exists on your system.
         // If it does not, run the RecordControl example and come back to this.
-        replay->load( 42 );
+        ps_rnr_session_id sessionId;
+        cout << "Enter recording session id: ";
+        cin >> sessionId;
+        replay->load( sessionId );
 
         // Optionally set looping to true. If you are using the log session
         // collected in the RecordControl example, wait until the end of the
-        // 1 minute log and the replay will loop back to the beginning.
+        // log and the replay will loop back to the beginning.
         replay->setLooping( true );
 
         // Start the replay.
@@ -92,10 +95,13 @@ class ReplayNode : public Node
      */
     void okStateEvent() override
     {
-        cout << "Press a key to end the replay session: ";
-
-        // Wait until user input.
-        cin.ignore();
+        string input;
+        do
+        {
+            cout << endl << "Enter 'q' to end replay: ";
+            cin >> input;
+        }
+        while( input != "q" );
 
         // Stop the replay.
         replay->stop();
