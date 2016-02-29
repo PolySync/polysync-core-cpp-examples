@@ -40,7 +40,7 @@ using namespace std;
  *
  * The HelloWorldNode class exists to override the functions defined in the
  * base class.  The functions exist in the base class but are stubbed out
- * and must be overloaded in order for them to do something.  In this instance
+ * and must be overloaded in order for them to do something. In this instance
  * only the okStateEvent function is overloaded to publish a message that the
  * subscriber can receive.
  */

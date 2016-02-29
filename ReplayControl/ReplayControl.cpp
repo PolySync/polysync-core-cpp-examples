@@ -24,13 +24,13 @@
  */
 
 /**
- * \example RecordControl.cpp
+ * \example ReplayControl.cpp
  *
- * Demonstrates how to use the Record API routines to control a recording session.
- * Although this example shows how to start and stop a recording session, it
+ * Demonstrates how to use the Replay API routines to control a replay session.
+ * Although this example shows how to start and stop a replay session, it
  * does NOT spawn other nodes for you. If you have no other nodes running
- * which can log data, then the resulting recording will be empty.
- *
+ * in no hardware mode which can replay log data, then the replay session
+ * will not replay the log file data.
  */
 
 #include <iostream>
@@ -41,13 +41,13 @@ using namespace polysync;
 using namespace std;
 
 /**
- * @brief RecordNode class
+ * @brief ReplayNode class
  *
- * The RecordNode class exists to override the functions defined in the
+ * The ReplayNode class exists to override the functions defined in the
  * base Node class.  The functions exist in the base class but
  * must be overloaded to define the node's custom behavior.
  */
-class RecordNode : public Node
+class ReplayNode : public Node
 {
     /**
      * @brief Timestamp of when the recording began.
@@ -55,62 +55,64 @@ class RecordNode : public Node
     ps_timestamp startTime;
 
     /**
-     * @brief @ref polysync::RecordSession used to start and stop the
-     * recording session.
+     * @brief @ref polysync::ReplaySession used to start and stop the
+     * replay session.
      */
-    RecordSession *recording;
+    ReplaySession *replay;
 
     /**
      * @brief initStateEvent
      *
      * Override the base class functionality to create and
-     * start a @ref polysync::RecordSession.
+     * start a @ref polysync::ReplaySession.
      */
     void initStateEvent() override
     {
-        // Create a new record session.
+        // Create a new replay session.
         // Uses the @ref polysync::Node to subscribe and publish
         // Record & Replay messages.
-        recording = new RecordSession{ *this };
+        replay = new ReplaySession{ *this };
 
-        // Set the @ref ps_rnr_session_id of this recording.
-        recording->setId( 42 );
+        // Set the @ref ps_rnr_session_id of this replay session.
+        // Check that the log session id below exists on your system.
+        // If it does not, run the RecordControl example and come back to this.
+        replay->load( 42 );
 
-        // Start the recording.
-        recording->start();
+        // Optionally set looping to true. If you are using the log session
+        // collected in the RecordControl example, wait until the end of the
+        // 1 minute log and the replay will loop back to the beginning.
+        replay->setLooping( true );
 
-        // Get time the recording started.
+        // Start the replay.
+        replay->start();
+
+        // Get time the replay started.
         startTime = getTimestamp();
 
-        cout << "Recording started." << endl;
+        cout << "Replay started." << endl;
     };
 
     /**
      * @brief okStateEvent
      *
-     * Override the base class functionality to end the recording after
-     * a minute has passed.
+     * Override the base class functionality to end the replay session until
+     * the user provides some input.
      */
     void okStateEvent() override
     {
-        // If a minute has passed (60000000 microseconds is 60 seconds).
-        if( (startTime + 60000000) < getTimestamp() )
-        {
-            // Stop the recording session.
-            recording->stop();
+        cout << "Press a key to end the replay session: ";
 
-            // Clean up dynamic memory.
-            delete recording;
+        // Wait until user input.
+        cin.ignore();
 
-            // Disconnect this Node.
-            disconnectPolySync();
+        // Stop the replay.
+        replay->stop();
 
-            cout << "Recording stoped." << endl;
-        }
+        // Clean up dynamic memory.
+        delete replay;
 
-        // The ok state is called periodically by the system.
-        // Sleeping will lessen the load on the system for this example.
-        polysync::sleepMicro( 1000000 );
+        // Disconnect this Node.
+        disconnectPolySync();
     }
 };
 
@@ -121,13 +123,13 @@ class RecordNode : public Node
  */
 int main()
 {
-    // Create an instance of the RecordNode and connect it to PolySync.
-    RecordNode recordingNode;
+    // Create an instance of the ReplayNode and connect it to PolySync.
+    ReplayNode replayNode;
 
     // When the node has been connected, it will call
-    // 'initStateEvent' once, and then continue to loop
-    // using 'okStateEvent' until a minute has passed.
-    recordingNode.connectPolySync();
+    // 'initStateEvent' once, and then call 'okStateEvent' until
+    // the user provides some input.
+    replayNode.connectPolySync();
 
     return 0;
 }
