@@ -14,17 +14,22 @@ LidarPointGenerator::LidarPointGenerator( polysync::Node & node )
 void LidarPointGenerator::initializeMessage()
 {
     polysync::datamodel::SensorDescriptor descriptor;
-
+    memset( &descriptor, 0, sizeof( descriptor ) );
     descriptor.setId( 11 );
     descriptor.setTransformParentId( PSYNC_COORDINATE_FRAME_LOCAL );
     descriptor.setType( PSYNC_SENSOR_KIND_NOT_AVAILABLE );
-
-    _message.setEndTimestamp( 234 );
     _message.setSensorDescriptor( descriptor );
+
+//    _message.setSensorDescriptorId( 11 );
+//    _message.setSensorDescriptorTransformParentId( PSYNC_COORDINATE_FRAME_LOCAL );
+//    _message.setSensorDescriptorType( PSYNC_SENSOR_KIND_NOT_AVAILABLE );
+
 
     auto time = polysync::getTimestamp();
     _message.setHeaderTimestamp( time );
     _message.setStartTimestamp( time );
+    _message.setEndTimestamp( time );
+
 
     updatePoints();
 }

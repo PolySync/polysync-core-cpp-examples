@@ -9,9 +9,17 @@ RadarTargetGenerator::RadarTargetGenerator( polysync::Node & node )
 
 void RadarTargetGenerator::initializeMessage()
 {
-    _message.setSensorDescriptorId( _sensorID );
-    _message.setSensorDescriptorTransformParentId(
-                PSYNC_COORDINATE_FRAME_LOCAL );
+    polysync::datamodel::SensorDescriptor descriptor;
+
+    descriptor.setId( _sensorID );
+    descriptor.setTransformParentId( PSYNC_COORDINATE_FRAME_LOCAL );
+    descriptor.setType( PSYNC_SENSOR_KIND_NOT_AVAILABLE );
+    _message.setSensorDescriptor( descriptor );
+
+//    _message.setSensorDescriptorId( _sensorID );
+//    _message.setSensorDescriptorTransformParentId(
+//                PSYNC_COORDINATE_FRAME_LOCAL );
+
     _message.setHeaderTimestamp( polysync::getTimestamp() );
 
     resetTargets();

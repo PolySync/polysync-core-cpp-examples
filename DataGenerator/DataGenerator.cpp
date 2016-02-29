@@ -5,7 +5,7 @@
 
 #include "LidarPointGenerator.hpp"
 #include "RadarTargetGenerator.hpp"
-
+#include "ObjectGenerator.hpp"
 
 using namespace polysync::datamodel;
 
@@ -26,6 +26,9 @@ protected:
         _radarTargetGenerator->updateTargets();
         _radarTargetGenerator->publishTargets();
 
+        _objectGenerator->updateObjects();
+        _objectGenerator->publishObjects();
+
         polysync::sleepMicro( _updateInterval );
     }
 
@@ -38,12 +41,17 @@ protected:
         _radarTargetGenerator =
                 std::unique_ptr< RadarTargetGenerator >{
                     new RadarTargetGenerator( *this ) };
+
+        _objectGenerator =
+                std::unique_ptr< ObjectGenerator >{
+                    new ObjectGenerator( *this ) };
     }
 
 private:
     ps_timestamp _updateInterval{ 50000 };
     std::unique_ptr< LidarPointGenerator > _lidarPointGenerator;
     std::unique_ptr< RadarTargetGenerator > _radarTargetGenerator;
+    std::unique_ptr< ObjectGenerator > _objectGenerator;
 };
 
 int main(int argc, char *argv[])
@@ -51,5 +59,6 @@ int main(int argc, char *argv[])
     DataGenerator dataGenerator;
 
     dataGenerator.connectPolySync();
+
     return 0;
 }
