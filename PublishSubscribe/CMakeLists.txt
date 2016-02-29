@@ -1,14 +1,8 @@
-cmake_minimum_required(
-    VERSION 2.8
-    )
+cmake_minimum_required( VERSION 2.8.11 )
 
-project(
-    polysync-socket-reader-cpp
-    )
+project( publisher-subscriber-cpp )
 
-add_definitions(
-    -std=c++11
-    )
+add_definitions( -std=c++11 )
 
 set( PSYNC_HOME
     /usr/local/polysync
@@ -21,19 +15,21 @@ include_directories(
     ${PSYNC_HOME}/include/deps/sys
     )
 
+
 link_directories(
     ${PSYNC_HOME}/lib
     )
 
 add_executable(
     ${PROJECT_NAME}
-    SocketReader.cpp
-    )
+    main.cpp
+)
 
 target_link_libraries(
     ${PROJECT_NAME}
     polysync++
+    polysync_node
     polysync_cpp_message_support
+    polysync
     polysync_data_model
-    )
-
+)
