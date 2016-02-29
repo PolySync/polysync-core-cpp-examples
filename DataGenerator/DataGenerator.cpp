@@ -20,7 +20,7 @@ protected:
     {
         _lidarPointGenerator->updatePoints();
         _lidarPointGenerator->publishPoints();
-        polysync::sleepMicro( 100000 );
+        polysync::sleepMicro( _updateInterval );
     }
 
     virtual void initStateEvent()
@@ -31,7 +31,7 @@ protected:
     }
 
 private:
-    bool init{ false };
+    ps_timestamp _updateInterval{ 50000 };
     std::unique_ptr< LidarPointGenerator > _lidarPointGenerator;
 };
 

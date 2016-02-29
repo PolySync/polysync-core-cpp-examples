@@ -13,6 +13,7 @@ public:
     void updatePoints();
 
     void publishPoints();
+
     void initializeMessage();
 
 private:
@@ -20,10 +21,10 @@ private:
     polysync::datamodel::LidarPointsMessage _message;
 
     float _relativeTime{ 0.0 };
-    ulong _sensorID{ 11 };
-    ulong _gridSideLength{ 100 };
-    float _gridScale{ 10.0 };
-    ulong _numberOfPoints{ 10000 };
+    const float _gridScale{ 10.0 };
+    const ulong _gridSideLength{ 100 };
+    const ulong _sensorID{ 11 };
+    const ulong _numberOfPoints{ 10000 };
     const float _sineFrequency{ 4.0 };
 };
 

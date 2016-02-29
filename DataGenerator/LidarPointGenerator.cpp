@@ -31,15 +31,20 @@ void LidarPointGenerator::initializeMessage()
 
 void LidarPointGenerator::updatePoints()
 {
-    auto timeDelta = polysync::getTimestamp() - _message.getStartTimestamp();
+    auto time = polysync::getTimestamp();
+
+    auto timeDelta = time - _message.getStartTimestamp();
 
     auto timeDeltaSeconds = static_cast< float >( timeDelta ) / 1000000.0;
 
-    _message.setStartTimestamp( timeDeltaSeconds );
-    _message.setEndTimestamp( timeDeltaSeconds );
+    _relativeTime += timeDeltaSeconds;
+
+    _message.setStartTimestamp( time );
+    _message.setEndTimestamp( time );
 
     std::vector< LidarPoint > outputPoints;
     outputPoints.reserve( _numberOfPoints );
+
     for( auto pointNum = 0; pointNum < _numberOfPoints; ++pointNum )
     {
         polysync::datamodel::LidarPoint point;
@@ -68,5 +73,6 @@ void LidarPointGenerator::updatePoints()
 
 void LidarPointGenerator::publishPoints()
 {
+    _message.setHeaderTimestamp( polysync::getTimestamp() );
     _message.publish();
 }
