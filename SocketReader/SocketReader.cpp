@@ -110,7 +110,7 @@ public:
     /**
      * @brief releaseStateEvent
      *
-     * Perform the serial port cleanup here.
+     * Perform the socket cleanup here.
      *
      */
     void releaseStateEvent() override
