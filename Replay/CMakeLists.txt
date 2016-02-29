@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 2.8.11 )
 
-project( replay-control )
+project( replay )
 
 add_definitions( -std=c++11 )
 
@@ -22,7 +22,7 @@ link_directories(
 
 add_executable(
     ${PROJECT_NAME}
-    ReplayControl.cpp
+    Replay.cpp
 )
 
 target_link_libraries(

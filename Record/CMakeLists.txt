@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 2.8.11 )
 
-project( record-control )
+project( record )
 
 add_definitions( -std=c++11 )
 
@@ -22,7 +22,7 @@ link_directories(
 
 add_executable(
     ${PROJECT_NAME}
-    RecordControl.cpp
+    Record.cpp
 )
 
 target_link_libraries(
