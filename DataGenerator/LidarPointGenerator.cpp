@@ -45,7 +45,7 @@ LidarPointGenerator::LidarPointGenerator( polysync::Node & node )
 void LidarPointGenerator::initializeMessage()
 {
     polysync::datamodel::SensorDescriptor descriptor;
-    memset( &descriptor, 0, sizeof( descriptor ) );
+
     descriptor.setId( 11 );
     descriptor.setTransformParentId( PSYNC_COORDINATE_FRAME_LOCAL );
     descriptor.setType( PSYNC_SENSOR_KIND_NOT_AVAILABLE );

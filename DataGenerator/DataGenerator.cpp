@@ -104,7 +104,7 @@ private:
  */
 int main(int argc, char *argv[])
 {
-    DataGenerator dataGenerator( argc, argv );
+    DataGenerator dataGenerator;
 
     dataGenerator.connectPolySync();
 
