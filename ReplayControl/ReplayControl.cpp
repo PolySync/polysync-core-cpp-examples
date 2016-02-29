@@ -50,11 +50,6 @@ using namespace std;
 class ReplayNode : public Node
 {
     /**
-     * @brief Timestamp of when the recording began.
-     */
-    ps_timestamp startTime;
-
-    /**
      * @brief @ref polysync::ReplaySession used to start and stop the
      * replay session.
      */
@@ -85,9 +80,6 @@ class ReplayNode : public Node
 
         // Start the replay.
         replay->start();
-
-        // Get time the replay started.
-        startTime = getTimestamp();
 
         cout << "Replay started." << endl;
     };
