@@ -1,5 +1,7 @@
 #include "LidarPointGenerator.hpp"
 
+using namespace std;
+using namespace polysync::datamodel;
 
 LidarPointGenerator::LidarPointGenerator( polysync::Node & node )
     :
@@ -17,17 +19,28 @@ void LidarPointGenerator::initializeMessage()
     descriptor.setTransformParentId( PSYNC_COORDINATE_FRAME_LOCAL );
     descriptor.setType( PSYNC_SENSOR_KIND_NOT_AVAILABLE );
 
+    _message.setEndTimestamp( 234 );
     _message.setSensorDescriptor( descriptor );
 
     auto time = polysync::getTimestamp();
     _message.setHeaderTimestamp( time );
     _message.setStartTimestamp( time );
-    _message.setEndTimestamp( time );
+
+    updatePoints();
 }
 
-const polysync::datamodel::LidarPointsMessage & LidarPointGenerator::updatePoints()
+void LidarPointGenerator::updatePoints()
 {
-    for( auto pointNum = 0; pointNum < 10000; ++pointNum )
+    auto timeDelta = polysync::getTimestamp() - _message.getStartTimestamp();
+
+    auto timeDeltaSeconds = static_cast< float >( timeDelta ) / 1000000.0;
+
+    _message.setStartTimestamp( timeDeltaSeconds );
+    _message.setEndTimestamp( timeDeltaSeconds );
+
+    std::vector< LidarPoint > outputPoints;
+    outputPoints.reserve( _numberOfPoints );
+    for( auto pointNum = 0; pointNum < _numberOfPoints; ++pointNum )
     {
         polysync::datamodel::LidarPoint point;
         point.setIntensity( 255 );
@@ -35,17 +48,25 @@ const polysync::datamodel::LidarPointsMessage & LidarPointGenerator::updatePoint
         auto x = pointNum % 100;
         auto y = pointNum / 100;
 
-        double u = static_cast< double >( x )/ 100.0;
-        double v = static_cast< double >( y ) / 100.0;
+        float u = static_cast< float >( x )/ 100.0;
+        float v = static_cast< float >( y ) / 100.0;
 
         // center u/v at origin
         u = ( u * 2.0 ) - 1.0;
         v = ( v * 2.0 ) - 1.0;
 
-        auto w = sin( ( u * _sineFrequency ) + _relativeTime )
+        float w = sin( ( u * _sineFrequency ) + _relativeTime )
                 * cos( ( v * _sineFrequency ) + _relativeTime )
                 * 0.5;
 
         point.setPosition( { u * 10, v * 10, w * 10 } );
+        outputPoints.emplace_back( point );
     }
+
+    _message.setPoints( outputPoints );
+}
+
+void LidarPointGenerator::publishPoints()
+{
+    _message.publish();
 }
