@@ -36,7 +36,8 @@
 
 using namespace std;
 
-const string NODE_NAME( "polysync-sample-app-cpp" );
+const uint ITERATIONS_PER_STATE = 4;
+const string NODE_NAME( "polysync-sample-application-cpp" );
 
 /**
  * @brief SampleApplicationNode class
@@ -59,6 +60,7 @@ private:
      * PolySync bus.
      */
     ps_msg_type _messageType;
+    unsigned int _timerTick;
 
 public:
     /**
@@ -103,6 +105,15 @@ public:
         // Limit the number of iterations by sleeping for 1 second.
         // The nominal PolySync clock is on a microsecond basis
         polysync::sleepMicro( 1000000 );
+
+        // Spend some iterations in this state and transition to the next
+        _timerTick++;
+
+        if ( _timerTick > ITERATIONS_PER_STATE )
+        {
+            activateFault( DTC_USAGE, NODE_STATE_WARN );
+            _timerTick = 0;
+        }
     }
 
     /**
@@ -134,6 +145,15 @@ public:
         cout << NODE_NAME << " is in the error state." << endl;
 
         polysync::sleepMicro( 1000000 );
+
+        // Spend some iterations in this state and transition to the next
+        // Note that a FATAL state shuts the node down.
+        _timerTick++;
+
+        if ( _timerTick > ITERATIONS_PER_STATE )
+        {
+            activateFault( DTC_USAGE, NODE_STATE_FATAL );
+        }
     }
 
     /**
@@ -160,6 +180,15 @@ public:
         // Limit the number of iterations by sleeping for 1 second.
         // The nominal PolySync clock is on a microsecond basis
         polysync::sleepMicro( 1000000 );
+
+        // Spend some iterations in this state and transition to the next
+        _timerTick++;
+
+        if ( _timerTick > ITERATIONS_PER_STATE )
+        {
+            activateFault( DTC_USAGE, NODE_STATE_ERROR );
+            _timerTick = 0;
+        }
     }
 
     /**
@@ -187,6 +216,8 @@ public:
      */
     virtual void initStateEvent()
     {
+        _timerTick = 0;
+
         cout << NODE_NAME << " is initializing." << endl;
 
         _messageType = getMessageTypeByName( "ps_byte_array_msg" );
@@ -214,9 +245,16 @@ public:
     {
         cout << NODE_NAME << " received a configuration event." << endl;
 
-        for (int i = 0; i < argc; i++)
+        if (argc > 0)
         {
-            cout << "Parameter: " << argv[i] << endl;
+            for (int i = 0; i < argc; i++)
+            {
+                cout << "Parameter: " << argc << " : " << argv[i] << endl;
+            }
+        }
+        else
+        {
+            cout << "No configuration parameters to display." << endl;
         }
     }
 };
