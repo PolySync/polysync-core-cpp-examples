@@ -50,7 +50,7 @@ public:
      * @brief CANReaderNode constructor
      * Open @ref _channel
      */
-    CANReaderNode( int argc, char * argv[] )
+    CANReaderNode()
         :
         _channel( _systemID, _flags )
     {}
