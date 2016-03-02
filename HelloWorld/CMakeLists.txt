@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 2.8 )
 
-project( helloworld-example )
+project( polysync-helloworld-cpp )
 
 add_definitions( -std=c++11 )
 
