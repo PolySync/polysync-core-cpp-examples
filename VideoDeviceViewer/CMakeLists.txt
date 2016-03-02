@@ -1,9 +1,9 @@
 cmake_minimum_required(
-    VERSION 2.8.11
+    VERSION 2.8
     )
 
 project(
-    polysync-video-device-viewer-c++
+    polysync-video-device-viewer-cpp
     )
 
 add_definitions(
