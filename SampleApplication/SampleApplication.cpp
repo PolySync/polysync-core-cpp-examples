@@ -90,7 +90,7 @@ public:
      * or actuator interaction, it would happen here; this is the lowest latency
      * of any of the functions in a given node.
      */
-    void okStateEvent() override
+    void okStateEvent() 
     {
         // In this instance, like the publisher tutorial, we will send a message
         // on the bus with a sleep to minimize the loading on the bus.
