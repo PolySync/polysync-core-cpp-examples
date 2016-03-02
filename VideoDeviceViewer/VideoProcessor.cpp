@@ -1,11 +1,10 @@
-#include <VideoProcessor.hpp>
+#include "VideoProcessor.hpp"
 
 #include <PolySyncVideo.hpp>
 #include <PolySyncDTCException.hpp>
 
 #include <QImage>
 #include <QPixmap>
-#include <QThread>
 
 #include <iostream>
 
@@ -39,7 +38,7 @@ void VideoProcessor::slotRun()
 
             videoDevice.enableStreaming();
 
-            // Pull data from device
+            // Continously pull data from the device while it's available.
             while( videoDevice.poll() )
             {
                 auto frame = videoDevice.getFrame();
