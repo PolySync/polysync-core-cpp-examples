@@ -30,5 +30,6 @@ target_link_libraries(
     polysync++
     polysync_node
     polysync_cpp_message_support
+    polysync
     polysync_data_model
 )
