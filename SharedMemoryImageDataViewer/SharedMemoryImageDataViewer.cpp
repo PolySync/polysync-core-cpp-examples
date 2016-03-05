@@ -56,6 +56,7 @@ int main( int argc, char *argv[] )
     else
     {
         std::cout << "Must pass executable a sharedMemoryKey" << std::endl;
+        std::cout << "See the Knowledge Base article (https://support.harbrick.com/hc/en-us/articles/217046318-Connecting-to-a-Sensor-Webcam) to configure video device to operate in shared memory mode." << std::endl;
         return 0;
     }
 
