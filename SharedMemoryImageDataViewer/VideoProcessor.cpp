@@ -73,6 +73,7 @@ void VideoProcessor::slotRun()
         while( 1 )
         {
             // Block and wait for data
+            // Shared memory behaves as a FIFO (first in, first out ) queue.
             sharedMemory.pop();
 
             if( sharedMemory.getMessageType() == PSYNC_SHDMEM_MSG_TYPE_IMAGE_DATA )
