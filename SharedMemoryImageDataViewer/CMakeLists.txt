@@ -3,7 +3,7 @@ cmake_minimum_required(
     )
 
 project(
-    polysync-shdmem-image-data-viewer-cpp
+    polysync-sharedmem-image-data-viewer-cpp
     )
 
 add_definitions(
