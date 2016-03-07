@@ -56,11 +56,9 @@ void VideoProcessor::slotRun()
         480,
         PSYNC_VIDEO_DEFAULT_FRAMES_PER_SECOND };
 
-    auto sharedKey = 22345;
-
     try
     {
-        polysync::SharedMemoryImageData sharedMemory( sharedKey );
+        polysync::SharedMemoryImageData sharedMemory( _sharedMemoryKey );
 
         // Attach to existing shared memory segment at given key
         sharedMemory.attach();

@@ -25,8 +25,31 @@
 
 /*
  * PolySync Sample C++ API example
- *      Demonstrate access to shared memory written to by a video device driver
+ *      Demonstrate access to shared memory written to by a video device driver.
  *
+ * In order to compile and run:
+ *
+ * 1.) Example requires PolySync Lochsa (v2.0) or later.
+ *
+ * 2.) Qt must be installed on your system. http://www.qt.io/download/
+ *
+ * 3.) Make sure to set up a video device using the polysync-sdf-configurator
+ *     tool.
+ *
+ * 4.) In the SDF configurator, under "IO Configuration" for the device, set
+ *     "Shared Memory Output Queue Key to a unique key that you will input to
+ *     this example.
+ *
+ * 5.) Run your device driver. "dynamic-driver -n 1 -o" Assuming your driver's
+ *     identifier is 1 in the system design file.
+ *
+ * 6.) To build this example, starting in it's directory:
+ *     1 - mkdir build && cd build
+ *     2 - cmake ..
+ *     3 - make ..
+ *
+ * 7.) Run the example:
+ *     1 - ./polysync-shdmem-image-data-viewer-cpp
  */
 #include <QApplication>
 #include <QThread>
@@ -51,12 +74,26 @@ int main( int argc, char *argv[] )
     // Check for shared memory key argument
     if( argc > 1 )
     {
-        videoProcessor.get()->_sharedMemoryKey = std::stoul( argv[ 1 ] );
+        try
+        {
+            videoProcessor.get()->_sharedMemoryKey = std::stoul( argv[ 1 ] );
+        }
+        catch( std::exception & e )
+        {
+            std::cout << "Invalid memory key. This example requires valid "
+                         "integer input representing a device driver key."
+                      << std::endl
+                      << "For example: "
+                         "polysync-shdmem-image-data-viewer-cpp 12345"
+                      << std::endl;
+
+            return 1;
+        }
     }
     else
     {
         std::cout << "Must pass executable a sharedMemoryKey" << std::endl;
-        return 0;
+        return 1;
     }
 
     // Thread video processing loop, this will continously pull data from
@@ -65,8 +102,7 @@ int main( int argc, char *argv[] )
     videoProcessor->moveToThread( processingThread );
     processingThread->start();
 
-    auto videoViewer =
-            std::unique_ptr< VideoViewer >( new VideoViewer );
+    auto videoViewer = std::unique_ptr< VideoViewer >( new VideoViewer );
 
     // Qt signal/slot connect for passing data between processor and viewer.
     QObject::connect( videoProcessor.get(), &VideoProcessor::signalPixmap,
