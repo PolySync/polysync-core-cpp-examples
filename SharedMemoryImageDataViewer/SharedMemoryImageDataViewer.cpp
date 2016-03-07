@@ -81,7 +81,7 @@ int main( int argc, char *argv[] )
         catch( std::exception & e )
         {
             std::cout << "Invalid memory key. This example requires valid "
-                         "integer input representing a device driver key."
+                         "integer input representing a shared memory key."
                       << std::endl
                       << "For example: "
                          "polysync-shdmem-image-data-viewer-cpp 12345"
