@@ -31,24 +31,22 @@
  *
  * 1.) Example requires PolySync Lochsa (v2.0) or later.
  *
- * 2.) Qt must be installed on your system. http://www.qt.io/download/
- *
- * 3.) Make sure to set up a video device using the polysync-sdf-configurator
+ * 2.) Make sure to set up a video device using the polysync-sdf-configurator
  *     tool.
  *
- * 4.) In the SDF configurator, under "IO Configuration" for the device, set
+ * 3.) In the SDF configurator, under "IO Configuration" for the device, set
  *     "Shared Memory Output Queue Key to a unique key that you will input to
  *     this example.
  *
- * 5.) Run your device driver. "dynamic-driver -n 1 -o" Assuming your driver's
+ * 4.) Run your device driver. "dynamic-driver -n 1 -o" Assuming your driver's
  *     identifier is 1 in the system design file.
  *
- * 6.) To build this example, starting in it's directory:
+ * 5.) To build this example, starting in it's directory:
  *     1 - mkdir build && cd build
  *     2 - cmake ..
  *     3 - make ..
  *
- * 7.) Run the example:
+ * 6.) Run the example:
  *     1 - ./polysync-shdmem-image-data-viewer-cpp
  */
 #include <QApplication>
