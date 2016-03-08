@@ -48,13 +48,21 @@ class CANReaderNode : public polysync::Node
 public:
     /**
      * @brief CANReaderNode constructor
-     * Open @ref _channel
      */
-    CANReaderNode()
+    CANReaderNode( uint channelID )
         :
-        _channel( _systemID, _flags )
+        _channelID( channelID )
     {}
 
+    ~CANReaderNode()
+    {
+        if( _channel )
+        {
+            _channel->goOffBus();
+            delete _channel;
+            _channel = nullptr;
+        }
+    }
 
 protected:
 
@@ -66,14 +74,19 @@ protected:
      */
     virtual void initStateEvent()
     {
+        std::cout << "CANReaderNode::initStateEvent()" << std::endl;
+        _channel = new polysync::CANChannel( _channelID, _flags );
+
         try
         {
-            _channel.setBitRate( _bitRate );
-
-            _channel.goOnBus();
+            std::cout << "before psync calls" << std::endl;
+            _channel->setBitRate( _bitRate );
+            _channel->goOnBus();
+            std::cout << "after psync calls" << std::endl;
         }
         catch( polysync::DTCException & exception )
         {
+            std::cout << "exception" << std::endl;
             // If interaction with the channel fails, print why and trigger
             // errorStateEvent
             std::cout << exception.what() << std::endl;
@@ -92,22 +105,25 @@ protected:
         try
         {
             // Read data from the device, we're not using the buffer, here.
-            auto CANFrame = _channel.read();
+            auto CANFrame = _channel->read();
 
             // Output CAN frame data.
             std::cout << "CAN frame - ID: 0x"
-                      << _channel.getInputFrameId() << std::endl;
+                      << _channel->getInputFrameId() << std::endl;
 
             std::cout << "DLC: "
-                      << _channel.getInputFramePayloadSize() << std::endl;
+                      << _channel->getInputFramePayloadSize() << std::endl;
         }
         catch( polysync::DTCException & exception )
         {
-            std::cout << exception.what() << std::endl;
+            if( exception.getDtc() != DTC_UNAVAILABLE )
+            {
+                std::cout << exception.what() << std::endl;
 
-            // Activate a fault state for this node. The NODE_STATE_ERROR
-            // will trigger call to errorStateEvent.
-            activateFault( exception.getDtc(), NODE_STATE_ERROR );
+                // Activate a fault state for this node. The NODE_STATE_ERROR
+                // will trigger call to errorStateEvent.
+                activateFault( exception.getDtc(), NODE_STATE_ERROR );
+            }
         }
 
     }
@@ -120,7 +136,13 @@ protected:
      */
     virtual void releaseStateEvent()
     {
-        _channel.goOffBus();
+        std::cout << "CANReaderNode::releaseStateEvent()" << std::endl;
+        if( _channel )
+        {
+            _channel->goOffBus();
+            delete _channel;
+            _channel = nullptr;
+        }
     }
 
     /**
@@ -131,12 +153,13 @@ protected:
      */
     virtual void errorStateEvent()
     {
+        std::cout << "CANReaderNode::errorStateEvent()" << std::endl;
         disconnectPolySync();
     }
 
 private:
-    polysync::CANChannel _channel;
-    uint _systemID{ 0 };
+    polysync::CANChannel * _channel{ nullptr };
+    uint _channelID{ 0 };
     uint _flags{ PSYNC_CAN_OPEN_ALLOW_VIRTUAL };
     ps_datarate_kind _bitRate{ DATARATE_500K };
 };
@@ -154,18 +177,36 @@ private:
  */
 int main( int argc, char *argv[] )
 {
-    try
+    // Check for shared memory key argument
+    if( argc > 1 )
     {
-        CANReaderNode canReader;
+        try
+        {
+            CANReaderNode canReader( std::stoul( argv[ 1 ] ) );
 
-        canReader.setNodeName( "polysync-can-reader-cpp" );
-        canReader.connectPolySync();
+            canReader.setNodeName( "polysync-can-reader-cpp" );
+
+            canReader.connectPolySync();
+        }
+        catch( std::exception & e )
+        {
+            std::cout << "Invalid argument. This example requires valid "
+                         "integer input representing a CAN channel."
+                      << std::endl
+                      << "For example: "
+                         "polysync-can-reader-cpp 1"
+                      << std::endl;
+
+            return 1;
+        }
     }
-    catch( polysync::DTCException & exception )
+    else
     {
-        std::cout << exception.what() << std::endl;
-        std::cout << "Make sure a CAN device is connected to your machine."
-                  << std::endl;
+        std::cout << "Must pass CAN channel argument." << std::endl
+                  << "For example: "
+                     "polysync-can-reader-cpp 1" << std::endl;
+
+        return 1;
     }
 
     return 0;
