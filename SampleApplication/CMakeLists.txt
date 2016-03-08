@@ -1,13 +1,9 @@
-project(
-    polysync-socket-writer-cpp
-    )
-
 cmake_minimum_required(
     VERSION 2.8
     )
 
 project(
-    polysync-socket-writer-cpp
+    polysync-sample-application-cpp
     )
 
 add_definitions(
@@ -31,7 +27,7 @@ link_directories(
 
 add_executable(
     ${PROJECT_NAME}
-    SocketWriter.cpp
+    SampleApplication.cpp
     )
 
 target_link_libraries(
@@ -40,4 +36,3 @@ target_link_libraries(
     polysync_cpp_message_support
     polysync_data_model
     )
-
