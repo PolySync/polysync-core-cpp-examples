@@ -1,20 +1,34 @@
-project( SingleTransform )
+project( polysync-single-transform-cpp )
 
 cmake_minimum_required( VERSION 2.8 )
 
-include ( /usr/local/polysync/BuildResources.cmake )
+add_definitions(
+    -std=c++11
+    )
 
-aux_source_directory( . SRC_LIST )
+set( PSYNC_HOME
+    /usr/local/polysync
+    )
 
 include_directories(
-    ${PSYNC_INCLUDE_DIRS}
-)
+    ${PSYNC_HOME}/include
+    ${PSYNC_HOME}/pdm
+    ${PSYNC_HOME}/include/deps/dcps/C/SAC
+    ${PSYNC_HOME}/include/deps/sys
+    )
 
-add_executable( ${PROJECT_NAME}
-    ${SRC_LIST}
-)
+link_directories(
+    ${PSYNC_HOME}/lib
+    )
+
+add_executable(
+    ${PROJECT_NAME}
+    SingleTransform.cpp
+    )
 
 target_link_libraries(
     ${PROJECT_NAME}
-    ${PSYNC_LIBS}
-)
+    polysync++
+    polysync_cpp_message_support
+    polysync_data_model
+    )

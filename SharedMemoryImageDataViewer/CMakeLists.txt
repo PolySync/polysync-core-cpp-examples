@@ -1,13 +1,9 @@
-project(
-    polysync-socket-writer-cpp
-    )
-
 cmake_minimum_required(
     VERSION 2.8
     )
 
 project(
-    polysync-socket-writer-cpp
+    polysync-sharedmem-image-data-viewer-cpp
     )
 
 add_definitions(
@@ -17,6 +13,11 @@ add_definitions(
 set( PSYNC_HOME
     /usr/local/polysync
     )
+
+set( CMAKE_INCLUDE_CURRENT_DIR ON )
+set( CMAKE_AUTOMOC ON )
+
+find_package( Qt5Widgets )
 
 include_directories(
     ${PSYNC_HOME}/include
@@ -31,7 +32,9 @@ link_directories(
 
 add_executable(
     ${PROJECT_NAME}
-    SocketWriter.cpp
+    SharedMemoryImageDataViewer.cpp
+    VideoViewer.cpp
+    VideoProcessor.cpp
     )
 
 target_link_libraries(
@@ -39,5 +42,5 @@ target_link_libraries(
     polysync++
     polysync_cpp_message_support
     polysync_data_model
+    Qt5::Widgets
     )
-

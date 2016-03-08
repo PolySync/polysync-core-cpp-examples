@@ -1,5 +1,5 @@
 cmake_minimum_required(
-    VERSION 2.8.11
+    VERSION 2.8
     )
 
 project(
@@ -27,8 +27,7 @@ link_directories(
 
 add_executable(
     ${PROJECT_NAME}
-    ${RESOURCES}
-    main.cpp
+    HelloWorldSubscriber.cpp
     )
 
 target_link_libraries(
