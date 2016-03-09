@@ -22,7 +22,7 @@ link_directories(
 
 add_executable(
     ${PROJECT_NAME}
-    main.cpp
+    CANWriterNode.cpp
 )
 
 target_link_libraries(
