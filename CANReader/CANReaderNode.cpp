@@ -51,18 +51,8 @@ public:
      */
     CANReaderNode( uint channelID )
         :
-        _channelID( channelID )
+        _channel( channelID, _flags )
     {}
-
-    ~CANReaderNode()
-    {
-        if( _channel )
-        {
-            _channel->goOffBus();
-            delete _channel;
-            _channel = nullptr;
-        }
-    }
 
 protected:
 
@@ -75,18 +65,14 @@ protected:
     virtual void initStateEvent()
     {
         std::cout << "CANReaderNode::initStateEvent()" << std::endl;
-        _channel = new polysync::CANChannel( _channelID, _flags );
 
         try
         {
-            std::cout << "before psync calls" << std::endl;
-            _channel->setBitRate( _bitRate );
-            _channel->goOnBus();
-            std::cout << "after psync calls" << std::endl;
+            _channel.setBitRate( _bitRate );
+            _channel.goOnBus();
         }
         catch( polysync::DTCException & exception )
         {
-            std::cout << "exception" << std::endl;
             // If interaction with the channel fails, print why and trigger
             // errorStateEvent
             std::cout << exception.what() << std::endl;
@@ -105,14 +91,14 @@ protected:
         try
         {
             // Read data from the device, we're not using the buffer, here.
-            auto CANFrame = _channel->read();
+            auto CANFrame = _channel.read();
 
             // Output CAN frame data.
             std::cout << "CAN frame - ID: 0x"
-                      << _channel->getInputFrameId() << std::endl;
+                      << _channel.getInputFrameId() << std::endl;
 
             std::cout << "DLC: "
-                      << _channel->getInputFramePayloadSize() << std::endl;
+                      << _channel.getInputFramePayloadSize() << std::endl;
         }
         catch( polysync::DTCException & exception )
         {
@@ -129,23 +115,6 @@ protected:
     }
 
     /**
-     * @brief releaseStateEvent
-     *
-     * The event is triggered once upon the node's release from PolySync.
-     *
-     */
-    virtual void releaseStateEvent()
-    {
-        std::cout << "CANReaderNode::releaseStateEvent()" << std::endl;
-        if( _channel )
-        {
-            _channel->goOffBus();
-            delete _channel;
-            _channel = nullptr;
-        }
-    }
-
-    /**
      * @brief errorStateEvent
      * If exceptions occurred in @ref okStateEvent or @ref initStateEvent, we
      * disconnect, which triggers @ref releaseStateEvent and allows for graceful
@@ -158,8 +127,7 @@ protected:
     }
 
 private:
-    polysync::CANChannel * _channel{ nullptr };
-    uint _channelID{ 0 };
+    polysync::CANChannel _channel;
     uint _flags{ PSYNC_CAN_OPEN_ALLOW_VIRTUAL };
     ps_datarate_kind _bitRate{ DATARATE_500K };
 };
