@@ -50,9 +50,9 @@ public:
      * @brief CANReaderNode constructor
      * Open @ref _channel
      */
-    CANWriterNode()
+    CANWriterNode( uint channelID )
         :
-        _channel( _systemID, _flags )
+        _channel( channelID, _flags )
     {}
 
 
@@ -66,11 +66,12 @@ protected:
      */
     virtual void initStateEvent()
     {
+        std::cout << "CANWriterNode::initStateEvent()" << std::endl;
         try
         {
-            _channel.setBitRate( _bitRate );
+           _channel.setBitRate( _bitRate );
 
-            _channel.goOnBus();
+           _channel.goOnBus();
         }
         catch( polysync::DTCException & exception )
         {
@@ -85,19 +86,27 @@ protected:
      * @brief okStateEvent
      *
      * Called repeatedly while node is in an operational state. For this
-     * example, ***********************************************
+     * example, 1 byte is written to the CAN channel passed in.
      */
     virtual void okStateEvent()
     {
         try
         {
-            _channel.setOutputFrameId( 0x456 );
-            _channel.setOutputFramePayloadSize( 1 );
+           _channel.setOutputFrameId( 0x456 );
+           _channel.setOutputFramePayloadSize( 1 );
 
-            std::array< uchar, 8 > outputFrame{ 0 };
-            outputFrame[ 0 ] = 0xFF;
+            std::cout << "Writing CAN frame - ID: "
+                      << _channel.getOutputFrameId()
+                      << " - Output payload size: "
+                      << _channel.getOutputFramePayloadSize()
+                      << std::endl;
 
-            _channel.write( outputFrame );
+            std::array< uchar, 8 > outputData{ 0 };
+            outputData[ 0 ] = 0xFF;
+
+            _channel.write( outputData );
+
+            polysync::sleepMicro( 100000 );
         }
         catch( polysync::DTCException & exception )
         {
@@ -111,17 +120,6 @@ protected:
     }
 
     /**
-     * @brief releaseStateEvent
-     *
-     * The event is triggered once upon the node's release from PolySync.
-     *
-     */
-    virtual void releaseStateEvent()
-    {
-        _channel.goOffBus();
-    }
-
-    /**
      * @brief errorStateEvent
      * If exceptions occurred in @ref okStateEvent or @ref initStateEvent, we
      * disconnect, which triggers @ref releaseStateEvent and allows for graceful
@@ -129,12 +127,12 @@ protected:
      */
     virtual void errorStateEvent()
     {
+        std::cout << "CANWriterNode::errorStateEvent()" << std::endl;
         disconnectPolySync();
     }
 
 private:
     polysync::CANChannel _channel;
-    uint _systemID{ 0 };
     uint _flags{ PSYNC_CAN_OPEN_ALLOW_VIRTUAL };
     ps_datarate_kind _bitRate{ DATARATE_500K };
 };
@@ -152,18 +150,47 @@ private:
  */
 int main( int argc, char *argv[] )
 {
-    try
+    if( argc > 1 )
     {
-        CANWriterNode canWriter;
+        ulong channel = 0;
 
-        canWriter.setNodeName( "polysync-can-writer-cpp" );
-        canWriter.connectPolySync();
+        try
+        {
+            channel = std::stoul( argv[ 1 ] );
+        }
+        catch( ... )
+        {
+            std::cout << "Invalid argument, example expects an integer "
+                         "representing a CAN channel." << std::endl;
+            return 1;
+        }
+
+        try
+        {
+            CANWriterNode canWriter( channel );
+
+            canWriter.setNodeName( "polysync-can-writer-cpp" );
+            canWriter.connectPolySync();
+        }
+        catch( polysync::DTCException & exception )
+        {
+            std::cout << exception.what() << std::endl;
+            std::cout << "Make sure a CAN device is connected to your machine."
+                      << std::endl;
+
+            return 1;
+        }
     }
-    catch( polysync::DTCException & exception )
+    else
     {
-        std::cout << exception.what() << std::endl;
-        std::cout << "Make sure a CAN device is connected to your machine."
+        std::cout << "Example expects an integer "
+                     "representing a CAN channel."
+                  << std::endl
+                  << "For example: "
+                  << std::endl
+                  << "./polysync-can-writer-cpp 1"
                   << std::endl;
+        return 1;
     }
 
     return 0;

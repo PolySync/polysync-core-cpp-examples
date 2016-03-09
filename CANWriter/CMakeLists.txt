@@ -28,8 +28,6 @@ add_executable(
 target_link_libraries(
     ${PROJECT_NAME}
     polysync++
-    polysync_node
     polysync_cpp_message_support
-    polysync
     polysync_data_model
 )
