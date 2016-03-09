@@ -73,7 +73,6 @@ int main()
 
         // Increment ID so that the next push has a unique ID
         id++;
-        // Use the same ps_identifier: PSYNC_COORDINATE_FRAME_PLATFORM
         transform.push( id );
 
         // Apply the entire transformation from the start to the end point
