@@ -49,6 +49,9 @@ int main()
         // Create a Transform object, an origin, and an orientation
         polysync::Transform transform;
 
+        // Variable to store identifiers in the transform stack
+        ps_identifier id = PSYNC_COORDINATE_FRAME_PLATFORM;
+
         // The first transform is strictly a scalar in space.
         // There is no change in orientation.
 
@@ -60,7 +63,7 @@ int main()
 
         // Push the transform on to the transform stack using the ps_identifier
         // PSYNC_COORDINATE_FRAME_PLATFORM
-        transform.push( PSYNC_COORDINATE_FRAME_PLATFORM );
+        transform.push( id );
 
         // The second stage of the transform involves both a change in the
         // origin and a change in orientation.
@@ -68,8 +71,10 @@ int main()
         transform.setOrigin( { 0.0, -10, 0.0 } );
         transform.setOrientation( { 0.0, 0.0, 2.0 } );
 
+        // Increment ID so that the next push has a unique ID
+        id++;
         // Use the same ps_identifier: PSYNC_COORDINATE_FRAME_PLATFORM
-        transform.push( PSYNC_COORDINATE_FRAME_PLATFORM );
+        transform.push( id );
 
         // Apply the entire transformation from the start to the end point
         polysync::Point startPt = { 1.0, 1.0, 1.0 };
