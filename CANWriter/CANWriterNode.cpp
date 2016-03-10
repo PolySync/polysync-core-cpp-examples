@@ -52,6 +52,8 @@ public:
      */
     CANWriterNode( uint channelID )
         :
+        _flags( PSYNC_CAN_OPEN_ALLOW_VIRTUAL ),
+        _bitRate( DATARATE_500K ),
         _channel( channelID, _flags )
     {}
 
@@ -133,8 +135,8 @@ protected:
 
 private:
     polysync::CANChannel _channel;
-    uint _flags{ PSYNC_CAN_OPEN_ALLOW_VIRTUAL };
-    ps_datarate_kind _bitRate{ DATARATE_500K };
+    uint _flags;
+    ps_datarate_kind _bitRate;
 };
 
 /**
