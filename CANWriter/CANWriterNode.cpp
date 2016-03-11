@@ -134,9 +134,9 @@ protected:
     }
 
 private:
-    polysync::CANChannel _channel;
     uint _flags;
     ps_datarate_kind _bitRate;
+    polysync::CANChannel _channel;
 };
 
 /**
