@@ -38,7 +38,7 @@
  *     "Shared Memory Output Queue Key to a unique key that you will input to
  *     this example.
  *
- * 4.) Run your device driver. "dynamic-driver -n 1 -o" Assuming your driver's
+ * 4.) Run your device driver. "polysync-dynamic-driver -n 1 -o" Assuming your driver's
  *     identifier is 1 in the system design file.
  *
  * 5.) To build this example, starting in it's directory:
