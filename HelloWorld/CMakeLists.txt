@@ -22,7 +22,7 @@ link_directories(
 
 add_executable(
     ${PROJECT_NAME}
-    HelloWolrd.cpp
+    HelloWorld.cpp
 )
 
 target_link_libraries(
