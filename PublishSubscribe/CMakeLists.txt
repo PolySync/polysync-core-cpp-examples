@@ -28,7 +28,7 @@ link_directories(
 
 add_executable(
     ${PROJECT_NAME}
-    main.cpp
+    PublishSubscribe.cpp
 )
 
 target_link_libraries(
