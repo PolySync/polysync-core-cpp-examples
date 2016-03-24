@@ -24,9 +24,9 @@
  */
 
 /**
- * \example single_transform.c
+ * \example SingleTransform.cpp
  *
- * Transform Example to demonstrate a single level transform.
+ * Transform Example in C++ to demonstrate a single level transform.
  *
  * Shows how to use the transform API to perform a single operation on the
  * transform stack.
@@ -41,6 +41,8 @@
 #include <PolySyncTransform.hpp>
 #include <PolySyncDTCException.hpp>
 
+using namespace polysync;
+
 int main()
 {
     // The transform object can throw one of several DTC errors for a given function call.
@@ -48,12 +50,14 @@ int main()
     try
     {
         // Create a Transform object, an origin, and an orientation
-        polysync::Transform transform;
+        Transform transform;
 
-        // Set the origin, passing in polysync::Point
+        // Set the origin using an array of doubles that contain the X,Y,Z
+        // coordinates of the origin
         transform.setOrigin( { 0.0, 0.0, 0.0 } );
 
-        // Set the orientation by passing in polysync::Orientation
+        // Set the orientation using an array of doubles that contain the
+        // roll, pitch, yaw, of the transform
         transform.setOrientation( { 1.0, 2.0, 3.0 } );
 
         // Push the transform on to the transform stack using the ps_identifier
@@ -71,7 +75,9 @@ int main()
                   << ", "
                   << 1.1
                   << std::endl;
-        std::cout << "Ending position: " << endPoint.x << ", " << endPoint.y << ", " << endPoint.z << std::endl;
+        std::cout << "Ending position: " << endPoint[P_X] << ", ";
+        std::cout << endPoint[P_Y] << ", ";
+        std::cout << endPoint[P_Z] << std::endl;
 
     }
     catch ( polysync::DTCException& d )

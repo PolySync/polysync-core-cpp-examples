@@ -40,14 +40,17 @@
 #include <PolySyncTransform.hpp>
 #include <PolySyncDTCException.hpp>
 
+using namespace polysync;
+
 int main()
 {
-    // The transform object can throw one of several DTC errors for a given function call.
-    // This is a large try-catch block to describe where the error occurred.
+    // The transform object can throw one of several DTC errors for a given
+    // function call. This is a large try-catch block to describe where the
+    // error occurred.
     try
     {
         // Create a Transform object, an origin, and an orientation
-        polysync::Transform transform;
+        Transform transform;
 
         // Variable to store identifiers in the transform stack
         ps_identifier id = PSYNC_COORDINATE_FRAME_PLATFORM;
@@ -55,10 +58,10 @@ int main()
         // The first transform is strictly a scalar in space.
         // There is no change in orientation.
 
-        // Set the origin (10,0,0), passing in polysync::Point
+        // Set the origin (10,0,0)
         transform.setOrigin( { 10.0, 0.0, 0.0 } );
 
-        // Set the orientation by passing in polysync::Orientation
+        // Set the orientation
         transform.setOrientation( { 0.0, 0.0, 0.0 } );
 
         // Push the transform on to the transform stack using the ps_identifier
@@ -76,16 +79,16 @@ int main()
         transform.push( id );
 
         // Apply the entire transformation from the start to the end point
-        polysync::Point startPt = { 1.0, 1.0, 1.0 };
+        std::array< double, 3 > startPt = { 1.0, 1.0, 1.0 };
 
         auto endPt = transform.apply( startPt );
 
         // Display the results of the transform
-        std::cout << "Starting position: " << startPt.x << ", " << startPt.y;
-        std::cout << ", " << startPt.z << std::endl;
+        std::cout << "Starting position: " << startPt[P_X] << ", "
+                  << startPt[P_Y] << ", " << startPt[P_Z] << std::endl;
 
-        std::cout << "Ending position: " << endPt.x << ", " << endPt.y;
-        std::cout << ", " << endPt.z << std::endl;
+        std::cout << "Ending position: " << endPt[P_X] << ", " << endPt[P_Y];
+        std::cout << ", " << endPt[P_Z] << std::endl;
 
     }
     catch ( polysync::DTCException& d )
