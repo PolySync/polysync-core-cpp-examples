@@ -26,9 +26,10 @@
 /**
  * Parameter Get/Set Example.
  *
- * Shows how to get/set parameters from the PolySync bus.
- * The example accepts command line input to 'get' a parameter value or will
- * set a parameter value for a given parameter type
+ * Shows how to get/set parameters from the PolySync bus. Example publishes
+ * a single parameter message to the bus requesting all nodes parameters.
+ * A subscriber is created to recieve parameter messages and prints all
+ * data stored within the message.
  *
  * The example uses the standard PolySync node template and state machine.
  * Send the SIGINT (control-C on the keyboard) signal to the node/process to do 
