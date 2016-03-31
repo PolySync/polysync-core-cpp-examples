@@ -1,34 +1,30 @@
-project( polysync-transform-stack-cpp )
-
 cmake_minimum_required( VERSION 2.8 )
 
-add_definitions(
-    -std=c++11
-    )
+project( polysync-transform-stack-cpp )
 
-set( PSYNC_HOME
-    /usr/local/polysync
-    )
+if( NOT PSYNC_HOME )
+    if( $ENV{PSYNC_HOME} )
+        set( PSYNC_HOME $ENV{PSYNC_HOME} )
+    else()
+        set( PSYNC_HOME /usr/local/polysync )
+    endif()
+endif()
+
+include( ${PSYNC_HOME}/BuildResources.cmake )
 
 include_directories(
-    ${PSYNC_HOME}/include
-    ${PSYNC_HOME}/pdm
-    ${PSYNC_HOME}/include/deps/dcps/C/SAC
-    ${PSYNC_HOME}/include/deps/sys
-    )
+    ${PSYNC_INCLUDE_DIRS}
+)
 
-link_directories(
-    ${PSYNC_HOME}/lib
-    )
-
-add_executable(
-    ${PROJECT_NAME}
+add_executable( ${PROJECT_NAME}
     TransformStack.cpp
-    )
+)
 
-target_link_libraries(
-    ${PROJECT_NAME}
-    polysync++
-    polysync_cpp_message_support
-    polysync_data_model
-    )
+target_link_libraries( ${PROJECT_NAME}
+    ${PSYNC_LIBS}
+)
+
+install(
+    TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION ${PSYNC_HOME}/bin
+)
