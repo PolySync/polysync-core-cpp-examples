@@ -32,6 +32,7 @@
 #include <string>
 #include <PolySyncNode.hpp>
 #include <PolySyncSerial.hpp>
+#include <PolySyncDTCException.hpp>
 
 using namespace std;
 
@@ -112,10 +113,18 @@ public:
  */
 int main(int argc, char *argv[])
 {
-    // Create an instance of the SerialReaderNode and connect it to PolySync
-    SerialReaderNode serialReaderNode;
-    serialReaderNode.setNodeName(NODE_NAME);
-    serialReaderNode.connectPolySync();
+    
+    try
+    {
+        // Create an instance of the SerialReaderNode and connect it to PolySync
+        SerialReaderNode serialReaderNode;
+        serialReaderNode.setNodeName(NODE_NAME);
+        serialReaderNode.connectPolySync();
+    }
+    catch( polysync::DTCException & e )
+    {
+        std::cout << e.what() << std::endl;
+    }
 
     return 0;
 }
