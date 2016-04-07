@@ -24,7 +24,7 @@
  */
 
 /**
- * \example ReplayControl.cpp
+ * \example Replay.cpp
  *
  * Demonstrates how to use the Replay API routines to control a replay session.
  * Although this example shows how to start and stop a replay session, it

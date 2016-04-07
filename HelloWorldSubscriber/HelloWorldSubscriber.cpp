@@ -23,7 +23,9 @@
  * THE SOFTWARE.
  */
 
-/*
+/**
+ * \example HelloWorldSubscriber.cpp
+ * 
  * PolySync Hello World Subscriber C++ API example application
  *      Demonstrate how to subscribe a node to a message
  *

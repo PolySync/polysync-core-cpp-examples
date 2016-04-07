@@ -23,7 +23,9 @@
  * THE SOFTWARE.
  */
 
-/*
+/**
+ * \example SerialWriter.cpp
+ *
  * PolySync Serial Writer C++ API example application
  *      Demonstrate the user of a serial writer node
  */

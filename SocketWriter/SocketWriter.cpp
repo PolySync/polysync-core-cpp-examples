@@ -23,7 +23,9 @@
  * THE SOFTWARE.
  */
 
-/*
+/**
+ * \example SocketWriter.cpp
+ *
  * PolySync SocketWriter C++ API example application
  *      Connect to a UDP socket and send data
  */

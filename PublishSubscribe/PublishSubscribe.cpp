@@ -24,6 +24,8 @@
  */
 
 /**
+ * \example PublishSubscribe.cpp
+ *
  * Publish/Subscribe Example.
  *
  * Shows how to use publish/subscribe routines.

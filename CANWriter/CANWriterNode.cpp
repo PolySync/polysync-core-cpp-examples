@@ -24,7 +24,7 @@
  */
 
 /**
- * \example CANWriter.cpp
+ * \example CANWriterNode.cpp
  *
  * PolySync CAN API writer Example.
  *

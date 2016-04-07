@@ -24,7 +24,7 @@
  */
 
 /**
- * \example RecordControl.cpp
+ * \example Record.cpp
  *
  * Demonstrates how to use the Record API routines to control a recording session.
  * Although this example shows how to start and stop a recording session, it

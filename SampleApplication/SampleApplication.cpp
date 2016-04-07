@@ -23,7 +23,9 @@
  * THE SOFTWARE.
  */
 
-/*
+/**
+ * \example SampleApplication.cpp
+ *
  * PolySync Sample Application C++ API example application
  *      Demonstrate how to function as an application node
  *
