@@ -8,7 +8,7 @@ Here you can find examples that demonstrate how to use PolySync's APIs.
 - [HelloWorldPublisher](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/HelloWorldPublisher) - Publish a message from a node to the PolySync bus.
 - [HelloWorldSubscriber](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/HelloWorldSubscriber) - Subscribe a node to messages on the PolySync bus.
 - [Publish & Subscribe](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/PublishSubscribe) - Use publish/subscribe routines.
-- [Coordinate Transformation (single)](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/SingleTransform) - Use the Transform API to transform coordinate frames.
+- [Coordinate Transformation (single)](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/SingleTransform) - Use the Transform API to create transform coordinate frames.
 - [Coordinate Transformation (stack)](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/TransformStack) - Use the Transform API to transform coordinate frames using a stack.
 - [Sample Application](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/SampleApplication) - Creeate an application node.
 
@@ -30,7 +30,7 @@ Here you can find examples that demonstrate how to use PolySync's APIs.
 
 ## Utilities and Cool Stuff
 
-- [Data Generator](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/DataGenerator) - Publish various provided sensor data message.
+- [Data Generator](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/DataGenerator) - Publish various PolySync message types with pseudo-random data.
 - [Record](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/Record) - Record PolySync bus data.
 - [Replay](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/Replay) - Replay PolySync bus data.
 - [Echo](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/Replay) - Echo PolySync messages on the command line.
