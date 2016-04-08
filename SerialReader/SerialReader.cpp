@@ -23,7 +23,9 @@
  * THE SOFTWARE.
  */
 
-/*
+/**
+ * \example SerialReader.cpp
+ *
  * PolySync Serial Reader C++ API example application
  *      Demonstrate the user of a serial reader node
  */

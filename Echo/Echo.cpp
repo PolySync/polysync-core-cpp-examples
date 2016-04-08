@@ -23,9 +23,15 @@
  * THE SOFTWARE.
  */
 
-/*
+/**
+ * \example Echo.cpp
+ *
  * PolySync Echo C++ API example application
- *      Demonstrates a command line utility for echoing PolySync messges to stdout
+ * 
+ * Demonstrates a command line utility for echoing PolySync messges to stdout
+ *
+ * @file Echo.cpp
+ * @brief Echo Source
  *
  */
 

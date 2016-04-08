@@ -24,6 +24,8 @@
  */
 
 /**
+ * \example ParameterGetSet.cpp
+ * 
  * Parameter Get/Set Example.
  *
  * Shows how to get/set parameters from the PolySync bus. Example publishes

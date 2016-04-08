@@ -24,6 +24,12 @@
  */
 
 /**
+ * \example DataGenerator.cpp
+ *
+ * PolySync CAN API Reader Example.
+ *
+ * Shows how to use the CAN API to read CAN frames.
+ *
  * @file DataGenerator.cpp
  * @brief DataGenerator Source
  *

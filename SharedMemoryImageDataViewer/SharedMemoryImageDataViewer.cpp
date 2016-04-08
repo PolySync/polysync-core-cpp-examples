@@ -23,7 +23,9 @@
  * THE SOFTWARE.
  */
 
-/*
+/**
+ * \example SharedMemoryImageDataViewer.cpp
+ *
  * PolySync Sample C++ API example
  *      Demonstrate access to shared memory written to by a video device driver.
  *
