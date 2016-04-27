@@ -15,6 +15,7 @@ set( PSYNC_HOME
     )
 
 include_directories(
+    .
     ${PSYNC_HOME}/include
     ${PSYNC_HOME}/pdm
     ${PSYNC_HOME}/include/deps/dcps/C/SAC
@@ -28,6 +29,7 @@ link_directories(
 add_executable(
     ${PROJECT_NAME}
     Echo.cpp
+    EchoNode.cpp
     )
 
 target_link_libraries(
