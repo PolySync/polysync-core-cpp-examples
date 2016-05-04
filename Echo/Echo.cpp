@@ -60,13 +60,29 @@ int main( int argc, char *argv[] )
     // Create an instance of the PolySyncEcho and connect it to PolySync
     PolySyncEcho echo;
 
-    // Parse options.
-    echo.setArgumentCount ( argc );
-    echo.setArgumentBuffer ( argv );
-
    // When the node has been created, it will cause an initStateEvent to
     // to be sent.
-    echo.connectPolySync();
+    if ( echo.validArgs( argc, argv )
+         && !echo.helpRequested( argc, argv ) )
+    {
+        // Parse options.
+        echo.setArgumentCount ( argc );
+
+        echo.setArgumentBuffer ( argv );
+
+        echo.connectPolySync();
+    }
+
+    // Nodes will only connect if help option -h not used.
+    else if ( echo.helpRequested( argc, argv ) )
+        {
+            echo.printHelp( echo.getHelpFlags() , echo.getHelpDescriptions() );
+        }
+
+    else
+    {
+        cout << "\n\n Invalid arguments. Try $ polysync-echo -h for help" <<endl;
+    }
 
     return 0;
 }

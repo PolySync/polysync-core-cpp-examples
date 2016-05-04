@@ -59,28 +59,23 @@ public:
      */
     virtual void messageEvent( std::shared_ptr< polysync::Message > message );
 
-private:
-
-    std::string _msgName;
-    std::string _userFileName;
-    bool _filteredForSingleMsgFlag = false;
-    bool _echoMessageHeadersOnly = false;
-    bool _echoMessageToFile = false;
-    bool _echoHelp = false;
-
-    /** @brief Get messages currently on bus and append to end of list.
-     *  @return std::vector< std::string > - variable containing msg name.
+    /**
+     * @brief Validates arguments; no nodes connect unless arguments valid.
+     * @param argc
+     * @param argv
+     * @return Returns true if arguments valid and falls through to connect.
      *
-     *  PSR-29-F05 : ( PS-203 )
      */
-    std::vector< std::string > getAvailableMessageNames();
+    bool validArgs( int argc, char * argv [] );
 
-    /** @brief Print messages currently available on bus, append to end of list.
-     *  @param std::vector< std:: string > - variable containing msg name.
+    /**
+     * @brief If help -h is one of arguments, don't start node up.
+     * @param argc
+     * @param argv
      *
-     *  PSR-29-F05 : ( PS-203 )
+     * PSR-29-F11 : ( PS-153)
      */
-    void printAvailableMessage( const std::vector< std::string > & messageTypeStrings );
+    bool helpRequested( int argc, char * argv [] );
 
     /**
      * @brief Get strings for help page display of cmd line flags.
@@ -105,6 +100,34 @@ private:
     void printHelp( const std::vector< std::string > & helpFlags,
                     const std::vector< std::string > & helpDescriptions);
 
+private:
+
+    std::string _msgName;
+    std::string _userFileName;
+
+    bool _filteredForSingleMsgFlag = false;
+    bool _echoMessageHeadersOnlyFlag = false;
+    bool _echoMessageToFileFlag = false;
+    bool _echoHelpFlag = false;
+
+    const std::string _echoHelpOpt = "-h";
+    const std::string _filterMessageOpt = "-f";
+    const std::string _echoHeadersOnlyOpt = "-H";
+    const std::string _echoToFileOpt = "-o";
+
+    /** @brief Get messages currently on bus and append to end of list.
+     *  @return std::vector< std::string > - variable containing msg name.
+     *
+     *  PSR-29-F05 : ( PS-203 )
+     */
+    std::vector< std::string > getAvailableMessageNames();
+
+    /** @brief Print messages currently available on bus, append to end of list.
+     *  @param std::vector< std:: string > - variable containing msg name.
+     *
+     *  PSR-29-F05 : ( PS-203 )
+     */
+    void printAvailableMessage( const std::vector< std::string > & messageTypeStrings );
 };
 
 } /*!< end namespace polysync */
