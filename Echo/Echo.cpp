@@ -38,7 +38,7 @@
 
 
 #include <EchoNode.hpp>
-
+#include <PolySyncGetOpt.hpp>
 
 using namespace std;
 using namespace polysync;
@@ -57,31 +57,24 @@ using namespace polysync;
  */
 int main( int argc, char *argv[] )
 {
-    // Create an instance of the PolySyncEcho and connect it to PolySync
+    // Create an instance of the PolySyncEcho and connect it to PolySync.
     PolySyncEcho echo;
 
-   // When the node has been created, it will cause an initStateEvent to
-    // to be sent.
-    if ( echo.validArgs( argc, argv )
-         && !echo.helpRequested( argc, argv ) )
+    // Nodes will only connect if help option -h not used,
+    // and if all arguments are valid.
+    if ( echo.optionsParse( argc, argv ) )
     {
-        // Parse options.
-        echo.setArgumentCount ( argc );
+        if ( echo.wasHelpRequested() )
+         {
+              echo.printHelp( echo.getHelpFlags() , echo.getHelpDescriptions() );
+         }
 
-        echo.setArgumentBuffer ( argv );
-
-        echo.connectPolySync();
-    }
-
-    // Nodes will only connect if help option -h not used.
-    else if ( echo.helpRequested( argc, argv ) )
+        // When the node has been created, it will cause an initStateEvent to
+         // to be sent.
+        else
         {
-            echo.printHelp( echo.getHelpFlags() , echo.getHelpDescriptions() );
+            echo.connectPolySync();
         }
-
-    else
-    {
-        cout << "\n\n Invalid arguments. Try $ polysync-echo -h for help" <<endl;
     }
 
     return 0;

@@ -30,6 +30,7 @@ add_executable(
     ${PROJECT_NAME}
     Echo.cpp
     EchoNode.cpp
+    PolySyncGetOpt.cpp
     )
 
 target_link_libraries(

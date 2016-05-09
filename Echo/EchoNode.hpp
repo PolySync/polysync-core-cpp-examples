@@ -9,6 +9,10 @@
 #define POLYSYNC_ECHO_HPP
 
 #include <PolySyncDataModel.hpp>
+//#include <unistd.h>
+//#include <stdlib.h>
+#include <getopt.h>
+
 
 /**
  * @namespace polysync
@@ -41,13 +45,6 @@ public:
     void initStateEvent() override;
 
     /**
-    * @brief Parse arguments: Filter on a single message type.
-    *
-    * PSR-29-F05 : ( PS-147 , PS-203, PS-149, PS-150 )
-    */
-    void setConfigurationEvent( int argc, char * argv [] ) override;
-
-    /**
      * @brief messageEvent
      *
      * Extract the information from the provided message
@@ -60,22 +57,35 @@ public:
     virtual void messageEvent( std::shared_ptr< polysync::Message > message );
 
     /**
-     * @brief Validates arguments; no nodes connect unless arguments valid.
-     * @param argc
-     * @param argv
-     * @return Returns true if arguments valid and falls through to connect.
-     *
+     * @brief Print msgs to external file and standard out with -o option.
+     * @param PolySync Message(s).
      */
-    bool validArgs( int argc, char * argv [] );
+    void printMsgToFile( std::shared_ptr< polysync::Message > message );
 
     /**
-     * @brief If help -h is one of arguments, don't start node up.
-     * @param argc
-     * @param argv
-     *
-     * PSR-29-F11 : ( PS-153)
+     * @brief Determines whether user supplied cmd line options are supported.
+     * @param optchar Character of user supplied option on cmd line.
+     * @return Returns -1 if not supported; returns index if supported (O-N)
      */
-    bool helpRequested( int argc, char * argv [] );
+    int getOptIdx( const char optchar );
+
+    /**
+     * @brief Parses cmd line arguments in C getopt style.
+     * @param argv Argument vector.
+     * @param argc Argument count.
+     * @return
+     */
+    bool optionsParse( const int argc, char * argv[] );
+
+
+    // GetOpt:: getters
+    bool wasSingleMsgFiltered();
+
+    bool wereHeadersRequested();
+
+    bool wasFileSpecified();
+
+    bool wasHelpRequested();
 
     /**
      * @brief Get strings for help page display of cmd line flags.
@@ -102,18 +112,25 @@ public:
 
 private:
 
-    std::string _msgName;
-    std::string _userFileName;
+    // GetOpt::
+    char * _msgName;
+    char * _userFileName;
+    /*
+    char * GetOpt::getMsgName() { return _msgName; }
+    char * GetOpt::getUserFileName() { return _userFileName; }
+    */
 
+    // GetOpt:: member variables, and use getters.
     bool _filteredForSingleMsgFlag = false;
     bool _echoMessageHeadersOnlyFlag = false;
     bool _echoMessageToFileFlag = false;
     bool _echoHelpFlag = false;
 
-    const std::string _echoHelpOpt = "-h";
-    const std::string _filterMessageOpt = "-f";
-    const std::string _echoHeadersOnlyOpt = "-H";
-    const std::string _echoToFileOpt = "-o";
+    // GetOpt::
+    const std::vector < char > _optChars
+    {
+      'f', 'h', 'H', 'o'
+    };
 
     /** @brief Get messages currently on bus and append to end of list.
      *  @return std::vector< std::string > - variable containing msg name.
