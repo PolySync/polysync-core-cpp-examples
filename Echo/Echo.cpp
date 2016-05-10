@@ -36,9 +36,7 @@
  *
  */
 
-
 #include <EchoNode.hpp>
-#include <PolySyncGetOpt.hpp>
 
 using namespace std;
 using namespace polysync;
@@ -61,21 +59,23 @@ int main( int argc, char *argv[] )
     PolySyncEcho echo;
 
     // Nodes will only connect if help option -h not used,
-    // and if all arguments are valid.
+    // and, if all arguments are valid.
     if ( echo.optionsParse( argc, argv ) )
     {
         if ( echo.wasHelpRequested() )
-         {
-              echo.printHelp( echo.getHelpFlags() , echo.getHelpDescriptions() );
-         }
+        {
+            echo.printEchoHelpPage();
+        }
 
-        // When the node has been created, it will cause an initStateEvent to
-         // to be sent.
+    // When the node has been created, it will cause an initStateEvent to
+    // to be sent, then, messageEvent.
         else
         {
             echo.connectPolySync();
         }
     }
+
+    // For a brief tutorial on the Echo tool, run help: $ polysync-echo -h
 
     return 0;
 }

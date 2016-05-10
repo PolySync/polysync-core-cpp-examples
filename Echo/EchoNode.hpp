@@ -9,10 +9,8 @@
 #define POLYSYNC_ECHO_HPP
 
 #include <PolySyncDataModel.hpp>
-//#include <unistd.h>
-//#include <stdlib.h>
-#include <getopt.h>
-
+#include <PolySyncGetOpt.hpp>
+#include <PolySyncEchoHelp.hpp>
 
 /**
  * @namespace polysync
@@ -33,6 +31,17 @@ class PolySyncEcho : public polysync::Node
 {
 
 public:
+    /**
+     * @brief PolySync C++ GetOpt class builds on standard C getopt
+     *          command line input handling + validation.
+     */
+    PolySyncGetOpt getOpt;
+
+    /**
+     * @brief PolySync EchoHelp is a user interaction class to assist
+     *          end users with command line arguments/options for Echo utility.
+     */
+    PolySyncEchoHelp echoHelp;
 
     /**
      * @brief initStateEvent
@@ -45,6 +54,12 @@ public:
     void initStateEvent() override;
 
     /**
+     * @brief Register a single, filtered message type per cmd line input.
+     *
+     */
+    void registerSingleFilteredMessage();
+
+    /**
      * @brief messageEvent
      *
      * Extract the information from the provided message
@@ -52,100 +67,60 @@ public:
      * @param std::shared_ptr< Message > - variable containing the message
      * @return void
      *
-     * PSR-29-F05 : ( PS-149, PS-150 )
      */
     virtual void messageEvent( std::shared_ptr< polysync::Message > message );
 
     /**
-     * @brief Print msgs to external file and standard out with -o option.
-     * @param PolySync Message(s).
+     * @brief Prints message(s) to external user specified file and std out.
+     *
+     * @param PolySync Message.
+     *
      */
-    void printMsgToFile( std::shared_ptr< polysync::Message > message );
+    void printToFile( std::shared_ptr < polysync:: Message > message );
 
     /**
-     * @brief Determines whether user supplied cmd line options are supported.
-     * @param optchar Character of user supplied option on cmd line.
-     * @return Returns -1 if not supported; returns index if supported (O-N)
+     * @brief Echo PolySync message(s) on bus to standard out.
+     * Messages will print data, or just headers, based on cmd line input.
      */
-    int getOptIdx( const char optchar );
+    void echoPolySyncMessagesToStdOut
+        ( std::shared_ptr < polysync:: Message > message );
 
     /**
-     * @brief Parses cmd line arguments in C getopt style.
+     * @brief Calls GetOpt::optionsParse. Standardizes cmd line handling.
      * @param argv Argument vector.
      * @param argc Argument count.
      * @return
      */
     bool optionsParse( const int argc, char * argv[] );
 
-
-    // GetOpt:: getters
-    bool wasSingleMsgFiltered();
-
-    bool wereHeadersRequested();
-
-    bool wasFileSpecified();
-
+    /**
+     * @brief If help -h is one of arguments, don't start node up.
+     * @param argc
+     * @param argv
+     *
+     */
     bool wasHelpRequested();
 
     /**
-     * @brief Get strings for help page display of cmd line flags.
-     * @return std::vector< std::string > - variable contains help descriptions.
-     *
-     * PSR-29-F11 : ( PS-153)
+     * @brief Wrapper for encapsulation of the PolySyncEchoHelp class.
      */
-    std::vector< std::string > getHelpFlags();
-
-    /**
-     * @brief Get strings for help page display of descriptions for cmd line flags.
-     * @return std::vector< std::string > - variable contains help descriptions.
-     *
-     * PSR-29-F11 : ( PS-153)
-     */
-    std::vector< std::string > getHelpDescriptions();
-
-    /**
-     * @brief Print strings for help page display, append to end of list.
-     * @param std::vector< std:: string > - variable containing help string.
-     */
-    void printHelp( const std::vector< std::string > & helpFlags,
-                    const std::vector< std::string > & helpDescriptions);
+    void printEchoHelpPage();
 
 private:
-
-    // GetOpt::
-    char * _msgName;
-    char * _userFileName;
-    /*
-    char * GetOpt::getMsgName() { return _msgName; }
-    char * GetOpt::getUserFileName() { return _userFileName; }
-    */
-
-    // GetOpt:: member variables, and use getters.
-    bool _filteredForSingleMsgFlag = false;
-    bool _echoMessageHeadersOnlyFlag = false;
-    bool _echoMessageToFileFlag = false;
-    bool _echoHelpFlag = false;
-
-    // GetOpt::
-    const std::vector < char > _optChars
-    {
-      'f', 'h', 'H', 'o'
-    };
 
     /** @brief Get messages currently on bus and append to end of list.
      *  @return std::vector< std::string > - variable containing msg name.
      *
-     *  PSR-29-F05 : ( PS-203 )
      */
     std::vector< std::string > getAvailableMessageNames();
 
     /** @brief Print messages currently available on bus, append to end of list.
      *  @param std::vector< std:: string > - variable containing msg name.
      *
-     *  PSR-29-F05 : ( PS-203 )
      */
     void printAvailableMessage( const std::vector< std::string > & messageTypeStrings );
-};
+
+}; // END polysync::EchoNode class
 
 } /*!< end namespace polysync */
 
