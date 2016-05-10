@@ -16,6 +16,11 @@
 namespace polysync
 {
 
+/**
+ * @brief The PolySyncEchoHelp class is a user interaction class to assist
+ *        end users with command line arguments/options for Echo utility.
+ *
+ */
 class PolySyncEchoHelp
 {
 public:
