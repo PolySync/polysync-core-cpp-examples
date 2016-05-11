@@ -8,29 +8,11 @@ using namespace std;
 namespace polysync
 {
 
-/*
-int ApplicationInputHandler::getOptIdx( const char optret )
-{
-    if( std::find
-            ( std::begin ( _optChars ),
-              std::end ( _optChars ),
-              optret )
-            != std::end ( _optChars ) )
-    {
-         // success: container end not reached.
-    }
-    else
-    {
-        //return -1;
-    }
-}
-*/
-
 int ApplicationInputHandler::getFlagIndex( const char optret )
 {
-    for ( auto index = 0; index < _optIoninputflags.size(); ++index )
+    for ( auto index = 0; index < _optionInputFlags.size(); ++index )
     {
-        if( _optIoninputflags[ index ] == optret )
+        if( _optionInputFlags[ index ] == optret )
         {
             return index;
         }
@@ -45,7 +27,6 @@ bool ApplicationInputHandler::optionsParse(const int argc, char *argv[])
     bool parsedOptSuccess = true;
 
     int option_idx = -1;
-    //bool option_idx = false;
 
     int optionArgumentIndex = 0;
 

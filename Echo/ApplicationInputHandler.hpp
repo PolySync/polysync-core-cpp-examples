@@ -31,7 +31,7 @@ public:
      * @param optchar Character of user supplied option on cmd line.
      * @return Returns -1 if not supported; returns index if supported (O-N)
      */
-    int getFlagIndex( const char optret );
+    int getFlagIndex( const char optionArgumentIndex );
 
     /**
      * @brief Parses cmd line arguments in C getopt style.
@@ -90,7 +90,7 @@ private:
     bool _echoMessageToFileFlag = false;
     bool _getOptHelpFlag = false;
 
-    const std::vector < char > _optIoninputflags
+    const std::vector < char > _optionInputFlags
     {
       'f', 'h', 'H', 'o'
     };
