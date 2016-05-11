@@ -1,12 +1,12 @@
 /**
- * @file PolySyncEchoHelp.hpp
+ * @file EchoHelp.hpp
  * @brief Help Class to augment Command Line Utility.
  *
  * PUBLIC_HEADER
  */
 
-#ifndef POLYSYNCECHOHELP_HPP
-#define POLYSYNCECHOHELP_HPP
+#ifndef ECHOHELP_HPP
+#define ECHOHELP_HPP
 
 #include <PolySyncDataModel.hpp>
 
@@ -17,14 +17,14 @@ namespace polysync
 {
 
 /**
- * @brief The PolySyncEchoHelp class is a user interaction class to assist
+ * @brief The EchoHelp class is a user interaction class to assist
  *        end users with command line arguments/options for Echo utility.
  *
  */
-class PolySyncEchoHelp
+class EchoHelp
 {
 public:
-    PolySyncEchoHelp();
+    EchoHelp();
 
     /**
      * @brief Get strings for help page display of cmd line flags.
@@ -56,4 +56,4 @@ public:
 
 } /*!< end namespace polysync */
 
-#endif // POLYSYNCECHOHELP_HPP
+#endif // ECHOHELP_HPP

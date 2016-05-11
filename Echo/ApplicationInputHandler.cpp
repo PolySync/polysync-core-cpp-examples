@@ -1,4 +1,4 @@
-#include "PolySyncGetOpt.hpp"
+#include "ApplicationInputHandler.hpp"
 #include <algorithm>
 
 using namespace std;
@@ -6,10 +6,13 @@ using namespace std;
 namespace polysync
 {
 
-int PolySyncGetOpt::getOptIdx( const char optret )
+int ApplicationInputHandler::getOptIdx( const char optret )
 {
-    if( std::find( std::begin( _optChars ), std::end( _optChars ), optret )
-            != std::end( _optChars ) )
+    if( std::find
+            ( std::begin ( _optChars ),
+              std::end ( _optChars ),
+              optret )
+            != std::end ( _optChars ) )
     {
          // success: container end not reached.
     }
@@ -20,7 +23,7 @@ int PolySyncGetOpt::getOptIdx( const char optret )
 }
 
 
-bool PolySyncGetOpt::optionsParse(const int argc, char *argv[])
+bool ApplicationInputHandler::optionsParse(const int argc, char *argv[])
 {
     bool parsedOptSuccess = true;
 
@@ -49,7 +52,7 @@ bool PolySyncGetOpt::optionsParse(const int argc, char *argv[])
             _getOptHelpFlag = true;
         }
 
-         else if ( option_idx != -1 )
+        else if ( option_idx != -1 )
         {
             switch ( optret )
             {
@@ -70,9 +73,9 @@ bool PolySyncGetOpt::optionsParse(const int argc, char *argv[])
                 {
                     fFlag = 1;
 
-                    _msgName = optarg;
+                    _messageName = optarg;
 
-                    _filteredForSingleMsgFlag = true;
+                    _filteredForSingleMessageFlag = true;
 
                     parsedOptSuccess = true;
                 }
@@ -159,6 +162,55 @@ bool PolySyncGetOpt::optionsParse(const int argc, char *argv[])
     }
 
     return parsedOptSuccess;
+}
+
+/*
+char * ApplicationInputHandler::getMessageName() const
+{
+    return _messageName;
+}
+
+
+char * ApplicationInputHandler::getFileName() const
+{
+    return _userFileName;
+}
+*/
+
+
+std::string ApplicationInputHandler::getMessageName() const
+{
+    return _messageName;
+}
+
+
+std::string ApplicationInputHandler::getFileName() const
+{
+    return _userFileName;
+}
+
+
+bool ApplicationInputHandler::wasSingleMessageFiltered() const
+{
+    return _filteredForSingleMessageFlag;
+}
+
+
+bool ApplicationInputHandler::wereHeadersRequested() const
+{
+    return _echoMessageHeadersOnlyFlag;
+}
+
+
+bool ApplicationInputHandler::wasFileSpecified() const
+{
+    return _echoMessageToFileFlag;
+}
+
+
+bool ApplicationInputHandler::wasHelpRequested() const
+{
+    return _getOptHelpFlag;
 }
 
 

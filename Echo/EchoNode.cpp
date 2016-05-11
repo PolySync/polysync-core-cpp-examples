@@ -1,5 +1,5 @@
 #include "EchoNode.hpp"
-#include "PolySyncGetOpt.hpp"
+#include "ApplicationInputHandler.hpp"
 #include <fstream>
 
 using namespace std;
@@ -9,7 +9,7 @@ namespace polysync
 
 void PolySyncEcho::initStateEvent()
 {
-    if ( getOpt.wasSingleMsgFiltered() )
+    if ( inputHandler.wasSingleMessageFiltered() )
     {
        registerSingleFilteredMessage();
     }
@@ -25,9 +25,8 @@ void PolySyncEcho::registerSingleFilteredMessage()
 {
     try
     {
-        registerListener( getMessageTypeByName ( getOpt.getMsgName() ) );
+        registerListener( getMessageTypeByName ( inputHandler.getMessageName() ) );
     }
-
     catch ( ... )
     {
         cout << "\nPlease enter a valid PS message type: \n\n";
@@ -44,7 +43,7 @@ void PolySyncEcho::registerSingleFilteredMessage()
 
 void PolySyncEcho::messageEvent( std::shared_ptr< polysync::Message > message )
 {    
-    if ( getOpt.wasFileSpecified() )
+    if ( inputHandler.wasFileSpecified() )
     {
         printToFile( message );
     }
@@ -57,31 +56,31 @@ void PolySyncEcho::printToFile( std::shared_ptr < polysync:: Message > message )
 {
     ofstream openUserFile;
 
-    openUserFile.open( getOpt.getFileName(), ios::app );
+    openUserFile.open( inputHandler.getFileName(), ios::app );
 
-    if ( getOpt.wereHeadersRequested() )
+    if ( inputHandler.wereHeadersRequested() )
     {
         message->printHeader( openUserFile );
     }
 
-    else if ( !getOpt.wereHeadersRequested() )
+    else if ( !inputHandler.wereHeadersRequested() )
     {
         message->print( openUserFile );
     }
 
-      openUserFile.close();
+    openUserFile.close();
 }
 
 
 void PolySyncEcho::echoPolySyncMessagesToStdOut
     ( std::shared_ptr < polysync:: Message > message )
 {
-    if ( getOpt.wereHeadersRequested() )
+    if ( inputHandler.wereHeadersRequested() )
     {
         message->printHeader();
     }
 
-    else if ( !getOpt.wereHeadersRequested() )
+    else
     {
         message->print();
     }
@@ -90,13 +89,13 @@ void PolySyncEcho::echoPolySyncMessagesToStdOut
 
 bool PolySyncEcho::optionsParse( const int argc, char * argv[] )
 {
-    return getOpt.optionsParse( argc, argv );
+    return inputHandler.optionsParse( argc, argv );
 }
 
 
 bool PolySyncEcho::wasHelpRequested( )
 {
-    return getOpt.wasHelpRequested();
+    return inputHandler.wasHelpRequested();
 }
 
 

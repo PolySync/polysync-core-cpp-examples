@@ -1,12 +1,12 @@
 /**
- * @file PolySyncGetOpt.hpp
- * @brief PolySync GetOpt Command Line Utility.
+ * @file ApplicationInputHandler.hpp
+ * @brief Input Handling for Echo Command Line Utility.
  *
  * PUBLIC_HEADER
  */
 
-#ifndef POLYSYNCGETOPT_HPP
-#define POLYSYNCGETOPT_HPP
+#ifndef APPLICATIONINPUTHANDLER_HPP
+#define APPLICATIONINPUTHANDLER_HPP
 
 #include <PolySyncDataModel.hpp>
 #include <getopt.h>
@@ -18,13 +18,13 @@ namespace polysync
 {
 
 /**
- * @brief PolySyncGetOpt class
+ * @brief ApplicationInputHandler class
  *
- * The PolySyncGetOpt C++ class exists to build upon the C-based getopt class.
+ * The ApplicationInputHandler C++ class exists to build upon the C-based getopt class.
  * Getopt parses command line input, and validates that input with options,
  * arguments, and option-arguments.
  */
-class PolySyncGetOpt
+class ApplicationInputHandler
 {
 
 public:
@@ -48,36 +48,33 @@ public:
      * @brief Member variable getter for message(s) name(s).
      * @return Returns char * variable containing message name.
      */
-    char * getMsgName()
-    { return _msgName; }
+    //char * getMessageName() const;
+    std::string getMessageName() const;
 
     /**
      * @brief Member variable getter for user defined file name.
      * @return Returns char * variable containing message name.
      */
-    char * getFileName()
-    { return _userFileName; }
+    //char * getFileName() const;
+    std::string getFileName() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
      * @return Returns boolean: true if a single message type was filtered.
      */
-    bool wasSingleMsgFiltered()
-    { return _filteredForSingleMsgFlag; }
+    bool wasSingleMessageFiltered() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
      * @return Returns boolean: true if only message headers were requested.
      */
-    bool wereHeadersRequested()
-    { return _echoMessageHeadersOnlyFlag; }
+    bool wereHeadersRequested() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
      * @return Returns boolean: true if user specified external file for output.
      */
-    bool wasFileSpecified()
-    { return _echoMessageToFileFlag; }
+    bool wasFileSpecified() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
@@ -86,15 +83,16 @@ public:
      *
      * If help flag true, PolySync nodes do not start up; help is displayed.
      */
-    bool wasHelpRequested()
-    { return _getOptHelpFlag; }
+    bool wasHelpRequested() const;
 
 private:
 
-    char * _msgName;
-    char * _userFileName;
+    //char * _messageName;
+    //char * _userFileName;
+    std::string _messageName;
+    std::string _userFileName;
 
-    bool _filteredForSingleMsgFlag = false;
+    bool _filteredForSingleMessageFlag = false;
     bool _echoMessageHeadersOnlyFlag = false;
     bool _echoMessageToFileFlag = false;
     bool _getOptHelpFlag = false;
@@ -104,8 +102,8 @@ private:
       'f', 'h', 'H', 'o'
     };
 
-}; // END polysync::PolySyncGetOpt class
+}; // END polysync::ApplicationInputHandler class
 
 } /*!< end namespace polysync */
 
-#endif // POLYSYNCGETOPT_HPP
+#endif // APPLICATIONINPUTHANDLER_HPP

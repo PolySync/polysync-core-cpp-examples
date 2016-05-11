@@ -9,8 +9,8 @@
 #define POLYSYNC_ECHO_HPP
 
 #include <PolySyncDataModel.hpp>
-#include <PolySyncGetOpt.hpp>
-#include <PolySyncEchoHelp.hpp>
+#include <ApplicationInputHandler.hpp>
+#include <EchoHelp.hpp>
 
 /**
  * @namespace polysync
@@ -32,16 +32,16 @@ class PolySyncEcho : public polysync::Node
 
 public:
     /**
-     * @brief PolySync C++ GetOpt class builds on standard C getopt
+     * @brief PolySync C++ ApplicationInputHandler class builds on standard C getopt
      *          command line input handling + validation.
      */
-    PolySyncGetOpt getOpt;
+    ApplicationInputHandler inputHandler;
 
     /**
      * @brief PolySync EchoHelp is a user interaction class to assist
      *          end users with command line arguments/options for Echo utility.
      */
-    PolySyncEchoHelp echoHelp;
+    EchoHelp echoHelp;
 
     /**
      * @brief initStateEvent
@@ -89,7 +89,7 @@ public:
      * @brief Calls GetOpt::optionsParse. Standardizes cmd line handling.
      * @param argv Argument vector.
      * @param argc Argument count.
-     * @return
+     * @return Returns true if options and option arguments are valid.
      */
     bool optionsParse( const int argc, char * argv[] );
 
