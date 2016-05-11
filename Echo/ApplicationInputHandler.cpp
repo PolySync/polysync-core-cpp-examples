@@ -1,7 +1,8 @@
-#include "PolySyncDataModel.hpp"
-#include "ApplicationInputHandler.hpp"
-#include "getopt.h"
 #include <algorithm>
+#include <getopt.h>
+#include <PolySyncDataModel.hpp>
+
+#include "ApplicationInputHandler.hpp"
 
 using namespace std;
 
