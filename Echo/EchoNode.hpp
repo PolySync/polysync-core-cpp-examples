@@ -47,15 +47,11 @@ public:
      * @brief initStateEvent
      *
      * Subscribe to a message that the publisher node will send.
-     *
-     * @param void
-     * @return void
      */
     void initStateEvent() override;
 
     /**
      * @brief Register a single, filtered message type per cmd line input.
-     *
      */
     void registerSingleFilteredMessage();
 
@@ -65,16 +61,12 @@ public:
      * Extract the information from the provided message
      *
      * @param std::shared_ptr< Message > - variable containing the message
-     * @return void
-     *
      */
     virtual void messageEvent( std::shared_ptr< polysync::Message > message );
 
     /**
      * @brief Prints message(s) to external user specified file and std out.
-     *
      * @param PolySync Message.
-     *
      */
     void printToFile( std::shared_ptr < polysync:: Message > message );
 
@@ -95,9 +87,8 @@ public:
 
     /**
      * @brief If help -h is one of arguments, don't start node up.
-     * @param Argument count.
-     * @param Argument vector.
-     * @returns Returns true if help was requested.
+     * @return Returns true if help was requested.
+     *
      */
     bool wasHelpRequested();
 
@@ -108,15 +99,15 @@ public:
 
 private:
 
-    /** @brief Get messages currently on bus and append to end of list.
+    /**
+     * @brief Get messages currently on bus and append to end of list.
      *  @return std::vector< std::string > - variable containing msg name.
-     *
      */
     std::vector< std::string > getAvailableMessageNames();
 
-    /** @brief Print messages currently available on bus, append to end of list.
+    /**
+     * @brief Print messages currently available on bus, append to end of list.
      *  @param std::vector< std:: string > - variable containing msg name.
-     *
      */
     void printAvailableMessage( const std::vector< std::string > & messageTypeStrings );
 
