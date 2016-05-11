@@ -1,6 +1,8 @@
+#include <fstream>
+
 #include "EchoNode.hpp"
 #include "ApplicationInputHandler.hpp"
-#include <fstream>
+
 
 using namespace std;
 
