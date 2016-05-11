@@ -15,6 +15,7 @@ set( PSYNC_HOME
     )
 
 include_directories(
+    .
     ${PSYNC_HOME}/include
     ${PSYNC_HOME}/pdm
     ${PSYNC_HOME}/include/deps/dcps/C/SAC
@@ -28,6 +29,9 @@ link_directories(
 add_executable(
     ${PROJECT_NAME}
     Echo.cpp
+    EchoNode.cpp
+    ApplicationInputHandler.cpp
+    EchoHelp.cpp
     )
 
 target_link_libraries(
@@ -36,3 +40,8 @@ target_link_libraries(
     polysync_cpp_message_support
     polysync_data_model
     )
+
+install(
+    TARGETS polysync-echo
+    DESTINATION ${PSYNC_HOME}/bin
+)

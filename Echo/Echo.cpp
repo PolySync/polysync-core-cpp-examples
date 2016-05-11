@@ -23,6 +23,7 @@
  * THE SOFTWARE.
  */
 
+
 /**
  * \example Echo.cpp
  *
@@ -35,55 +36,11 @@
  *
  */
 
-#include <iostream>
-#include <PolySyncNode.hpp>
-#include <PolySyncDataModel.hpp>
+#include <EchoNode.hpp>
 
 using namespace std;
+using namespace polysync;
 
-/**
- * @brief PolySyncEcho class
- *
- * The PolySyncEcho class exists to override the functions defined
- * in the base Node class.  The functions exist in the base class but are
- * stubbed out and must be overloaded in order for them to do something.  In
- * this instance the initStateEvent and the messageHandlerEvent are overloaded
- * to register for the messages and receive them, respectively.
- */
-class PolySyncEcho : public polysync::Node
-{
-    
-public:
-    /**
-     * @brief initStateEvent
-     *
-     * Subscribe to a message that the publisher node will send.
-     *
-     * @param void
-     * @return void
-     */
-    void initStateEvent() override
-    {
-        // Register as a listener for the message type that the publisher
-        // is going to send. Message types are defined in later tutorials.
-        registerListenerToAllMessageTypes();
-    }
-    
-    /**
-     * @brief messageEvent
-     * 
-     * Extract the information from the provided message
-     * 
-     * @param std::shared_ptr< Message > - variable containing the message
-     * @return void
-     */
-    virtual void messageEvent( std::shared_ptr< polysync::Message > message )
-    {
-        message->print();
-        //message->getHeader();
-    }
-
-};
 
 /**
  * @brief main
@@ -98,12 +55,27 @@ public:
  */
 int main( int argc, char *argv[] )
 {
-    // Create an instance of the PolySyncEcho and connect it to PolySync
+    // Create an instance of the PolySyncEcho and connect it to PolySync.
     PolySyncEcho echo;
 
+    // Nodes will only connect if help option -h not used,
+    // and, if all arguments are valid.
+    if ( echo.optionsParse( argc, argv ) )
+    {
+        if ( echo.wasHelpRequested() )
+        {
+            echo.printEchoHelpPage();
+        }
+
     // When the node has been created, it will cause an initStateEvent to
-    // to be sent.
-    echo.connectPolySync();
+    // to be sent, then, messageEvent.
+        else
+        {
+            echo.connectPolySync();
+        }
+    }
+
+    // For a brief tutorial on the Echo tool, run help: $ polysync-echo -h
 
     return 0;
 }
