@@ -8,8 +8,6 @@
 #ifndef ECHOHELP_HPP
 #define ECHOHELP_HPP
 
-#include <PolySyncDataModel.hpp>
-
 /**
  * @namespace polysync
  */

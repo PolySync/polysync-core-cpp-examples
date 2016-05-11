@@ -1,4 +1,6 @@
+#include "PolySyncDataModel.hpp"
 #include "ApplicationInputHandler.hpp"
+#include "getopt.h"
 #include <algorithm>
 
 using namespace std;
@@ -6,6 +8,7 @@ using namespace std;
 namespace polysync
 {
 
+/*
 int ApplicationInputHandler::getOptIdx( const char optret )
 {
     if( std::find
@@ -18,9 +21,23 @@ int ApplicationInputHandler::getOptIdx( const char optret )
     }
     else
     {
-        return -1;
+        //return -1;
     }
 }
+*/
+
+int ApplicationInputHandler::getFlagIndex( const char optret )
+{
+    for ( auto index = 0; index < _optIoninputflags.size(); ++index )
+    {
+        if( _optIoninputflags[ index ] == optret )
+        {
+            return index;
+        }
+    }
+    return -1;
+}
+
 
 
 bool ApplicationInputHandler::optionsParse(const int argc, char *argv[])
@@ -28,7 +45,9 @@ bool ApplicationInputHandler::optionsParse(const int argc, char *argv[])
     bool parsedOptSuccess = true;
 
     int option_idx = -1;
-    int optret = 0;
+    //bool option_idx = false;
+
+    int optionArgumentIndex = 0;
 
     // reset scanner
     optind = 0;
@@ -41,9 +60,9 @@ bool ApplicationInputHandler::optionsParse(const int argc, char *argv[])
 
     opterr = 0;
 
-    while ( (optret = getopt( argc, argv, "o:f:hH")) != -1 )
+    while ( (optionArgumentIndex = getopt( argc, argv, "o:f:hH")) != -1 )
     {
-        option_idx = getOptIdx( (const char) optret );
+        option_idx = getFlagIndex( (const char) optionArgumentIndex );
 
         if ( option_idx == -1 )
         {
@@ -54,7 +73,7 @@ bool ApplicationInputHandler::optionsParse(const int argc, char *argv[])
 
         else if ( option_idx != -1 )
         {
-            switch ( optret )
+            switch ( optionArgumentIndex )
             {
 
             case 'f':
@@ -164,19 +183,6 @@ bool ApplicationInputHandler::optionsParse(const int argc, char *argv[])
     return parsedOptSuccess;
 }
 
-/*
-char * ApplicationInputHandler::getMessageName() const
-{
-    return _messageName;
-}
-
-
-char * ApplicationInputHandler::getFileName() const
-{
-    return _userFileName;
-}
-*/
-
 
 std::string ApplicationInputHandler::getMessageName() const
 {
@@ -190,25 +196,25 @@ std::string ApplicationInputHandler::getFileName() const
 }
 
 
-bool ApplicationInputHandler::wasSingleMessageFiltered() const
+bool ApplicationInputHandler::singleMessageWasFiltered() const
 {
     return _filteredForSingleMessageFlag;
 }
 
 
-bool ApplicationInputHandler::wereHeadersRequested() const
+bool ApplicationInputHandler::headersWereRequested() const
 {
     return _echoMessageHeadersOnlyFlag;
 }
 
 
-bool ApplicationInputHandler::wasFileSpecified() const
+bool ApplicationInputHandler::fileWasSpecified() const
 {
     return _echoMessageToFileFlag;
 }
 
 
-bool ApplicationInputHandler::wasHelpRequested() const
+bool ApplicationInputHandler::helpWasRequested() const
 {
     return _getOptHelpFlag;
 }

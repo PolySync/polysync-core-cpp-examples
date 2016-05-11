@@ -9,7 +9,7 @@ namespace polysync
 
 void PolySyncEcho::initStateEvent()
 {
-    if ( inputHandler.wasSingleMessageFiltered() )
+    if ( inputHandler.singleMessageWasFiltered() )
     {
        registerSingleFilteredMessage();
     }
@@ -33,9 +33,6 @@ void PolySyncEcho::registerSingleFilteredMessage()
 
         printAvailableMessage( getAvailableMessageNames() );
 
-        // getAvailable is all of the messages.
-        // let's add a function for "everything that's on the bus."
-
         disconnectPolySync();
     }
 }
@@ -43,7 +40,7 @@ void PolySyncEcho::registerSingleFilteredMessage()
 
 void PolySyncEcho::messageEvent( std::shared_ptr< polysync::Message > message )
 {    
-    if ( inputHandler.wasFileSpecified() )
+    if ( inputHandler.fileWasSpecified() )
     {
         printToFile( message );
     }
@@ -58,12 +55,12 @@ void PolySyncEcho::printToFile( std::shared_ptr < polysync:: Message > message )
 
     openUserFile.open( inputHandler.getFileName(), ios::app );
 
-    if ( inputHandler.wereHeadersRequested() )
+    if ( inputHandler.headersWereRequested() )
     {
         message->printHeader( openUserFile );
     }
 
-    else if ( !inputHandler.wereHeadersRequested() )
+    else if ( !inputHandler.headersWereRequested() )
     {
         message->print( openUserFile );
     }
@@ -75,7 +72,7 @@ void PolySyncEcho::printToFile( std::shared_ptr < polysync:: Message > message )
 void PolySyncEcho::echoPolySyncMessagesToStdOut
     ( std::shared_ptr < polysync:: Message > message )
 {
-    if ( inputHandler.wereHeadersRequested() )
+    if ( inputHandler.headersWereRequested() )
     {
         message->printHeader();
     }
@@ -95,7 +92,7 @@ bool PolySyncEcho::optionsParse( const int argc, char * argv[] )
 
 bool PolySyncEcho::wasHelpRequested( )
 {
-    return inputHandler.wasHelpRequested();
+    return inputHandler.helpWasRequested();
 }
 
 

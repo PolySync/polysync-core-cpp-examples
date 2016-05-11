@@ -8,9 +8,6 @@
 #ifndef APPLICATIONINPUTHANDLER_HPP
 #define APPLICATIONINPUTHANDLER_HPP
 
-#include <PolySyncDataModel.hpp>
-#include <getopt.h>
-
 /**
  * @namespace polysync
  */
@@ -34,7 +31,7 @@ public:
      * @param optchar Character of user supplied option on cmd line.
      * @return Returns -1 if not supported; returns index if supported (O-N)
      */
-    int getOptIdx( const char optret );
+    int getFlagIndex( const char optret );
 
     /**
      * @brief Parses cmd line arguments in C getopt style.
@@ -48,33 +45,31 @@ public:
      * @brief Member variable getter for message(s) name(s).
      * @return Returns char * variable containing message name.
      */
-    //char * getMessageName() const;
     std::string getMessageName() const;
 
     /**
      * @brief Member variable getter for user defined file name.
      * @return Returns char * variable containing message name.
      */
-    //char * getFileName() const;
     std::string getFileName() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
      * @return Returns boolean: true if a single message type was filtered.
      */
-    bool wasSingleMessageFiltered() const;
+    bool singleMessageWasFiltered() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
      * @return Returns boolean: true if only message headers were requested.
      */
-    bool wereHeadersRequested() const;
+    bool headersWereRequested() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
      * @return Returns boolean: true if user specified external file for output.
      */
-    bool wasFileSpecified() const;
+    bool fileWasSpecified() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
@@ -83,12 +78,10 @@ public:
      *
      * If help flag true, PolySync nodes do not start up; help is displayed.
      */
-    bool wasHelpRequested() const;
+    bool helpWasRequested() const;
 
 private:
 
-    //char * _messageName;
-    //char * _userFileName;
     std::string _messageName;
     std::string _userFileName;
 
@@ -97,7 +90,7 @@ private:
     bool _echoMessageToFileFlag = false;
     bool _getOptHelpFlag = false;
 
-    const std::vector < char > _optChars
+    const std::vector < char > _optIoninputflags
     {
       'f', 'h', 'H', 'o'
     };
