@@ -86,7 +86,6 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 
                     _getOptHelpFlag = true;
                 }
-
                 else
                 {
                     _userFileName = optarg;
