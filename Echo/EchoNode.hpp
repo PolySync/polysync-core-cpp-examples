@@ -9,8 +9,9 @@
 #define POLYSYNC_ECHO_HPP
 
 #include <PolySyncDataModel.hpp>
-#include <ApplicationInputHandler.hpp>
-#include <EchoHelp.hpp>
+
+#include "ApplicationInputHandler.hpp"
+#include "EchoHelp.hpp"
 
 /**
  * @namespace polysync

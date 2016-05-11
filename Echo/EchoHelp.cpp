@@ -1,4 +1,5 @@
-#include "PolySyncDataModel.hpp"
+#include <PolySyncDataModel.hpp>
+
 #include "EchoHelp.hpp"
 
 using namespace std;
