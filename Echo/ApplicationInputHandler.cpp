@@ -26,33 +26,29 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 {
     bool parsedOptSuccess = true;
 
-    int option_idx = -1;
+    int optionIndex = -1;
 
     int optionArgumentIndex = 0;
 
     // reset scanner
     optind = 0;
 
-    int fFlag = 0;
-    int oFlag = 0;
-    int hFlag = 0;
-    int HFlag = 0;
-    int idx;
+    int index;
 
     opterr = 0;
 
     while ( ( optionArgumentIndex = getopt( argc, argv, "o:f:hH") ) != -1 )
     {
-        option_idx = getFlagIndex( (const char) optionArgumentIndex );
+        optionIndex = getFlagIndex( (const char) optionArgumentIndex );
 
-        if ( option_idx == -1 )
+        if ( optionIndex == -1 )
         {
             cout << "\n\nUsage: invalid options. Usage guide follows." <<endl;
 
             _getOptHelpFlag = true;
         }
 
-        else if ( option_idx != -1 )
+        else if ( optionIndex != -1 )
         {
             switch ( optionArgumentIndex )
             {
@@ -71,13 +67,10 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
                 }
                 else
                 {
-                    fFlag = 1;
-
                     _messageName = optarg;
 
                     _filteredForSingleMessageFlag = true;
 
-                    parsedOptSuccess = true;
                 }
                 break;
 
@@ -96,33 +89,22 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 
                 else
                 {
-                    oFlag = 1;
-
                     _userFileName = optarg;
 
                     _echoMessageToFileFlag = true;
 
-                    parsedOptSuccess = true;
                 }
                 break;
 
             case 'h':
 
-                hFlag = 1;
-
                 _getOptHelpFlag = true;
-
-                parsedOptSuccess = true;
 
                 break;
 
             case 'H':
 
-                HFlag = 1;
-
                 _echoMessageHeadersOnlyFlag = true;
-
-                parsedOptSuccess = true;
 
                 break;
 
@@ -130,8 +112,6 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 
                 if ( optopt == 'f' )
                 {
-                    fFlag = 0;
-
                     _getOptHelpFlag = true;
 
                     parsedOptSuccess = false;
@@ -139,8 +119,6 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 
                 else if ( optopt == 'o' )
                 {
-                    oFlag = 0;
-
                     _getOptHelpFlag = true;
 
                     parsedOptSuccess = false;
@@ -153,9 +131,9 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
         }
     }
 
-    for ( idx = optind; idx < argc; ++idx )
+    for ( index = optind; index < argc; ++index )
     {
-        cout << "\n\nUsage: Non option argument: " << argv[ idx ] <<endl
+        cout << "\n\nUsage: Non option argument: " << argv[ index ] <<endl
              << "A usage guide follows." <<endl;
 
         _getOptHelpFlag = true;
