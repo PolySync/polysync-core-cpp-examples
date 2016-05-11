@@ -92,7 +92,6 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
                     _userFileName = optarg;
 
                     _echoMessageToFileFlag = true;
-
                 }
                 break;
 

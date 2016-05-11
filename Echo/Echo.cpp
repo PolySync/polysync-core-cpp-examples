@@ -43,8 +43,6 @@ using namespace polysync;
 
 
 /**
- * @brief main
- *
  * Entry point for this tutorial application
  * The "connectPolySync" begins this node's PolySync execution loop.
  *
@@ -66,11 +64,9 @@ int main( int argc, char *argv[] )
         {
             echo.printEchoHelpPage();
         }
-
-    // When the node has been created, it will cause an initStateEvent to
-    // to be sent, then, messageEvent.
         else
         {
+            // Begin the PolySync event loop.
             echo.connectPolySync();
         }
     }
