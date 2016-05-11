@@ -33,7 +33,6 @@ Here you can find examples that demonstrate how to use PolySync's APIs.
 - [Data Generator](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/DataGenerator) - Publish various PolySync message types with pseudo-random data.
 - [Record](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/Record) - Record PolySync bus data.
 - [Replay](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/Replay) - Replay PolySync bus data.
-- [Echo](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/Replay) - Echo PolySync messages on the command line.
 
 
 ## PolySync Resources
