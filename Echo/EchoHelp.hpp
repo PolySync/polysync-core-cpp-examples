@@ -22,7 +22,6 @@ namespace polysync
 class EchoHelp
 {
 public:
-    EchoHelp();
 
     /**
      * @brief Get strings for help page display of cmd line flags.

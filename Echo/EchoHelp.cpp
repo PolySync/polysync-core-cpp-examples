@@ -6,10 +6,6 @@ using namespace std;
 namespace polysync
 {
 
-EchoHelp::EchoHelp()
-{
-}
-
 std::vector< std::string > EchoHelp::getHelpFlags()
 {
     std::vector< std::string > cmdLineFlagsHelp;
