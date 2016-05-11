@@ -22,7 +22,7 @@ int ApplicationInputHandler::getFlagIndex( const char optret )
 
 
 
-bool ApplicationInputHandler::optionsParse(const int argc, char *argv[])
+bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 {
     bool parsedOptSuccess = true;
 
@@ -41,7 +41,7 @@ bool ApplicationInputHandler::optionsParse(const int argc, char *argv[])
 
     opterr = 0;
 
-    while ( (optionArgumentIndex = getopt( argc, argv, "o:f:hH")) != -1 )
+    while ( ( optionArgumentIndex = getopt( argc, argv, "o:f:hH") ) != -1 )
     {
         option_idx = getFlagIndex( (const char) optionArgumentIndex );
 
