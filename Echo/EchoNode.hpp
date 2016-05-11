@@ -95,9 +95,9 @@ public:
 
     /**
      * @brief If help -h is one of arguments, don't start node up.
-     * @param argc
-     * @param argv
-     *
+     * @param Argument count.
+     * @param Argument vector.
+     * @returns Returns true if help was requested.
      */
     bool wasHelpRequested();
 
