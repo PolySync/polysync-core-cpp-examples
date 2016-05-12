@@ -13,18 +13,28 @@ endif()
 include( ${PSYNC_HOME}/BuildResources.cmake )
 
 include_directories(
-    ${PSYNC_INCLUDE_DIRS}
-)
+    .
+    ${PSYNC_HOME}/include
+    ${PSYNC_HOME}/pdm
+    ${PSYNC_HOME}/include/deps/dcps/C/SAC
+    ${PSYNC_HOME}/include/deps/sys
+    )
 
 add_executable( ${PROJECT_NAME}
     Echo.cpp
-)
+    EchoNode.cpp
+    ApplicationInputHandler.cpp
+    EchoHelp.cpp
+    )
 
-target_link_libraries( ${PROJECT_NAME}
-    ${PSYNC_LIBS}
-)
+target_link_libraries(
+    ${PROJECT_NAME}
+    polysync++
+    polysync_cpp_message_support
+    polysync_data_model
+    )
 
 install(
-    TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION ${PSYNC_HOME}/bin
+    TARGETS polysync-echo
+    DESTINATION ${PSYNC_HOME}/bin
 )

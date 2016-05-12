@@ -23,10 +23,13 @@
  * THE SOFTWARE.
  */
 
-/*
+/**
+ * \example HelloWorldPublisher.cpp
+ *
  * PolySync Hello World Publisher C++ API example application
  *      Demonstrate how to publish a message from a node
  *
+ * Node Class definition and how to create your own Nodes
  */
 
 #include <iostream>

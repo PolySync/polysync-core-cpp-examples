@@ -23,7 +23,9 @@
  * THE SOFTWARE.
  */
 
-/*
+/**
+ * \example SocketReader.cpp
+ *
  * PolySync SocketReader C++ API example application
  *      Connect to a UDP socket and receive data
  */

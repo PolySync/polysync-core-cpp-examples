@@ -24,7 +24,7 @@
  */
 
 /**
- * \example CANReader.cpp
+ * \example CANReaderNode.cpp
  *
  * PolySync CAN API reader Example.
  *

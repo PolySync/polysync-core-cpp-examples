@@ -24,7 +24,7 @@
  */
 
 /**
- * \example ReplayControl.cpp
+ * \example Replay.cpp
  *
  * Demonstrates how to use the Replay API routines to control a replay session.
  * Although this example shows how to start and stop a replay session, it
@@ -35,6 +35,7 @@
 
 #include <iostream>
 
+#include "PolySyncNode.hpp"
 #include "PolySyncRecordReplay.hpp"
 
 using namespace polysync;
@@ -72,14 +73,12 @@ class ReplayNode : public Node
         // Check that the log session id below exists on your system.
         // If it does not, run the RecordControl example and come back to this.
         ps_rnr_session_id sessionId;
-        cout << "Enter recording session id: ";
+        cout << "Enter replay session id: ";
         cin >> sessionId;
-        replay->load( sessionId );
+        replay->setId( sessionId );
 
-        // Optionally set looping to true. If you are using the log session
-        // collected in the RecordControl example, wait until the end of the
-        // log and the replay will loop back to the beginning.
-        replay->setLooping( true );
+        // Activate the session.
+        replay->activate();
 
         // Start the replay.
         replay->start();
