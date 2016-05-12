@@ -1,18 +1,16 @@
-cmake_minimum_required(
-    VERSION 2.8
-    )
+cmake_minimum_required( VERSION 2.8 )
 
-project(
-    polysync-echo
-    )
+project( polysync-echo )
 
-add_definitions(
-    -std=c++11
-    )
+if( NOT PSYNC_HOME )
+    if( $ENV{PSYNC_HOME} )
+        set( PSYNC_HOME $ENV{PSYNC_HOME} )
+    else()
+        set( PSYNC_HOME /usr/local/polysync )
+    endif()
+endif()
 
-set( PSYNC_HOME
-    /usr/local/polysync
-    )
+include( ${PSYNC_HOME}/BuildResources.cmake )
 
 include_directories(
     .
@@ -22,12 +20,7 @@ include_directories(
     ${PSYNC_HOME}/include/deps/sys
     )
 
-link_directories(
-    ${PSYNC_HOME}/lib
-    )
-
-add_executable(
-    ${PROJECT_NAME}
+add_executable( ${PROJECT_NAME}
     Echo.cpp
     EchoNode.cpp
     ApplicationInputHandler.cpp
