@@ -10,12 +10,19 @@ namespace polysync
 {
 
 void PolySyncEcho::initStateEvent()
-{
-    if ( inputHandler.singleMessageWasFiltered() )
+{ 
+    if( inputHandler.singleMessageWasFiltered()
+         && inputHandler.multipleMessagesWereFiltered() )
+    {
+        registerSingleFilteredMessage();
+
+        registerMultipleFilteredMessages();
+    }
+    else if( inputHandler.singleMessageWasFiltered()
+              && !inputHandler.multipleMessagesWereFiltered() )
     {
        registerSingleFilteredMessage();
     }
-
     else
     {
         registerListenerToAllMessageTypes();
@@ -25,9 +32,24 @@ void PolySyncEcho::initStateEvent()
 
 void PolySyncEcho::registerSingleFilteredMessage()
 {
+    tryCatchRegisterAMessageListener( inputHandler.getSingleMessageName() );
+}
+
+
+void PolySyncEcho::registerMultipleFilteredMessages()
+{
+    for( auto messageName : inputHandler.getMultipleMessageNames() )
+    {
+        tryCatchRegisterAMessageListener( messageName );
+    }
+}
+
+
+void PolySyncEcho::tryCatchRegisterAMessageListener( std::string messageName )
+{
     try
     {
-        registerListener( getMessageTypeByName ( inputHandler.getMessageName() ) );
+        registerListener( getMessageTypeByName ( messageName ) );
     }
     catch ( ... )
     {
@@ -42,7 +64,7 @@ void PolySyncEcho::registerSingleFilteredMessage()
 
 void PolySyncEcho::messageEvent( std::shared_ptr< polysync::Message > message )
 {    
-    if ( inputHandler.fileWasSpecified() )
+    if( inputHandler.fileWasSpecified() )
     {
         printToFile( message );
     }
@@ -57,12 +79,12 @@ void PolySyncEcho::printToFile( std::shared_ptr < polysync:: Message > message )
 
     openUserFile.open( inputHandler.getFileName(), ios::app );
 
-    if ( inputHandler.headersWereRequested() )
+    if( inputHandler.headersWereRequested() )
     {
         message->printHeader( openUserFile );
     }
 
-    else if ( !inputHandler.headersWereRequested() )
+    else if( !inputHandler.headersWereRequested() )
     {
         message->print( openUserFile );
     }
@@ -74,7 +96,7 @@ void PolySyncEcho::printToFile( std::shared_ptr < polysync:: Message > message )
 void PolySyncEcho::echoPolySyncMessagesToStdOut
     ( std::shared_ptr < polysync:: Message > message )
 {
-    if ( inputHandler.headersWereRequested() )
+    if( inputHandler.headersWereRequested() )
     {
         message->printHeader();
     }

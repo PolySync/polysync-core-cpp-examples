@@ -28,11 +28,20 @@ std::vector< std::string > EchoHelp::getHelpDescriptions()
         ( " Show this help message [optional]." );
 
     flagDescriptionsHelp.emplace_back
-        ( " Filter for a single message type [optional]. \n"
-        " Usage Example: $ polysync-echo -f ps_diagnostic_trace_msg \n\n"
+        ( " Filter for a single message type OR multiple message types [optional]. \n"
+        " Usage Example 1: Single Message: \n"
+            " $ polysync-echo -f ps_diagnostic_trace_msg \n\n"
+        " Usage Example 2: Multiple Messages: \n"
+            " $ polysync-echo -f ps_diagnostic_trace_msg"
+            " -f ps_lidar_points_msg \n\n"
+        " Usage Example 3: Multiple Messages, Headers Only: \n $ polysync-echo"
+              " -f ps_diagnostic_trace_msg -f ps_lidar_points_msg -H \n\n"
+        " Usage Example 4: Multiple Messages, Headers Only, and print to file: \n"
+              " $ polysync-echo -f ps_diagnostic_trace_msg -H -o yourFileName.txt \n"
+              " -f ps_lidar_points_msg \n\n"
         " To see a list of message types: $ polysync-echo -f PolySyncMessageType \n\n"
         " To see sample messages on bus, run Data Generation Tutorial in \n "
-        "one Terminal window, and run Echo Utility in a second Terminal window.\n\n"
+            "one Terminal window, and run Echo Utility in a second Terminal window.\n\n"
          " Running $ polysync-echo with no -f filter flags prints ALL messages on bus.");
 
     flagDescriptionsHelp.emplace_back

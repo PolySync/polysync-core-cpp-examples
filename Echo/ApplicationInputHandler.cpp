@@ -22,7 +22,6 @@ int ApplicationInputHandler::getFlagIndex( const char optret )
 }
 
 
-
 bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 {
     bool parsedOptSuccess = true;
@@ -38,99 +37,110 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 
     opterr = 0;
 
+    int messageFilterCounter = 0;
+
     while ( ( optionArgumentIndex = getopt( argc, argv, "o:f:hH") ) != -1 )
     {
         optionIndex = getFlagIndex( (const char) optionArgumentIndex );
 
-        if ( optionIndex == -1 )
+        if( optionIndex == -1 )
         {
             cout << "\n\nUsage: invalid options. Usage guide follows." <<endl;
 
             _getOptHelpFlag = true;
         }
-
-        else if ( optionIndex != -1 )
+        else if( optionIndex != -1 )
         {
-            switch ( optionArgumentIndex )
+            switch( optionArgumentIndex )
             {
+                case 'f':
 
-            case 'f':
+                    if( ( *argv[ optind - 1 ] )
+                         && ( *argv[ optind - 1 ] == '-' ) )
+                    {
+                        cout <<"\n\nInvalid usage for option -f filter single message type:\n"
+                             <<"-f should be followed by a PolySync message type,"
+                             << " not by another -option.\n"
+                             <<"A usage guide follows." << endl;
 
-                if ( ( *argv[ optind - 1 ] )
-                     && ( *argv[ optind - 1 ] == '-' ) )
-                {
-                    cout <<"\n\nInvalid usage for option -f filter single message type:\n"
-                         <<"-f should be followed by a PolySync message type,"
-                         << " not by another -option.\n"
-                         <<"A usage guide follows." << endl;
+                        _getOptHelpFlag = true;
+                    }
+                    else
+                    {
+                        if( messageFilterCounter == 0 )
+                        {
+                            _messageName = optarg;
 
-                    _getOptHelpFlag = true;
-                }
-                else
-                {
-                    _messageName = optarg;
+                            _filteredForSingleMessageFlag = true;
 
-                    _filteredForSingleMessageFlag = true;
+                            ++messageFilterCounter;
+                        }
+                        else
+                        {
+                            _filteredForMultipleMessagesFlag = true;
 
-                }
-                break;
-
-            case 'o':
-
-                if ( ( *argv[ optind - 1 ] )
-                     && ( *argv[ optind - 1 ] == '-' ) )
-                {
-                    cout <<"\n\nInvalid usage for option -o external file:\n"
-                         <<"-o should be followed by a filename yourfile.txt,"
-                         << " not by another -option.\n"
-                         <<"A usage guide follows." << endl;
-
-                    _getOptHelpFlag = true;
-                }
-                else
-                {
-                    _userFileName = optarg;
-
-                    _echoMessageToFileFlag = true;
-                }
-                break;
-
-            case 'h':
-
-                _getOptHelpFlag = true;
+                            _multipleFilteredMessageNames.emplace_back( optarg );
+                        }
+                    }
 
                 break;
 
-            case 'H':
+                case 'o':
 
-                _echoMessageHeadersOnlyFlag = true;
+                    if( ( *argv[ optind - 1 ] )
+                         && ( *argv[ optind - 1 ] == '-' ) )
+                    {
+                        cout <<"\n\nInvalid usage for option -o external file:\n"
+                             <<"-o should be followed by a filename yourfile.txt,"
+                             << " not by another -option.\n"
+                             <<"A usage guide follows." << endl;
+
+                        _getOptHelpFlag = true;
+                    }
+                    else
+                    {
+                        _userFileName = optarg;
+
+                        _echoMessageToFileFlag = true;
+                    }
+
+                    break;
+
+                case 'h':
+
+                    _getOptHelpFlag = true;
 
                 break;
 
-            case '?':
+                case 'H':
 
-                if ( optopt == 'f' )
-                {
-                    _getOptHelpFlag = true;
+                    _echoMessageHeadersOnlyFlag = true;
 
-                    parsedOptSuccess = false;
-                }
+                break;
 
-                else if ( optopt == 'o' )
-                {
-                    _getOptHelpFlag = true;
+                case '?':
 
-                    parsedOptSuccess = false;
-                }
+                    if( optopt == 'f' )
+                    {
+                        _getOptHelpFlag = true;
 
-            default:
+                        parsedOptSuccess = false;
+                    }
+                    else if( optopt == 'o' )
+                    {
+                        _getOptHelpFlag = true;
 
-                parsedOptSuccess = true;
+                        parsedOptSuccess = false;
+                    }
+
+                default:
+
+                    parsedOptSuccess = true;
             }
         }
     }
 
-    for ( index = optind; index < argc; ++index )
+    for( index = optind; index < argc; ++index )
     {
         cout << "\n\nUsage: Non option argument: " << argv[ index ] <<endl
              << "A usage guide follows." <<endl;
@@ -142,9 +152,15 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 }
 
 
-std::string ApplicationInputHandler::getMessageName() const
+std::string ApplicationInputHandler::getSingleMessageName() const
 {
     return _messageName;
+}
+
+
+std::vector < std::string > ApplicationInputHandler::getMultipleMessageNames() const
+{
+    return _multipleFilteredMessageNames;
 }
 
 
@@ -157,6 +173,12 @@ std::string ApplicationInputHandler::getFileName() const
 bool ApplicationInputHandler::singleMessageWasFiltered() const
 {
     return _filteredForSingleMessageFlag;
+}
+
+
+bool ApplicationInputHandler::multipleMessagesWereFiltered() const
+{
+    return _filteredForMultipleMessagesFlag;
 }
 
 

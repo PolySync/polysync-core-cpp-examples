@@ -57,6 +57,18 @@ public:
     void registerSingleFilteredMessage();
 
     /**
+     * @brief Register multiple filtered message types per cmd line input.
+     */
+    void registerMultipleFilteredMessages();
+
+    /**
+     * @brief Safely register message listeners. For single or multiple
+     *  message filtering. Called by registerSingle/MultipleFilteredMessages.
+     * @param std::string messageName.
+     */
+    void tryCatchRegisterAMessageListener ( std::string );
+
+    /**
      * @brief messageEvent
      *
      * Extract the information from the provided message
@@ -89,7 +101,6 @@ public:
     /**
      * @brief If help -h is one of arguments, don't start node up.
      * @return Returns true if help was requested.
-     *
      */
     bool wasHelpRequested();
 

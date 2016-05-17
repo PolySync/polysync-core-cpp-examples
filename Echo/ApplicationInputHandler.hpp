@@ -37,31 +37,44 @@ public:
      * @brief Parses cmd line arguments in C getopt style.
      * @param argv Argument vector.
      * @param argc Argument count.
-     * @return
+     * @return Returns true if options were parsed successfully.
      */
     bool optionsParse( const int argc, char * argv[] );
 
     /**
      * @brief Member variable getter for message(s) name(s).
-     * @return Returns char * variable containing message name.
+     * @return Returns std::string containing message name.
      */
-    std::string getMessageName() const;
+    std::string getSingleMessageName() const;
 
     /**
-     * @brief Member variable getter for user defined file name.
-     * @return Returns char * variable containing message name.
+     * @brief Member variable getter for multiple filtered message names.
+     * @return Returns std::vector <std::string> containing multiple message names.
+     */
+    std::vector < std::string > getMultipleMessageNames() const;
+
+    /**
+     * @brief Member variable getter for user-defined file name, so that
+     *        user can print Echo output to file.
+     * @return Returns std::string containing user-defined file name.
      */
     std::string getFileName() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
-     * @return Returns boolean: true if a single message type was filtered.
+     * @return Returns true if a single message type was filtered.
      */
     bool singleMessageWasFiltered() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
-     * @return Returns boolean: true if only message headers were requested.
+     * @return Returns true if multiple message types were filtered.
+     */
+    bool multipleMessagesWereFiltered() const;
+
+    /**
+     * @brief Member variable getter for command line getopt handling.
+     * @return Returns true if only message headers (not data) were requested.
      */
     bool headersWereRequested() const;
 
@@ -86,6 +99,7 @@ private:
     std::string _userFileName;
 
     bool _filteredForSingleMessageFlag = false;
+    bool _filteredForMultipleMessagesFlag = false;
     bool _echoMessageHeadersOnlyFlag = false;
     bool _echoMessageToFileFlag = false;
     bool _getOptHelpFlag = false;
@@ -94,6 +108,8 @@ private:
     {
       'f', 'h', 'H', 'o'
     };
+
+    std::vector < std::string > _multipleFilteredMessageNames;
 
 }; // END polysync::ApplicationInputHandler class
 
