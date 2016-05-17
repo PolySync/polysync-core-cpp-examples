@@ -93,20 +93,36 @@ public:
      */
     bool helpWasRequested() const;
 
+    /**
+     * @brief Member veriable getter for command line getopt handling.
+     * @return Returns true if user specified a specific runtime for Echo.
+     */
+    bool wasRunTimeSpecified() const;
+
+    /**
+     * @brief Member variable getter for command line getopt handling.
+     * @return Returns unsigned long long to compute difference in UTC microsec.
+     */
+    unsigned long long getUserRunTime() const;
+
 private:
 
     std::string _messageName;
     std::string _userFileName;
+ //   std::string _userRunTime; // cast to unsigned long long
+
+    unsigned long long _echoRunTime;
 
     bool _filteredForSingleMessageFlag = false;
     bool _filteredForMultipleMessagesFlag = false;
     bool _echoMessageHeadersOnlyFlag = false;
     bool _echoMessageToFileFlag = false;
     bool _getOptHelpFlag = false;
+    bool _runTimeSpecifiedFlag = false;
 
     const std::vector < char > _optionInputFlags
     {
-      'f', 'h', 'H', 'o'
+      'f', 'h', 'H', 'o', 't'
     };
 
     std::vector < std::string > _multipleFilteredMessageNames;

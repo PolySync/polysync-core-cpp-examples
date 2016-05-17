@@ -27,6 +27,25 @@ void PolySyncEcho::initStateEvent()
     {
         registerListenerToAllMessageTypes();
     }
+
+    _echoGetStartTime = getTimestamp();
+}
+
+
+void PolySyncEcho::okStateEvent()
+{
+    _echoGetCurrentTime = getTimestamp();
+
+    _echoDiffRunTime = ( _echoGetCurrentTime - _echoGetStartTime );
+
+    _userSpecifiedRunTime = inputHandler.getUserRunTime() * 1000000;
+
+    if ( _echoDiffRunTime >= _userSpecifiedRunTime )
+    {
+        cout <<"\n\n\n Disconnecting PolySync successfully: "
+               "The time you've specified with -t option argument has expired.\n" <<endl <<endl;
+        disconnectPolySync();
+    }
 }
 
 

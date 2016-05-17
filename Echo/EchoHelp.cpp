@@ -15,6 +15,7 @@ std::vector< std::string > EchoHelp::getHelpFlags()
         cmdLineFlagsHelp.emplace_back ( "-f <MESSAGE_TYPE>" );
         cmdLineFlagsHelp.emplace_back ( "-H" );
         cmdLineFlagsHelp.emplace_back ( "-o <FILE_NAME>" );
+        cmdLineFlagsHelp.emplace_back ( "-t <ECHO_RUNTIME>" );
 
     return cmdLineFlagsHelp;
 }
@@ -59,6 +60,11 @@ std::vector< std::string > EchoHelp::getHelpDescriptions()
         " Note: Unless you specify a new file each time, each session will \n"
         " append to the end of your specified file.");
 
+    flagDescriptionsHelp.emplace_back
+        ( " Specify the amount of time Echo should run for [optional]. \n"
+        " Usage Example: Run Echo for 10 seconds: \n"
+        " $ polysync-echo -t 10" );
+
     return flagDescriptionsHelp;
 }
 
@@ -72,7 +78,7 @@ void EchoHelp::printHelp(const std::vector< std::string > & helpFlags ,
 
     cout << "Usage: \n $polysync-echo [options] \n\n";
 
-    for( auto index = 0; index < 4; ++index )
+    for( auto index = 0; index < 5; ++index )
     {
         cout  << helpFlags[ index ] <<endl;
         cout  << helpDescriptions[ index ] <<endl <<endl;

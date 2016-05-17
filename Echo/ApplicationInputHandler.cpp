@@ -39,7 +39,7 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 
     int messageFilterCounter = 0;
 
-    while ( ( optionArgumentIndex = getopt( argc, argv, "o:f:hH") ) != -1 )
+    while ( ( optionArgumentIndex = getopt( argc, argv, "t:o:f:hH") ) != -1 )
     {
         optionIndex = getFlagIndex( (const char) optionArgumentIndex );
 
@@ -106,6 +106,41 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 
                     break;
 
+            case 't':
+
+                if( ( *argv[ optind - 1 ] )
+                     && ( *argv[ optind - 1 ] == '-' ) )
+                {
+                    cout <<"\n\nInvalid usage for option -t run for specific time:\n"
+                         <<"-t should be followed by how long you want Echo to run,"
+                         << " not by another -option.\n"
+                         <<"A usage guide follows." << endl;
+
+                    _getOptHelpFlag = true;
+                }
+                else if( ( *argv[ optind - 1 ] )
+                     && isalpha(  *argv[ optind - 1 ] ) )
+                {
+                    cout <<"\n\nInvalid usage for option -t run for specific time:\n"
+                         << "-t should be followed by a number"
+                         <<" representing  how long you want Echo to run.\n"
+                         <<"A usage guide follows." << endl;
+
+                    _getOptHelpFlag = true;
+                }
+                else
+                {
+                   // _userRunTime = optarg;
+
+                   // _userRunTime = (unsigned long long) _echoRunTime;
+
+                    _echoRunTime =  stoull( optarg );
+
+                    _runTimeSpecifiedFlag = true;
+                }
+
+                break;
+
                 case 'h':
 
                     _getOptHelpFlag = true;
@@ -127,6 +162,12 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
                         parsedOptSuccess = false;
                     }
                     else if( optopt == 'o' )
+                    {
+                        _getOptHelpFlag = true;
+
+                        parsedOptSuccess = false;
+                    }
+                    else if( optopt == 't' )
                     {
                         _getOptHelpFlag = true;
 
@@ -197,6 +238,18 @@ bool ApplicationInputHandler::fileWasSpecified() const
 bool ApplicationInputHandler::helpWasRequested() const
 {
     return _getOptHelpFlag;
+}
+
+
+bool ApplicationInputHandler::wasRunTimeSpecified () const
+{
+    return _runTimeSpecifiedFlag;
+}
+
+
+unsigned long long ApplicationInputHandler::getUserRunTime () const
+{
+    return _echoRunTime;
 }
 
 

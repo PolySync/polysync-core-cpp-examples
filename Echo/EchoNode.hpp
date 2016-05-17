@@ -44,12 +44,18 @@ public:
      */
     EchoHelp echoHelp;
 
+
     /**
      * @brief initStateEvent
-     *
      * Subscribe to a message that the publisher node will send.
      */
     void initStateEvent() override;
+
+    /**
+     * @brief okStateEvent
+     * Called continuously while in ok state.
+     */
+    void okStateEvent() override;
 
     /**
      * @brief Register a single, filtered message type per cmd line input.
@@ -105,11 +111,24 @@ public:
     bool wasHelpRequested();
 
     /**
-     * @brief Wrapper for encapsulation of the PolySyncEchoHelp class.
+     * @brief Wrapper for encapsulation of the EchoHelp class.
      */
     void printEchoHelpPage();
 
 private:
+
+    /**
+     * @brief Member variables to run Echo for a particular time.
+     * getTimestamp() is a PolySync function that returns message header
+     *    timestamps in UTC microseconds.
+     * Start run time: see PolySyncEcho's overridden initState() function.
+     * Current run time: see PolySyncEcho's overridden okStateEvent() function.
+     */
+    //psync_message_get_timestamp();
+    ps_timestamp _echoGetStartTime;
+    ps_timestamp _echoGetCurrentTime;
+    ps_timestamp _echoDiffRunTime;
+    ps_timestamp _userSpecifiedRunTime;
 
     /**
      * @brief Get messages currently on bus and append to end of list.
@@ -122,6 +141,8 @@ private:
      *  @param std::vector< std:: string > - variable containing msg name.
      */
     void printAvailableMessage( const std::vector< std::string > & messageTypeStrings );
+
+
 
 }; // END polysync::EchoNode class
 
