@@ -44,7 +44,6 @@ public:
      */
     EchoHelp echoHelp;
 
-
     /**
      * @brief initStateEvent
      * Subscribe to a message that the publisher node will send.
@@ -75,10 +74,7 @@ public:
     void tryCatchRegisterAMessageListener ( std::string );
 
     /**
-     * @brief messageEvent
-     *
-     * Extract the information from the provided message
-     *
+     * @brief Extract the information from the provided message
      * @param std::shared_ptr< Message > - variable containing the message
      */
     virtual void messageEvent( std::shared_ptr< polysync::Message > message );
@@ -119,12 +115,11 @@ private:
 
     /**
      * @brief Member variables to run Echo for a particular time.
-     * getTimestamp() is a PolySync function that returns message header
+     * @note getTimestamp() is a PolySync function that returns message header
      *    timestamps in UTC microseconds.
      * Start run time: see PolySyncEcho's overridden initState() function.
      * Current run time: see PolySyncEcho's overridden okStateEvent() function.
      */
-    //psync_message_get_timestamp();
     ps_timestamp _echoGetStartTime;
     ps_timestamp _echoGetCurrentTime;
     ps_timestamp _echoDiffRunTime;
@@ -141,8 +136,6 @@ private:
      *  @param std::vector< std:: string > - variable containing msg name.
      */
     void printAvailableMessage( const std::vector< std::string > & messageTypeStrings );
-
-
 
 }; // END polysync::EchoNode class
 

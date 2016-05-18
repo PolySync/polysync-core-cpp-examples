@@ -109,7 +109,6 @@ private:
 
     std::string _messageName;
     std::string _userFileName;
- //   std::string _userRunTime; // cast to unsigned long long
 
     unsigned long long _echoRunTime;
 
