@@ -4,6 +4,7 @@
 
 #include "ApplicationInputHandler.hpp"
 
+
 using namespace std;
 
 namespace polysync
@@ -11,7 +12,7 @@ namespace polysync
 
 int ApplicationInputHandler::getFlagIndex( const char optret )
 {
-    for ( auto index = 0; index < _optionInputFlags.size(); ++index )
+    for( auto index = 0; index < _optionInputFlags.size(); ++index )
     {
         if( _optionInputFlags[ index ] == optret )
         {
@@ -36,8 +37,6 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
     int index;
 
     opterr = 0;
-
-    int messageFilterCounter = 0;
 
     while ( ( optionArgumentIndex = getopt( argc, argv, "t:o:f:hH") ) != -1 )
     {
@@ -67,20 +66,9 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
                     }
                     else
                     {
-                        if( messageFilterCounter == 0 )
-                        {
-                            _messageName = optarg;
+                        _filteredForMessagesFlag = true;
 
-                            _filteredForSingleMessageFlag = true;
-
-                            ++messageFilterCounter;
-                        }
-                        else
-                        {
-                            _filteredForMultipleMessagesFlag = true;
-
-                            _multipleFilteredMessageNames.emplace_back( optarg );
-                        }
+                        _filteredMessageNames.emplace_back( optarg );
                     }
 
                 break;
@@ -117,6 +105,8 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
                          <<"A usage guide follows." << endl;
 
                     _getOptHelpFlag = true;
+
+                    //_runTimeSpecifiedFlag = false;
                 }
                 else if( ( *argv[ optind - 1 ] )
                      && isalpha(  *argv[ optind - 1 ] ) )
@@ -130,10 +120,6 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
                 }
                 else
                 {
-                   // _userRunTime = optarg;
-
-                   // _userRunTime = (unsigned long long) _echoRunTime;
-
                     _echoRunTime =  stoull( optarg );
 
                     _runTimeSpecifiedFlag = true;
@@ -193,15 +179,9 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 }
 
 
-std::string ApplicationInputHandler::getSingleMessageName() const
+std::vector < std::string > ApplicationInputHandler::getFilteredMessageNames() const
 {
-    return _messageName;
-}
-
-
-std::vector < std::string > ApplicationInputHandler::getMultipleMessageNames() const
-{
-    return _multipleFilteredMessageNames;
+    return _filteredMessageNames;
 }
 
 
@@ -211,15 +191,9 @@ std::string ApplicationInputHandler::getFileName() const
 }
 
 
-bool ApplicationInputHandler::singleMessageWasFiltered() const
+bool ApplicationInputHandler::messageTypesWereFiltered() const
 {
-    return _filteredForSingleMessageFlag;
-}
-
-
-bool ApplicationInputHandler::multipleMessagesWereFiltered() const
-{
-    return _filteredForMultipleMessagesFlag;
+    return _filteredForMessagesFlag;
 }
 
 

@@ -57,18 +57,13 @@ public:
     void okStateEvent() override;
 
     /**
-     * @brief Register a single, filtered message type per cmd line input.
+     * @brief Register filtered message type(s) per cmd line input.
      */
-    void registerSingleFilteredMessage();
+    void registerFilteredMessages();
 
     /**
-     * @brief Register multiple filtered message types per cmd line input.
-     */
-    void registerMultipleFilteredMessages();
-
-    /**
-     * @brief Safely register message listeners. For single or multiple
-     *  message filtering. Called by registerSingle/MultipleFilteredMessages.
+     * @brief Safely register message listeners.
+     * Called by registerSingle/MultipleFilteredMessages.
      * @param std::string messageName.
      */
     void tryCatchRegisterAMessageListener ( std::string );

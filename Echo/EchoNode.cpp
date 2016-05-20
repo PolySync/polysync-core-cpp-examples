@@ -11,17 +11,9 @@ namespace polysync
 
 void PolySyncEcho::initStateEvent()
 { 
-    if( inputHandler.singleMessageWasFiltered()
-         && inputHandler.multipleMessagesWereFiltered() )
+    if( inputHandler.messageTypesWereFiltered() )
     {
-        registerSingleFilteredMessage();
-
-        registerMultipleFilteredMessages();
-    }
-    else if( inputHandler.singleMessageWasFiltered()
-              && !inputHandler.multipleMessagesWereFiltered() )
-    {
-       registerSingleFilteredMessage();
+        registerFilteredMessages();
     }
     else
     {
@@ -40,24 +32,19 @@ void PolySyncEcho::okStateEvent()
 
     _userSpecifiedRunTime = inputHandler.getUserRunTime() * 1000000;
 
-    if ( _echoDiffRunTime >= _userSpecifiedRunTime )
-    {
-        cout <<"\n\n\n Disconnecting PolySync successfully: "
-               "The time you've specified with -t option argument has expired.\n" <<endl <<endl;
-        disconnectPolySync();
-    }
+    if( inputHandler.wasRunTimeSpecified()
+         && _echoDiffRunTime >= _userSpecifiedRunTime )
+        {
+            cout <<"\n\n\n Disconnecting PolySync successfully: \n "
+                   "The time you've specified with -t option argument has expired.\n" <<endl <<endl;
+            disconnectPolySync();
+        }
 }
 
 
-void PolySyncEcho::registerSingleFilteredMessage()
+void PolySyncEcho::registerFilteredMessages()
 {
-    tryCatchRegisterAMessageListener( inputHandler.getSingleMessageName() );
-}
-
-
-void PolySyncEcho::registerMultipleFilteredMessages()
-{
-    for( auto messageName : inputHandler.getMultipleMessageNames() )
+    for( auto messageName : inputHandler.getFilteredMessageNames() )
     {
         tryCatchRegisterAMessageListener( messageName );
     }
