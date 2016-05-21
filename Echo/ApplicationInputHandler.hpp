@@ -99,7 +99,7 @@ private:
 
     unsigned long long _echoRunTime;
 
-    bool _filteredForMessagesFlag = true;
+    bool _filteredForMessagesFlag = false;
     bool _echoMessageHeadersOnlyFlag = false;
     bool _echoMessageToFileFlag = false;
     bool _getOptHelpFlag = false;

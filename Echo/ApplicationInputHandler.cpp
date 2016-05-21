@@ -105,8 +105,6 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
                          <<"A usage guide follows." << endl;
 
                     _getOptHelpFlag = true;
-
-                    //_runTimeSpecifiedFlag = false;
                 }
                 else if( ( *argv[ optind - 1 ] )
                      && isalpha(  *argv[ optind - 1 ] ) )
