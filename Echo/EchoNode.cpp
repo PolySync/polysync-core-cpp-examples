@@ -10,24 +10,52 @@ namespace polysync
 {
 
 void PolySyncEcho::initStateEvent()
-{
-    if ( inputHandler.singleMessageWasFiltered() )
+{ 
+    if( inputHandler.messageTypesWereFiltered() )
     {
-       registerSingleFilteredMessage();
+        registerFilteredMessages();
     }
-
     else
     {
         registerListenerToAllMessageTypes();
     }
+
+    _echoGetStartTime = getTimestamp();
 }
 
 
-void PolySyncEcho::registerSingleFilteredMessage()
+void PolySyncEcho::okStateEvent()
+{
+    _echoGetCurrentTime = getTimestamp();
+
+    _echoDiffRunTime = ( _echoGetCurrentTime - _echoGetStartTime );
+
+    _userSpecifiedRunTime = inputHandler.getUserRunTime() * 1000000;
+
+    if( inputHandler.wasRunTimeSpecified()
+         && _echoDiffRunTime >= _userSpecifiedRunTime )
+        {
+            cout <<"\n\n\n Disconnecting PolySync successfully: \n "
+                   "The time you've specified with -t option argument has expired.\n" <<endl <<endl;
+            disconnectPolySync();
+        }
+}
+
+
+void PolySyncEcho::registerFilteredMessages()
+{
+    for( auto messageName : inputHandler.getFilteredMessageNames() )
+    {
+        tryCatchRegisterAMessageListener( messageName );
+    }
+}
+
+
+void PolySyncEcho::tryCatchRegisterAMessageListener( std::string messageName )
 {
     try
     {
-        registerListener( getMessageTypeByName ( inputHandler.getMessageName() ) );
+        registerListener( getMessageTypeByName ( messageName ) );
     }
     catch ( ... )
     {
@@ -42,7 +70,7 @@ void PolySyncEcho::registerSingleFilteredMessage()
 
 void PolySyncEcho::messageEvent( std::shared_ptr< polysync::Message > message )
 {    
-    if ( inputHandler.fileWasSpecified() )
+    if( inputHandler.fileWasSpecified() )
     {
         printToFile( message );
     }
@@ -57,12 +85,12 @@ void PolySyncEcho::printToFile( std::shared_ptr < polysync:: Message > message )
 
     openUserFile.open( inputHandler.getFileName(), ios::app );
 
-    if ( inputHandler.headersWereRequested() )
+    if( inputHandler.headersWereRequested() )
     {
         message->printHeader( openUserFile );
     }
 
-    else if ( !inputHandler.headersWereRequested() )
+    else if( !inputHandler.headersWereRequested() )
     {
         message->print( openUserFile );
     }
@@ -74,7 +102,7 @@ void PolySyncEcho::printToFile( std::shared_ptr < polysync:: Message > message )
 void PolySyncEcho::echoPolySyncMessagesToStdOut
     ( std::shared_ptr < polysync:: Message > message )
 {
-    if ( inputHandler.headersWereRequested() )
+    if( inputHandler.headersWereRequested() )
     {
         message->printHeader();
     }

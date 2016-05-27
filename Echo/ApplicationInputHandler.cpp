@@ -4,6 +4,7 @@
 
 #include "ApplicationInputHandler.hpp"
 
+
 using namespace std;
 
 namespace polysync
@@ -11,7 +12,7 @@ namespace polysync
 
 int ApplicationInputHandler::getFlagIndex( const char optret )
 {
-    for ( auto index = 0; index < _optionInputFlags.size(); ++index )
+    for( auto index = 0; index < _optionInputFlags.size(); ++index )
     {
         if( _optionInputFlags[ index ] == optret )
         {
@@ -20,7 +21,6 @@ int ApplicationInputHandler::getFlagIndex( const char optret )
     }
     return -1;
 }
-
 
 
 bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
@@ -38,99 +38,134 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 
     opterr = 0;
 
-    while ( ( optionArgumentIndex = getopt( argc, argv, "o:f:hH") ) != -1 )
+    while ( ( optionArgumentIndex = getopt( argc, argv, "t:o:f:hH") ) != -1 )
     {
         optionIndex = getFlagIndex( (const char) optionArgumentIndex );
 
-        if ( optionIndex == -1 )
+        if( optionIndex == -1 )
         {
             cout << "\n\nUsage: invalid options. Usage guide follows." <<endl;
 
             _getOptHelpFlag = true;
         }
-
-        else if ( optionIndex != -1 )
+        else if( optionIndex != -1 )
         {
-            switch ( optionArgumentIndex )
+            switch( optionArgumentIndex )
             {
+                case 'f':
 
-            case 'f':
+                    if( ( *argv[ optind - 1 ] )
+                         && ( *argv[ optind - 1 ] == '-' ) )
+                    {
+                        cout <<"\n\nInvalid usage for option -f filter single message type:\n"
+                             <<"-f should be followed by a PolySync message type,"
+                             << " not by another -option.\n"
+                             <<"A usage guide follows." << endl;
 
-                if ( ( *argv[ optind - 1 ] )
+                        _getOptHelpFlag = true;
+                    }
+                    else
+                    {
+                        _filteredForMessagesFlag = true;
+
+                        _filteredMessageNames.emplace_back( optarg );
+                    }
+
+                break;
+
+                case 'o':
+
+                    if( ( *argv[ optind - 1 ] )
+                         && ( *argv[ optind - 1 ] == '-' ) )
+                    {
+                        cout <<"\n\nInvalid usage for option -o external file:\n"
+                             <<"-o should be followed by a filename yourfile.txt,"
+                             << " not by another -option.\n"
+                             <<"A usage guide follows." << endl;
+
+                        _getOptHelpFlag = true;
+                    }
+                    else
+                    {
+                        _userFileName = optarg;
+
+                        _echoMessageToFileFlag = true;
+                    }
+
+                    break;
+
+            case 't':
+
+                if( ( *argv[ optind - 1 ] )
                      && ( *argv[ optind - 1 ] == '-' ) )
                 {
-                    cout <<"\n\nInvalid usage for option -f filter single message type:\n"
-                         <<"-f should be followed by a PolySync message type,"
+                    cout <<"\n\nInvalid usage for option -t run for specific time:\n"
+                         <<"-t should be followed by how long you want Echo to run,"
                          << " not by another -option.\n"
+                         <<"A usage guide follows." << endl;
+
+                    _getOptHelpFlag = true;
+                }
+                else if( ( *argv[ optind - 1 ] )
+                     && isalpha(  *argv[ optind - 1 ] ) )
+                {
+                    cout <<"\n\nInvalid usage for option -t run for specific time:\n"
+                         << "-t should be followed by a number"
+                         <<" representing  how long you want Echo to run.\n"
                          <<"A usage guide follows." << endl;
 
                     _getOptHelpFlag = true;
                 }
                 else
                 {
-                    _messageName = optarg;
+                    _echoRunTime =  stoull( optarg );
 
-                    _filteredForSingleMessageFlag = true;
-
+                    _runTimeSpecifiedFlag = true;
                 }
+
                 break;
 
-            case 'o':
-
-                if ( ( *argv[ optind - 1 ] )
-                     && ( *argv[ optind - 1 ] == '-' ) )
-                {
-                    cout <<"\n\nInvalid usage for option -o external file:\n"
-                         <<"-o should be followed by a filename yourfile.txt,"
-                         << " not by another -option.\n"
-                         <<"A usage guide follows." << endl;
+                case 'h':
 
                     _getOptHelpFlag = true;
-                }
-                else
-                {
-                    _userFileName = optarg;
-
-                    _echoMessageToFileFlag = true;
-                }
-                break;
-
-            case 'h':
-
-                _getOptHelpFlag = true;
 
                 break;
 
-            case 'H':
+                case 'H':
 
-                _echoMessageHeadersOnlyFlag = true;
+                    _echoMessageHeadersOnlyFlag = true;
 
                 break;
 
-            case '?':
+                case '?':
 
-                if ( optopt == 'f' )
-                {
-                    _getOptHelpFlag = true;
+                    if( optopt == 'f' )
+                    {
+                        _getOptHelpFlag = true;
 
-                    parsedOptSuccess = false;
-                }
+                        parsedOptSuccess = false;
+                    }
+                    else if( optopt == 'o' )
+                    {
+                        _getOptHelpFlag = true;
 
-                else if ( optopt == 'o' )
-                {
-                    _getOptHelpFlag = true;
+                        parsedOptSuccess = false;
+                    }
+                    else if( optopt == 't' )
+                    {
+                        _getOptHelpFlag = true;
 
-                    parsedOptSuccess = false;
-                }
+                        parsedOptSuccess = false;
+                    }
 
-            default:
+                default:
 
-                parsedOptSuccess = true;
+                    parsedOptSuccess = true;
             }
         }
     }
 
-    for ( index = optind; index < argc; ++index )
+    for( index = optind; index < argc; ++index )
     {
         cout << "\n\nUsage: Non option argument: " << argv[ index ] <<endl
              << "A usage guide follows." <<endl;
@@ -142,9 +177,9 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 }
 
 
-std::string ApplicationInputHandler::getMessageName() const
+std::vector < std::string > ApplicationInputHandler::getFilteredMessageNames() const
 {
-    return _messageName;
+    return _filteredMessageNames;
 }
 
 
@@ -154,9 +189,9 @@ std::string ApplicationInputHandler::getFileName() const
 }
 
 
-bool ApplicationInputHandler::singleMessageWasFiltered() const
+bool ApplicationInputHandler::messageTypesWereFiltered() const
 {
-    return _filteredForSingleMessageFlag;
+    return _filteredForMessagesFlag;
 }
 
 
@@ -175,6 +210,18 @@ bool ApplicationInputHandler::fileWasSpecified() const
 bool ApplicationInputHandler::helpWasRequested() const
 {
     return _getOptHelpFlag;
+}
+
+
+bool ApplicationInputHandler::wasRunTimeSpecified () const
+{
+    return _runTimeSpecifiedFlag;
+}
+
+
+unsigned long long ApplicationInputHandler::getUserRunTime () const
+{
+    return _echoRunTime;
 }
 
 

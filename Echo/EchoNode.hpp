@@ -46,21 +46,30 @@ public:
 
     /**
      * @brief initStateEvent
-     *
      * Subscribe to a message that the publisher node will send.
      */
     void initStateEvent() override;
 
     /**
-     * @brief Register a single, filtered message type per cmd line input.
+     * @brief okStateEvent
+     * Called continuously while in ok state.
      */
-    void registerSingleFilteredMessage();
+    void okStateEvent() override;
 
     /**
-     * @brief messageEvent
-     *
-     * Extract the information from the provided message
-     *
+     * @brief Register filtered message type(s) per cmd line input.
+     */
+    void registerFilteredMessages();
+
+    /**
+     * @brief Safely register message listeners.
+     * Called by registerSingle/MultipleFilteredMessages.
+     * @param std::string messageName.
+     */
+    void tryCatchRegisterAMessageListener ( std::string );
+
+    /**
+     * @brief Extract the information from the provided message
      * @param std::shared_ptr< Message > - variable containing the message
      */
     virtual void messageEvent( std::shared_ptr< polysync::Message > message );
@@ -89,16 +98,27 @@ public:
     /**
      * @brief If help -h is one of arguments, don't start node up.
      * @return Returns true if help was requested.
-     *
      */
     bool wasHelpRequested();
 
     /**
-     * @brief Wrapper for encapsulation of the PolySyncEchoHelp class.
+     * @brief Wrapper for encapsulation of the EchoHelp class.
      */
     void printEchoHelpPage();
 
 private:
+
+    /**
+     * @brief Member variables to run Echo for a particular time.
+     * @note getTimestamp() is a PolySync function that returns message header
+     *    timestamps in UTC microseconds.
+     * Start run time: see PolySyncEcho's overridden initState() function.
+     * Current run time: see PolySyncEcho's overridden okStateEvent() function.
+     */
+    ps_timestamp _echoGetStartTime;
+    ps_timestamp _echoGetCurrentTime;
+    ps_timestamp _echoDiffRunTime;
+    ps_timestamp _userSpecifiedRunTime;
 
     /**
      * @brief Get messages currently on bus and append to end of list.
