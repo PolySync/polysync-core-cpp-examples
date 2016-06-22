@@ -38,7 +38,7 @@
  */
 
 
-#include "LogFileTestNode.hpp"             // For all CPP Logfile API examples.
+#include "LogfileTestNode.hpp"             // For all CPP Logfile API examples.
 
 using namespace std;
 

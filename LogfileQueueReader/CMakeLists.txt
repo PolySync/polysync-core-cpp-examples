@@ -25,7 +25,7 @@ include_directories(
     )
 
 add_executable( ${PROJECT_NAME}
-    PolySyncLogFile.cpp
+    PolySyncLogfile.cpp
     LogfileQueueReaderExample.cpp
 )
 
