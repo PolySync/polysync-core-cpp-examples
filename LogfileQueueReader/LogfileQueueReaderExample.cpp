@@ -21,6 +21,41 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ *
+ *
+ * Regarding setting node name using Logfile Reader and how that relates
+ * to setFilePath(), setSessionId(), and setNodeName():
+ *
+ * Example: in directory 1234, let a logfile be name.5678.plog,
+ * where 1234 = session ID, 5678 = GUID, and name = node name.
+
+ * To read from this logfile, you can use its filepath or its session ID.
+ *
+ * Session ID logic is default write logic.
+ * If you do not set explicit filepath, then directory will be timestamp
+ * of write time, and name will be whatever is set in setNodeName().
+ *
+ * setFilePath() logic overrides default Session ID logic.
+ * For Logfile Reader, using a Logfile's explicit filepath is strongly
+ * recommended.
+ *
+ * Option 1: Using explicit filepath to read logfiles (recommended):
+ * Any file specified in the path can be read from;
+ * node name is irrelevant.
+ * How:
+ * 1. use any setNodeName(), then
+ * 2. use setFilePath() in prepareLogfileToRead().
+ *
+ * Option 2: Using Session ID to read logfiles:
+ * Since reader's SDF key must match written SDF key, it's required to
+ * use the same node reference/context to write to, and then read from,
+ * a Logfile using its SessionID. Generally, that means writing to a
+ * Logfile and then reading from that Logfile in the same "example"
+ * file (same Node called from main() with connectPolySync() ).
+ * Doing this guarantees the same node reference, and hence, the same SDF Key.
+ * How:
+ * Not covered in this example.
+ * All C/C++ Logfile examples use explicit filepath, not Session ID.
  */
 
 /**
@@ -221,41 +256,6 @@ int main()
         LogFileTestNode aNode;
 
         sleep( 1 );
-
-        /* Regarding setting node name using Logfile Reader and how that relates
-         * to setFilePath(), setSessionId(), and setNodeName():
-         *
-         * Example: in directory 1234, let a logfile be name.5678.plog,
-         * where 1234 = session ID, 5678 = GUID, and name = node name.
-         * To read from this logfile, you can use its filepath or its session ID.
-         *
-         * Session ID logic is default write logic.
-         * If you do not set explicit filepath, then directory will be timestamp
-         * of write time, and name will be whatever is set in setNodeName().
-         *
-         * setFilePath() logic overrides default Session ID logic.
-         * For Logfile Reader, using a Logfile's explicit filepath is strongly
-         * recommended.
-         *
-         * Option 1: Using explicit filepath to read logfiles (recommended):
-         * Any file specified in the path can be read from;
-         * node name is irrelevant.
-         * How:
-         * 1. use any setNodeName(), then
-         * 2. use setFilePath() in prepareLogfileToRead().
-         *
-         * Option 2: Using Session ID to read logfiles:
-         * Since reader's SDF key must match written SDF key, it's required to
-         * use the same node reference/context to write to, and then read from,
-         * a Logfile using its SessionID. Generally, that means writing to a
-         * Logfile and then reading from that Logfile in the same "example"
-         * file (same Node called from main() with connectPolySync() ).
-         * Doing this guarantees the same node reference, and hence, the
-         * same SDF Key.
-         * How:
-         * Not covered in this example.
-         * All C/C++ Logfile examples use explicit filepath, not Session ID.
-         */
 
         aNode.setNodeName("custom-nodename"); // Read logfiles.
 

@@ -21,6 +21,19 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ *
+ * Regarding setting node name using Logfile Writer and how that relates
+ * to setFilePath(), setSessionId(), and setNodeName()
+ * Example: in directory 1234, let a logfile be name.5678.plog,
+ * where 1234 = session ID, 5678 = GUID, and name = node name.
+ *
+ * For Logfile Writer: In prepareLogfileToWrite(), set sessionId;
+ * optionally, set custom filepath. If writer uses explicit
+ * setFilePath(), then setNodeName is irrelevant.
+ *
+ * If writer uses setSessionId() and not setFilePath(), then name of
+ * logfile will be set with setNodeName(), located in dir specified by
+ * Session Id.
  */
 
 /**
@@ -196,21 +209,6 @@ int main()
         LogFileTestNode aNode;
 
         sleep( 1 );
-
-        /* Regarding setting node name using Logfile Writer and how that relates
-         * to setFilePath(), setSessionId(), and setNodeName():
-         *
-         * Example: in directory 1234, let a logfile be name.5678.plog,
-         * where 1234 = session ID, 5678 = GUID, and name = node name.
-         *
-         * For Logfile Writer: In prepareLogfileToWrite(), set sessionId;
-         * optionally, set custom filepath. If writer uses explicit
-         * setFilePath(), then setNodeName is irrelevant.
-         *
-         * If writer uses setSessionId() and not setFilePath(), then name of
-         * logfile will be set with setNodeName(), located in dir specified by
-         * Session Id.
-         */
 
         aNode.setNodeName("custom-nodename");
 

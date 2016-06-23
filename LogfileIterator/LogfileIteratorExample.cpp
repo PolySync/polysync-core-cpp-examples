@@ -35,6 +35,19 @@
  * @file LogfileIteratorExample.cpp
  * @brief LogfileIterator Source
  *
+ * Regarding setting node name using Logfile Iterator and how that
+ * relates to setFilePath(), setSessionId(), and setNodeName():
+ *
+ * Example: in directory 1234, let a logfile be name.5678.plog,
+ * where 1234 = session ID, 5678 = GUID, and name = node name.
+ *
+ * To iterate over records in a logfile, use its explicit filepath.
+ *
+ * Any file specified in the path can be read from; node name is
+ * irrelevant when using explicit setFilePath().
+ *
+ * How: use any setNodeName(), and use setFilePath() in
+ * prepareLogfileToIterate().
  */
 
 
@@ -152,21 +165,7 @@ int main()
 
         sleep( 2 );
 
-        /* Regarding setting node name using Logfile Iterator and how that
-         * relates to setFilePath(), setSessionId(), and setNodeName():
-         *
-         * Example: in directory 1234, let a logfile be name.5678.plog,
-         * where 1234 = session ID, 5678 = GUID, and name = node name.
-         *
-         * To iterate over records in a logfile, use its explicit filepath.
-         *
-         * Any file specified in the path can be read from; node name is
-         * irrelevant when using explicit setFilePath().
-         *
-         * How: use any setNodeName(), and use setFilePath() in
-         * prepareLogfileToIterate().
-         */
-        aNode.setNodeName("custom-nodename"); // Read logfiles.
+        aNode.setNodeName("custom-nodename"); // Iterate over logfile's records.
 
         aNode.connectPolySync();
     }
