@@ -47,13 +47,13 @@ using namespace polysync::datamodel;
 
 void LogFileTestNode::prepareLogfileToIterate()
 {
-    sleepMicro ( 1000000 ); //always sleep before modeoff so queue doesn't flush.
+    sleepMicro ( 1000000 ); // Sleep before mode off so queue doesn't flush.
 
-    _logFile->setModeOff(); // automatically disables state.
+    _logFile->setModeOff(); // Automatically disables state.
 
     _logFile->setFilePath( "/tmp/polysync_logfile.plog"  );
 
-    cout<<"Logfile Iterator started." << endl;
+    cout << "Logfile Iterator started." << endl;
 
     _logFileWasIterated = true;
 }
@@ -65,7 +65,7 @@ void LogFileTestNode::logfileIteratorCallback(
         const ps_rnr_log_record * const logRecord,
         void * const userData )
 {
-    cout<<"\nLogfile iterator callback\n";
+    cout << "\nLogfile iterator callback\n";
 
     if( logRecord )
     {
@@ -75,9 +75,7 @@ void LogFileTestNode::logfileIteratorCallback(
            << logRecord->timestamp;
     }
 
-    cout<<endl;
-
-    // get ps_msg_ref, and do something with it.
+    cout << endl;
 }
 
 
@@ -95,35 +93,36 @@ void LogFileTestNode::printResults()
 {
     if( _logFileWasIterated )
     {
-        cout<<"\nIterator complete.\n";
+        cout << "\nIterator complete.\n";
     }
 
-    cout<<"\nReleasing logfile resources. If all messages did not print "
-          "to Terminal \nin either read, write, or iterator, that is due to "
-          "i/o (printf / cout) \nbeing slower than CPU.\n\n";
+    cout << "\nReleasing logfile resources. If all messages did not print "
+            "to Terminal \nin either read, write, or iterator, that is due to "
+            "i/o (printf / cout) \nbeing slower than CPU.\n\n";
 }
 
 
 void LogFileTestNode::initStateEvent()
 {
-// 1. Init LogFile API resources:
+    // 1. Init LogFile API resources:
     _logFile = new Logfile{ *this };
 
-// 2. Set up parameters.
+    // 2. Set up parameters.
     prepareLogfileToIterate();
 
-// 3. Iterate over Logfiles in initStateEvent(), not okStateEvent(), as
-//    Logfile iterator operates outside of the normal Replay time domain.
+    /* 3. Iterate over Logfiles in initStateEvent(), not okStateEvent(), as
+     * Logfile iterator operates outside of the normal Replay time domain.
+     */
     iterateOverLogfiles();
 
-// 4. Disconnect after Iterator is done iterating over a Logfile.
+    // 4. Disconnect after Iterator is done iterating over a Logfile.
     disconnectPolySync();
 }
 
 
 void LogFileTestNode::okStateEvent()
 {
-/**** Logfile Iterator. No code should be in in okStateEvent(). ****/
+    // When using Logfile Iterator, no code should be in in okStateEvent().
 }
 
 
@@ -131,9 +130,9 @@ void LogFileTestNode::releaseStateEvent()
 {
     printResults();
 
-// Turn off mode. Turning off the mode automatically disables state.
-// Sleep before turning mode off after last write to avoid flushing of queue.
-
+    /* Turn off mode. Turning off the mode automatically disables state.
+     * Sleep before turning mode off after last write to avoid flushing of queue.
+     */
     sleep( 5 );
 
     _logFile->setModeOff();
@@ -144,7 +143,7 @@ void LogFileTestNode::releaseStateEvent()
 
 int main()
 {
-    cout<<"\n\n************************************************\n"
+    cout << "\n\n************************************************\n"
     "*** PolySync LogFile API: C++ Iterator Example ***\n\n";
 
     try
@@ -153,17 +152,20 @@ int main()
 
         sleep( 2 );
 
-// Regarding setting node name using Logfile Iterator and how that relates to
-// setFilePath(), setSessionId(), and setNodeName():
-
-// Example: in directory 1234, let a logfile be name.5678.plog,
-// where 1234 = session ID, 5678 = GUID, and name = node name.
-
-// To iterate over records in a logfile, use its explicit filepath.
-
-// Any file specified in the path can be read from; node name is irrelevant.
-// How: use any setNodeName(), and use setFilePath() in prepareLogfileToIterate().
-
+        /* Regarding setting node name using Logfile Iterator and how that
+         * relates to setFilePath(), setSessionId(), and setNodeName():
+         *
+         * Example: in directory 1234, let a logfile be name.5678.plog,
+         * where 1234 = session ID, 5678 = GUID, and name = node name.
+         *
+         * To iterate over records in a logfile, use its explicit filepath.
+         *
+         * Any file specified in the path can be read from; node name is
+         * irrelevant when using explicit setFilePath().
+         *
+         * How: use any setNodeName(), and use setFilePath() in
+         * prepareLogfileToIterate().
+         */
         aNode.setNodeName("custom-nodename"); // Read logfiles.
 
         aNode.connectPolySync();

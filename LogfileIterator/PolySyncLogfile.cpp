@@ -487,8 +487,6 @@ void Logfile::logfileIteratorCallback(
     }
 
     cout << endl;
-
-    // get ps_msg_ref, and do something with it.
 }
 
 void Logfile::setSessionId( ps_timestamp currentTimeStamp )
