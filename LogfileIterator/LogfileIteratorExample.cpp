@@ -67,8 +67,6 @@ void LogFileTestNode::prepareLogfileToIterate()
     _logFile->setFilePath( "/tmp/polysync_logfile.plog"  );
 
     cout << "Logfile Iterator started." << endl;
-
-    _logFileWasIterated = true;
 }
 
 
@@ -103,13 +101,9 @@ void LogFileTestNode::iterateOverLogfiles()
 
 
 void LogFileTestNode::printResults()
-{
-    if( _logFileWasIterated )
-    {
-        cout << "\nIterator complete.\n";
-    }
-
-    cout << "\nReleasing logfile resources. If all messages did not print "
+{   
+    cout << "\nIterator complete.\n"
+             "\nReleasing logfile resources. If all messages did not print "
             "to Terminal \nin either read, write, or iterator, that is due to "
             "i/o (printf / cout) \nbeing slower than CPU.\n\n";
 }
@@ -146,7 +140,7 @@ void LogFileTestNode::releaseStateEvent()
     /* Turn off mode. Turning off the mode automatically disables state.
      * Sleep before turning mode off after last write to avoid flushing of queue.
      */
-    sleep( 5 );
+    sleepMicro( 5000000 );
 
     _logFile->setModeOff();
 

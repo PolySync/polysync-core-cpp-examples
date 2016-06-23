@@ -89,7 +89,14 @@ void LogFileTestNode::prepareLogfileToRead()
 
     _logFile->setSessionId( 1 );
 
-    // Option 2: Using setSessionId() instead of setFilePath():
+    /* Option 2: Using setSessionId() instead of setFilePath(): for reading
+     * via Session ID. This requires writing to, and reading from, the same
+     * node reference, and is not covered in this example. As covered in
+     * Logfile API documentation, setFilePath() invocation overrides Session
+     * ID logic; to use the following line, do not setFilePath().
+     * As covered in Logfile Queue Reader example, Session ID logic for
+     * Logfile Reader is not recommended; use cases use setFilePath() instead.
+     */
     //_logFile->setSessionId( 1234 );
 
     // 3. Enable the Replay Message Queue + get a reference to the Queue.
@@ -102,12 +109,10 @@ void LogFileTestNode::prepareLogfileToRead()
 
     _logFile->setStateEnabled( 0 );
 
-    cout<<"Logfile Replay started. Ctrl + C to stop, or wait until EOF." << endl;
+    cout << "Logfile Replay started. Ctrl + C to stop, or wait until EOF." << endl;
 
-    // 5. Set flags / counters.
+    // 5. Set counter.
     _numMessagesRead = 0;
-
-    _messagesWereRead = true;
 }
 
 
@@ -145,7 +150,7 @@ void LogFileTestNode::readDequeuedMessage()
 
         ++_numMessagesRead;
 
-        cout<<"\nReplaying message # " <<_numMessagesRead <<" in queue\n";
+        cout << "\nReplaying message # " <<_numMessagesRead <<" in queue\n";
 
         messageToPrint->printHeader();
     }
@@ -166,21 +171,18 @@ void LogFileTestNode::resumeReplay()
 
 void LogFileTestNode::printResults()
 {
-    if( _messagesWereRead )
-    {
-        cout<<"\n\nRead " << _numMessagesRead <<" total messages.\n";
+    cout << "\n\nRead " << _numMessagesRead <<" total messages.\n";
 
-        if( _logFile->readerGetEofStatus() )
-        {
-            cout<<"End of file was reached.\n";
-        }
-        else
-        {
-            cout<<"End of file was not reached.\n";
-        }
+    if( _logFile->readerGetEofStatus() )
+    {
+        cout << "End of file was reached.\n";
+    }
+    else
+    {
+        cout << "End of file was not reached.\n";
     }
 
-    cout<<"\n***  End PolySync LogFile C++ Reader Example  ***\n"
+    cout << "\n***  End PolySync LogFile C++ Reader Example  ***\n"
            "*************************************************\n"
 
           "\nReleasing logfile resources. If all messages did not print "
@@ -199,7 +201,8 @@ void LogFileTestNode::initStateEvent()
 
     if( _logFile->readerGetEofStatus() || !_replayQueue )
     {
-        cout<<"\nDisconnecting: either Replay Queue invalid, or Replay EOF. \n";
+        cout << "\nDisconnecting: either Replay Queue invalid, or Replay EOF.\n";
+
         disconnectPolySync();
     }
 
@@ -238,7 +241,7 @@ void LogFileTestNode::releaseStateEvent()
     // Turn off mode. Turning off the mode automatically disables state.
     // Sleep before turning mode off after last write to avoid flushing of queue.
 
-    sleep( 5 );
+    sleepMicro( 5000000 );
 
     _logFile->setModeOff();
 
@@ -248,7 +251,7 @@ void LogFileTestNode::releaseStateEvent()
 
 int main()
 {
-    cout<<"\n\n************************************************\n"
+    cout << "\n\n************************************************\n"
     "*** PolySync LogFile C++ API: Reader Example ***\n\n";
 
     try

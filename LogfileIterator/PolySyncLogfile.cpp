@@ -413,6 +413,7 @@ bool Logfile::readerGetEofStatus()
     {
         return true;
     }
+
     return false;
 }
 

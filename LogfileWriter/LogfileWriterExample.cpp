@@ -72,7 +72,7 @@ void LogFileTestNode::prepareLogfileToWrite()
 
     _logFile->setStateEnabled( 0 );
 
-    cout<<"Logfile Record started. Ctrl + C to stop." << endl;
+    cout << "Logfile Record started. Ctrl + C to stop." << endl;
 
     /* Note: Enable state in  *distributed system context* uses timing now
      *      + offset:
@@ -82,10 +82,8 @@ void LogFileTestNode::prepareLogfileToWrite()
      * _logFile->setStateEnabled( stateTimingOffsetDistributedContext );
      */
 
-    // 5. Set flags / counters.
+    // 5. Set counter.
     _numMessagesWritten = 0;
-
-    _messagesWereWritten = true;
 }
 
 
@@ -135,7 +133,7 @@ void LogFileTestNode::writeMessage()
 
     if( _numMessagesWritten % 20 == 0 )
     {
-       cout<<"\nLogged Message ID:" << byteArrayMessage.getDataType();
+       cout << "\nLogged Message ID:" << byteArrayMessage.getDataType();
     }
 
     // 5. Set write frequency for "real time 1x Replay" in okState w/ sleepMicro.
@@ -144,14 +142,12 @@ void LogFileTestNode::writeMessage()
 
 void LogFileTestNode::printResults()
 {
-    if( _messagesWereWritten )
-    {
-        cout<<"\n\nWrote " << _numMessagesWritten <<" total messages.\n"
+    cout << "\n\nWrote " << _numMessagesWritten <<" total messages.\n"
 
-              "\n***  End PolySync LogFile C++ Writer Example  ***\n"
-               "*************************************************\n";
-    }
-    cout<<"\nReleasing logfile resources. If all messages did not print "
+          "\n***  End PolySync LogFile C++ Writer Example  ***\n"
+          "*************************************************\n";
+
+    cout << "\nReleasing logfile resources. If all messages did not print "
           "to Terminal \nin either read, write, or iterator, that is due to "
           "i/o (printf / cout) \nbeing slower than CPU.\n\n";
 }
@@ -179,7 +175,7 @@ void LogFileTestNode::okStateEvent()
     writeMessage();
 
     // 2. Set write frequency for 1x Replay.
-    polysync::sleepMicro( 5000 );
+    sleepMicro( 5000 );
 }
 
 
@@ -191,7 +187,7 @@ void LogFileTestNode::releaseStateEvent()
      * Sleep before turning mode off after last write to avoid flushing of queue.
      *
      */
-    sleep( 5 );
+    sleepMicro( 5000000 );
 
     _logFile->setModeOff();
 
@@ -201,7 +197,7 @@ void LogFileTestNode::releaseStateEvent()
 
 int main()
 {
-    cout<<"\n\n************************************************\n"
+    cout << "\n\n************************************************\n"
     "*** PolySync LogFile C++ API: Writer Example ***\n\n";
 
     try
