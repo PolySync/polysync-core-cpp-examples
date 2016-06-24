@@ -65,8 +65,8 @@ using namespace std;
 class ParameterGetSet : public polysync::Node
 {
 private:
-    const string _node_name = "polysync-parameter-get-set-cpp";
-    const string _parameter_msg_name = "ps_parameters_msg";
+    const string _nodeName = "polysync-parameter-get-set-cpp";
+    const string _parameterMessageName = "ps_parameters_msg";
     
     ps_msg_type _messageType;
     ps_guid _destGUID;
@@ -81,7 +81,7 @@ public:
         setDomainID( PSYNC_DEFAULT_DOMAIN );
         setSDFID( PSYNC_SDF_ID_INVALID );
         setFlags( PSYNC_INIT_FLAG_STDOUT_LOGGING );
-        setNodeName( _node_name );
+        setNodeName( _nodeName );
     }
     
     ~ParameterGetSet()
@@ -105,7 +105,7 @@ public:
     void initStateEvent() override
     {
         // get parameter message type
-        _messageType = getMessageTypeByName( _parameter_msg_name );
+        _messageType = getMessageTypeByName( _parameterMessageName );
         
         // register as a listener for parameter messages that any
         // node may send
