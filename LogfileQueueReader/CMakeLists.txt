@@ -16,8 +16,6 @@ find_package( PkgConfig REQUIRED )
 
 pkg_check_modules( GLIB_PKG glib-2.0 )
 
-#include_directories(${GLIB_PKG_INCLUDE_DIRS})
-
 include_directories(
     .
     ${PSYNC_INCLUDE_DIRS}
@@ -25,7 +23,6 @@ include_directories(
     )
 
 add_executable( ${PROJECT_NAME}
-    PolySyncLogfile.cpp
     LogfileQueueReaderExample.cpp
 )
 

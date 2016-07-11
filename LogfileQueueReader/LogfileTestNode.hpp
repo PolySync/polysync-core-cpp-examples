@@ -11,21 +11,19 @@
 #include <PolySyncNode.hpp>
 #include <PolySyncDataModel.hpp>
 
-#include "PolySyncLogFile.hpp"
+#include "PolySyncLogfile.hpp"
 
-/**
- * @namespace polysync
- */
-namespace polysync
-{
-
-namespace datamodel
-{
-
-class LogFileTestNode : public polysync::Node
+class LogfileTestNode : public polysync::Node
 {
 
 public:
+
+    /**
+     * @brief LogfileTestNode Empty Constructor
+     * Initialize private variables and call polysync::Node::Node()
+     * (base class constructor)
+     */
+    LogfileTestNode();
 
     /**
      * @brief Called from initStateEvent(), this function sets up all the
@@ -137,27 +135,21 @@ protected:
 
 private:
 
-    Logfile * _logFile{ nullptr };
+    polysync::Logfile * _logFile;
 
     GAsyncQueue * _replayQueue;
-
-    LogfileAttributes _logFileAttributes;
 
     int _numMessagesWritten;
 
     int _numMessagesRead;
 
-    bool _messagesWereWritten = false;
+    bool _messagesWereWritten;
 
-    bool _messagesWereRead = false;
+    bool _messagesWereRead;
 
-    bool _logFileWasIterated = false;
+    bool _logFileWasIterated;
 
 }; // END LogFileTestNode
 
-
-} /*!< end namespace datamodel */
-
-} /*!< end namespace polysync */
 
 #endif // LOGFILETESTNODE_HPP

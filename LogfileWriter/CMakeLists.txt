@@ -16,7 +16,6 @@ include_directories(
 )
 
 add_executable( ${PROJECT_NAME}
-    PolySyncLogfile.cpp
     LogfileWriterExample.cpp
 )
 

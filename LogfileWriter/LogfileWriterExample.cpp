@@ -56,7 +56,7 @@ using namespace std;
 using namespace polysync::datamodel;
 
 
-void LogFileTestNode::prepareLogfileToWrite()
+void LogfileTestNode::prepareLogfileToWrite()
 {
     // 1. Filter out certain message types from being written to disk (optional).
     //filterOutMessages();
@@ -87,29 +87,20 @@ void LogFileTestNode::prepareLogfileToWrite()
 }
 
 
-void LogFileTestNode::filterOutMessages()
+void LogfileTestNode::filterOutMessages()
 {
-    // 1. Sleep before modeoff so queue doesn't flush.
+    // 1. Sleep before setModeOff() so queue doesn't flush.
     sleepMicro( 1000000 );
 
     _logFile->setModeOff();
 
-    // 2. get message type:
-    ps_msg_type byteArrayMessageType =
-        getMessageTypeByName("ps_byte_array_msg");
-
-    ps_msg_type readerFilterList[1] = { byteArrayMessageType };
-
-    /* 3. Filter.
-     * First 2 params: writer filters. Second 2 params: reader filters.
-     * Using this function will prevent selected message types from being
-     * written to disk.
-     */
-    _logFile->setMessageTypeFilters( readerFilterList, 1, nullptr, 0 );
+    // Disable ps_byte_array_msg for the writer.
+    _logFile->setMessageTypeFilters(
+        { getMessageTypeByName( "ps_byte_array_msg" ) }, {} );
 }
 
 
-void LogFileTestNode::writeMessage()
+void LogfileTestNode::writeMessage()
 {
     // Record: Write a single message for each okStateEvent() loop.
 
@@ -140,7 +131,7 @@ void LogFileTestNode::writeMessage()
 }
 
 
-void LogFileTestNode::printResults()
+void LogfileTestNode::printResults()
 {
     cout << "\n\nWrote " << _numMessagesWritten <<" total messages.\n"
 
@@ -153,7 +144,7 @@ void LogFileTestNode::printResults()
 }
 
 
-void LogFileTestNode::initStateEvent()
+void LogfileTestNode::initStateEvent()
 {
     // 1. Init LogFile API resources:
     _logFile = new Logfile{ *this };
@@ -165,7 +156,7 @@ void LogFileTestNode::initStateEvent()
 }
 
 
-void LogFileTestNode::okStateEvent()
+void LogfileTestNode::okStateEvent()
 {
     /* For each okStateEvent() loop, process a single write + sleep (required).
      * For larger messages such as Lidar, set a larger (higher) write frequency.
@@ -179,7 +170,7 @@ void LogFileTestNode::okStateEvent()
 }
 
 
-void LogFileTestNode::releaseStateEvent()
+void LogfileTestNode::releaseStateEvent()
 {
     printResults();
 
@@ -202,7 +193,7 @@ int main()
 
     try
     {
-        LogFileTestNode aNode;
+        LogfileTestNode aNode;
 
         sleep( 1 );
 

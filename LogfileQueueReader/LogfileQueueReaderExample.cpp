@@ -75,10 +75,21 @@
 
 using namespace std;
 
-using namespace polysync::datamodel;
+LogfileTestNode::LogfileTestNode()
+    :
+      Node(),
+    _logFile( nullptr ),
+    _replayQueue( nullptr ),
+    _numMessagesWritten( 0 ),
+    _numMessagesRead( 0 ),
+    _messagesWereWritten( false ),
+    _messagesWereRead( false ),
+    _logFileWasIterated( false )
+{
+    // empty
+}
 
-
-void LogFileTestNode::prepareLogfileToRead()
+void LogfileTestNode::prepareLogfileToRead()
 {
     // 1. filter out certain message types from being published (optional).
     //    filterOutMessages();
@@ -89,20 +100,8 @@ void LogFileTestNode::prepareLogfileToRead()
 
     _logFile->setSessionId( 1 );
 
-    /* Option 2: Using setSessionId() instead of setFilePath(): for reading
-     * via Session ID. This requires writing to, and reading from, the same
-     * node reference, and is not covered in this example. As covered in
-     * Logfile API documentation, setFilePath() invocation overrides Session
-     * ID logic; to use the following line, do not setFilePath().
-     * As covered in Logfile Queue Reader example, Session ID logic for
-     * Logfile Reader is not recommended; use cases use setFilePath() instead.
-     */
-    //_logFile->setSessionId( 1234 );
-
     // 3. Enable the Replay Message Queue + get a reference to the Queue.
-    _logFile->enableOutputQueue(1);
-
-    _replayQueue = _logFile->getReplayMessageQueue();
+    _logFile->enableOutputQueue( 1 );
 
     // 4. Begin replay. Enqueue messages onto Replay Queue if queue valid.
     _logFile->setModeRead();
@@ -116,37 +115,29 @@ void LogFileTestNode::prepareLogfileToRead()
 }
 
 
-void LogFileTestNode::filterOutMessages()
+void LogfileTestNode::filterOutMessages()
 {
-    // 1. Always sleep before modeoff so queue doesn't flush.
-    sleepMicro( 1000000 );
+    // 1. Sleep before setModeOff() so queue doesn't flush.
+    polysync::sleepMicro( 1000000 );
 
     _logFile->setModeOff();
 
-    // 2. get message type:
-    ps_msg_type byteArrayMessageType =
-        getMessageTypeByName("ps_byte_array_msg");
-
-    ps_msg_type readerFilterList[1] = { byteArrayMessageType };
-
-    /* 3. Filter.
-     * First 2 params: writer filters. Second 2 params: reader filters.
-     * Filtering here will prevent selected message types from being published;
-     *  the reader queue always receives all messages regardless of filtering.
-     */
-    _logFile->setMessageTypeFilters( nullptr, 0, readerFilterList, 1 );
+    // Disable ps_byte_array_msg for the writer.
+    _logFile->setMessageTypeFilters(
+        { getMessageTypeByName( "ps_byte_array_msg" ) }, {} );
 }
 
 
-void LogFileTestNode::readDequeuedMessage()
+void LogfileTestNode::readDequeuedMessage()
 {
     // Replay: dequeue a single message for each okStateEvent() loop:
     ps_msg_ref dequeuedMessage =
-            g_async_queue_try_pop( _replayQueue );
+            g_async_queue_try_pop( _logFile->getReplayMessageQueue() );
 
     if( dequeuedMessage != PSYNC_MSG_REF_INVALID )
     {
-        auto messageToPrint = buildMessage( *this, dequeuedMessage );
+        auto messageToPrint =
+                polysync::datamodel::buildMessage( *this, dequeuedMessage );
 
         ++_numMessagesRead;
 
@@ -157,23 +148,23 @@ void LogFileTestNode::readDequeuedMessage()
 }
 
 
-void LogFileTestNode::pauseReplay()
+void LogfileTestNode::pauseReplay()
 {
     _logFile->setStateDisabled();     // Pause Replay.
 }
 
 
-void LogFileTestNode::resumeReplay()
+void LogfileTestNode::resumeReplay()
 {
     _logFile->setStateEnabled( 0 );   // Resume Replay.
 }
 
 
-void LogFileTestNode::printResults()
+void LogfileTestNode::printResults()
 {
     cout << "\n\nRead " << _numMessagesRead <<" total messages.\n";
 
-    if( _logFile->readerGetEofStatus() )
+    if( _logFile->eofHasBeenReached() )
     {
         cout << "End of file was reached.\n";
     }
@@ -191,15 +182,15 @@ void LogFileTestNode::printResults()
 }
 
 
-void LogFileTestNode::initStateEvent()
+void LogfileTestNode::initStateEvent()
 {
     // 1. Init LogFile API resources:
-    _logFile = new Logfile{ *this };
+    _logFile = new polysync::Logfile{ *this };
 
     // 2. Set up parameters and validate before reading in okStateEvent() loop.
     prepareLogfileToRead();
 
-    if( _logFile->readerGetEofStatus() || !_replayQueue )
+    if( _logFile->eofHasBeenReached() || !_replayQueue )
     {
         cout << "\nDisconnecting: either Replay Queue invalid, or Replay EOF.\n";
 
@@ -210,19 +201,19 @@ void LogFileTestNode::initStateEvent()
 }
 
 
-void LogFileTestNode::okStateEvent()
+void LogfileTestNode::okStateEvent()
 {
-    // For each okStateEvent() loop, dequeue and read a single message.
+    // For each okStateEvent(), dequeue and read a single message.
 
     readDequeuedMessage();
 
-    if( _logFile->readerGetEofStatus() )
+    if( _logFile->eofHasBeenReached() )
     {
         disconnectPolySync();
     }
 
-    /**** Logfile Reader Control: to pause/resume Replay, toggle State.
-      Timing issues may occur; use with discretion. ****/
+    /* Logfile Reader Control: to pause/resume Replay, toggle State.
+     * Timing issues may occur; use with discretion. */
     /*
     if( _numMessagesRead == 100 ) // example
     {
@@ -234,14 +225,14 @@ void LogFileTestNode::okStateEvent()
 }
 
 
-void LogFileTestNode::releaseStateEvent()
+void LogfileTestNode::releaseStateEvent()
 {
     printResults();
 
     // Turn off mode. Turning off the mode automatically disables state.
     // Sleep before turning mode off after last write to avoid flushing of queue.
 
-    sleepMicro( 5000000 );
+    polysync::sleepMicro( 5000000 );
 
     _logFile->setModeOff();
 
@@ -256,13 +247,13 @@ int main()
 
     try
     {
-        LogFileTestNode aNode;
+        LogfileTestNode logfileReader;
 
         sleep( 1 );
 
-        aNode.setNodeName("custom-nodename"); // Read logfiles.
+        logfileReader.setNodeName( "logfile-reader" );
 
-        aNode.connectPolySync();
+        logfileReader.connectPolySync();
     }
     catch( std::exception & e )
     {

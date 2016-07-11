@@ -11,7 +11,7 @@
 #include <PolySyncNode.hpp>
 #include <PolySyncDataModel.hpp>
 
-#include "PolySyncLogFile.hpp"
+#include "PolySyncLogfile.hpp"
 
 /**
  * @namespace polysync
@@ -22,7 +22,7 @@ namespace polysync
 namespace datamodel
 {
 
-class LogFileTestNode : public polysync::Node
+class LogfileTestNode : public polysync::Node
 {
 
 public:
