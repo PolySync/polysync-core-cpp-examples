@@ -48,15 +48,26 @@
  *
  */
 
-
-#include "LogfileTestNode.hpp"          // For all CPP Logfile API examples.
+#include "LogfileWriterExample.hpp"
 
 using namespace std;
 
-using namespace polysync::datamodel;
+
+LogfileWriterNode::LogfileWriterNode()
+    :
+      Node(),
+    _logFile( nullptr ),
+    _numMessagesWritten( 0 ),
+    _numMessagesRead( 0 ),
+    _messagesWereWritten( false ),
+    _messagesWereRead( false ),
+    _logFileWasIterated( false )
+{
+    // empty
+}
 
 
-void LogfileTestNode::prepareLogfileToWrite()
+void LogfileWriterNode::prepareLogfileToWrite()
 {
     // 1. Filter out certain message types from being written to disk (optional).
     //filterOutMessages();
@@ -65,7 +76,7 @@ void LogfileTestNode::prepareLogfileToWrite()
     _logFile->setFilePath( "/tmp/polysync_logfile.plog"  );
 
     // 3. Set session ID. You can use timestamp or arbitrary name such as 1234.
-    _logFile->setSessionId( getTimestamp() );
+    _logFile->setSessionId( polysync::getTimestamp() );
 
     // 4. Begin Replay: Enable state in single node context.
     _logFile->setModeWrite();
@@ -87,25 +98,12 @@ void LogfileTestNode::prepareLogfileToWrite()
 }
 
 
-void LogfileTestNode::filterOutMessages()
-{
-    // 1. Sleep before setModeOff() so queue doesn't flush.
-    sleepMicro( 1000000 );
-
-    _logFile->setModeOff();
-
-    // Disable ps_byte_array_msg for the writer.
-    _logFile->setMessageTypeFilters(
-        { getMessageTypeByName( "ps_byte_array_msg" ) }, {} );
-}
-
-
-void LogfileTestNode::writeMessage()
+void LogfileWriterNode::writeMessage()
 {
     // Record: Write a single message for each okStateEvent() loop.
 
     // 1. Allocate message / fill out its parameters.
-    ByteArrayMessage byteArrayMessage { *this };
+    polysync::datamodel::ByteArrayMessage byteArrayMessage { *this };
 
     byteArrayMessage.setBytes( { 'P','o','l','y','S','y','n','c' } );
 
@@ -117,7 +115,7 @@ void LogfileTestNode::writeMessage()
     byteArrayMessage.setDataType( _numMessagesWritten );
 
     // 3. Each message written receives a unique timestamp (Replay time slicing).
-    byteArrayMessage.setHeaderTimestamp( getTimestamp() );
+    byteArrayMessage.setHeaderTimestamp( polysync::getTimestamp() );
 
     // 4. Write a message. Tell user how many messages have been written so far.
     _logFile->writeMessage( byteArrayMessage );
@@ -131,7 +129,7 @@ void LogfileTestNode::writeMessage()
 }
 
 
-void LogfileTestNode::printResults()
+void LogfileWriterNode::printResults()
 {
     cout << "\n\nWrote " << _numMessagesWritten <<" total messages.\n"
 
@@ -144,10 +142,10 @@ void LogfileTestNode::printResults()
 }
 
 
-void LogfileTestNode::initStateEvent()
+void LogfileWriterNode::initStateEvent()
 {
     // 1. Init LogFile API resources:
-    _logFile = new Logfile{ *this };
+    _logFile = new polysync::Logfile{ *this };
 
     // 2. Set up parameters before writing in okStateEvent() loop.
     prepareLogfileToWrite();
@@ -156,7 +154,7 @@ void LogfileTestNode::initStateEvent()
 }
 
 
-void LogfileTestNode::okStateEvent()
+void LogfileWriterNode::okStateEvent()
 {
     /* For each okStateEvent() loop, process a single write + sleep (required).
      * For larger messages such as Lidar, set a larger (higher) write frequency.
@@ -166,11 +164,11 @@ void LogfileTestNode::okStateEvent()
     writeMessage();
 
     // 2. Set write frequency for 1x Replay.
-    sleepMicro( 5000 );
+    polysync::sleepMicro( 5000 );
 }
 
 
-void LogfileTestNode::releaseStateEvent()
+void LogfileWriterNode::releaseStateEvent()
 {
     printResults();
 
@@ -178,7 +176,7 @@ void LogfileTestNode::releaseStateEvent()
      * Sleep before turning mode off after last write to avoid flushing of queue.
      *
      */
-    sleepMicro( 5000000 );
+    polysync::sleepMicro( 5000000 );
 
     _logFile->setModeOff();
 
@@ -193,13 +191,13 @@ int main()
 
     try
     {
-        LogfileTestNode aNode;
+        LogfileWriterNode logfileWriter;
 
         sleep( 1 );
 
-        aNode.setNodeName("custom-nodename");
+        logfileWriter.setNodeName( "logfile-writer" );
 
-        aNode.connectPolySync();
+        logfileWriter.connectPolySync();
     }
     catch( std::exception & e )
     {

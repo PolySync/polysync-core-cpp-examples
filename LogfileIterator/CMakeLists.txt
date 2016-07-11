@@ -17,8 +17,8 @@ include_directories(
 )
 
 add_executable( ${PROJECT_NAME}
-    PolySyncLogfile.cpp
     LogfileIteratorExample.cpp
+    ExampleLogfile.hpp
 )
 
 target_link_libraries( ${PROJECT_NAME}

@@ -51,16 +51,28 @@
  */
 
 
-#include "LogfileTestNode.hpp"             // For all CPP Logfile API examples.
+#include "LogfileIteratorExample.hpp"
 
 using namespace std;
 
-using namespace polysync::datamodel;
 
-
-void LogFileTestNode::prepareLogfileToIterate()
+LogfileIteratorNode::LogfileIteratorNode()
+    :
+      Node(),
+    _logFile( nullptr ),
+    _numMessagesWritten( 0 ),
+    _numMessagesRead( 0 ),
+    _messagesWereWritten( false ),
+    _messagesWereRead( false ),
+    _logFileWasIterated( false )
 {
-    sleepMicro ( 1000000 ); // Sleep before mode off so queue doesn't flush.
+    // empty
+}
+
+
+void LogfileIteratorNode::prepareLogfileToIterate()
+{
+    polysync::sleepMicro ( 1000000 ); // Sleep before mode off so queue doesn't flush.
 
     _logFile->setModeOff(); // Automatically disables state.
 
@@ -70,37 +82,7 @@ void LogFileTestNode::prepareLogfileToIterate()
 }
 
 
-void LogFileTestNode::logfileIteratorCallback(
-        const ps_logfile_attributes * const fileAttributes,
-        const ps_msg_type msg_type,
-        const ps_rnr_log_record * const logRecord,
-        void * const userData )
-{
-    cout << "\nLogfile iterator callback\n";
-
-    if( logRecord )
-    {
-        cout<<"Log Record: Index: " << logRecord->index <<" - Size: "
-           << logRecord->size <<" - Previous Size: "
-           << logRecord->prev_size <<" - RnR Timestamp ( \nheader.timestamp):"
-           << logRecord->timestamp;
-    }
-
-    cout << endl;
-}
-
-
-
-void LogFileTestNode::iterateOverLogfiles()
-{
-    _logFile->forEachIterator(
-                _logFile->getFilePath().c_str(),
-                &logfileIteratorCallback,
-                nullptr );
-}
-
-
-void LogFileTestNode::printResults()
+void LogfileIteratorNode::printResults()
 {   
     cout << "\nIterator complete.\n"
              "\nReleasing logfile resources. If all messages did not print "
@@ -109,10 +91,10 @@ void LogFileTestNode::printResults()
 }
 
 
-void LogFileTestNode::initStateEvent()
+void LogfileIteratorNode::initStateEvent()
 {
     // 1. Init LogFile API resources:
-    _logFile = new Logfile{ *this };
+    _logFile = new ExampleLogfile{ *this };
 
     // 2. Set up parameters.
     prepareLogfileToIterate();
@@ -120,27 +102,21 @@ void LogFileTestNode::initStateEvent()
     /* 3. Iterate over Logfiles in initStateEvent(), not okStateEvent(), as
      * Logfile iterator operates outside of the normal Replay time domain.
      */
-    iterateOverLogfiles();
+    _logFile->readLogfile( _logFile->getFilePath() );
 
     // 4. Disconnect after Iterator is done iterating over a Logfile.
     disconnectPolySync();
 }
 
 
-void LogFileTestNode::okStateEvent()
-{
-    // When using Logfile Iterator, no code should be in in okStateEvent().
-}
-
-
-void LogFileTestNode::releaseStateEvent()
+void LogfileIteratorNode::releaseStateEvent()
 {
     printResults();
 
     /* Turn off mode. Turning off the mode automatically disables state.
      * Sleep before turning mode off after last write to avoid flushing of queue.
      */
-    sleepMicro( 5000000 );
+    polysync::sleepMicro( 5000000 );
 
     _logFile->setModeOff();
 
@@ -155,13 +131,13 @@ int main()
 
     try
     {
-        LogFileTestNode aNode;
+        LogfileIteratorNode logfileIteratorNode;
 
         sleep( 2 );
 
-        aNode.setNodeName("custom-nodename"); // Iterate over logfile's records.
+        logfileIteratorNode.setNodeName( "logfile-iterator" );
 
-        aNode.connectPolySync();
+        logfileIteratorNode.connectPolySync();
     }
     catch( std::exception & e )
     {

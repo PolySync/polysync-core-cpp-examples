@@ -70,12 +70,11 @@
  *
  */
 
-
-#include "LogfileTestNode.hpp"          // For all CPP Logfile API examples.
+#include "LogfileQueueReaderExample.hpp"
 
 using namespace std;
 
-LogfileTestNode::LogfileTestNode()
+LogfileQueueReaderNode::LogfileQueueReaderNode()
     :
       Node(),
     _logFile( nullptr ),
@@ -89,7 +88,7 @@ LogfileTestNode::LogfileTestNode()
     // empty
 }
 
-void LogfileTestNode::prepareLogfileToRead()
+void LogfileQueueReaderNode::prepareLogfileToRead()
 {
     // 1. filter out certain message types from being published (optional).
     //    filterOutMessages();
@@ -115,7 +114,7 @@ void LogfileTestNode::prepareLogfileToRead()
 }
 
 
-void LogfileTestNode::filterOutMessages()
+void LogfileQueueReaderNode::filterOutMessages()
 {
     // 1. Sleep before setModeOff() so queue doesn't flush.
     polysync::sleepMicro( 1000000 );
@@ -128,7 +127,7 @@ void LogfileTestNode::filterOutMessages()
 }
 
 
-void LogfileTestNode::readDequeuedMessage()
+void LogfileQueueReaderNode::readDequeuedMessage()
 {
     // Replay: dequeue a single message for each okStateEvent() loop:
     ps_msg_ref dequeuedMessage =
@@ -148,19 +147,19 @@ void LogfileTestNode::readDequeuedMessage()
 }
 
 
-void LogfileTestNode::pauseReplay()
+void LogfileQueueReaderNode::pauseReplay()
 {
-    _logFile->setStateDisabled();     // Pause Replay.
+    _logFile->setStateDisabled();
 }
 
 
-void LogfileTestNode::resumeReplay()
+void LogfileQueueReaderNode::resumeReplay()
 {
-    _logFile->setStateEnabled( 0 );   // Resume Replay.
+    _logFile->setStateEnabled( 0 );
 }
 
 
-void LogfileTestNode::printResults()
+void LogfileQueueReaderNode::printResults()
 {
     cout << "\n\nRead " << _numMessagesRead <<" total messages.\n";
 
@@ -182,7 +181,7 @@ void LogfileTestNode::printResults()
 }
 
 
-void LogfileTestNode::initStateEvent()
+void LogfileQueueReaderNode::initStateEvent()
 {
     // 1. Init LogFile API resources:
     _logFile = new polysync::Logfile{ *this };
@@ -201,7 +200,7 @@ void LogfileTestNode::initStateEvent()
 }
 
 
-void LogfileTestNode::okStateEvent()
+void LogfileQueueReaderNode::okStateEvent()
 {
     // For each okStateEvent(), dequeue and read a single message.
 
@@ -225,7 +224,7 @@ void LogfileTestNode::okStateEvent()
 }
 
 
-void LogfileTestNode::releaseStateEvent()
+void LogfileQueueReaderNode::releaseStateEvent()
 {
     printResults();
 
@@ -247,11 +246,11 @@ int main()
 
     try
     {
-        LogfileTestNode logfileReader;
+        LogfileQueueReaderNode logfileReader;
 
         sleep( 1 );
 
-        logfileReader.setNodeName( "logfile-reader" );
+        logfileReader.setNodeName( "logfile-queue-reader" );
 
         logfileReader.connectPolySync();
     }

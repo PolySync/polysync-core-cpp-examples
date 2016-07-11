@@ -5,27 +5,26 @@
  * PUBLIC_HEADER
  */
 
-#ifndef LOGFILETESTNODE_HPP
-#define LOGFILETESTNODE_HPP
+#ifndef LOGFILEITERATORNODE_HPP
+#define LOGFILEITERATORNODE_HPP
 
 #include <PolySyncNode.hpp>
 #include <PolySyncDataModel.hpp>
+#include <PolySyncLogfile.hpp>
 
-#include "PolySyncLogfile.hpp"
+#include "ExampleLogfile.hpp"
 
-/**
- * @namespace polysync
- */
-namespace polysync
-{
-
-namespace datamodel
-{
-
-class LogfileTestNode : public polysync::Node
+class LogfileIteratorNode : public polysync::Node
 {
 
 public:
+
+    /**
+     * @brief LogfileTestNode Empty Constructor
+     * Initialize private variables and call polysync::Node::Node()
+     * (base class constructor)
+     */
+    LogfileIteratorNode();
 
     /**
      * @brief Called from initStateEvent(), this function sets up all the
@@ -87,37 +86,6 @@ public:
     void readDequeuedMessage();
 
     /**
-     * @brief logFileIteratorCallback
-     * @param file_attributes
-     * @param msg_type
-     * @param log_record
-     * @param user_data
-     */
-    static void logfileIteratorCallback(
-                const ps_logfile_attributes * const file_attributes,
-                const ps_msg_type msg_type,
-                const ps_rnr_log_record * const log_record,
-                void * const user_data );
-
-    /**
-     * @brief Iterates over each record in a Logfile, and does so outside of
-     * the normal PolySync Replay time domain.
-     * Hence, Mode should be set to OFF and State should be disabled prior to
-     * invocation (in prepareLogfileToIterate() ).
-     */
-    void iterateOverLogfiles();
-
-    /**
-     * @brief Pauses Replay by toggling State to Disabled and sleeping.
-     */
-    void pauseReplay();
-
-    /**
-     * @brief Resumes Replay by toggling State to Enabled.
-     */
-    void resumeReplay();
-
-    /**
      * @brief Prints results: if _messagesWereWritten, _numMessagesWritten.
      * If _messagesWereRead, _numMessagesRead.
      * If _logFileWasIterated, iterator completed.
@@ -129,35 +97,24 @@ protected:
     // allocate Logfile in initstate
     void initStateEvent() override;
 
-    // create message and write to file, disconnect.
-    void okStateEvent() override;
-
     // called once upon disconnect. Validate here with mode.
     void releaseStateEvent() override;
 
 private:
 
-    Logfile * _logFile{ nullptr };
-
-    GAsyncQueue * _replayQueue;
-
-    LogfileAttributes _logFileAttributes;
+    ExampleLogfile * _logFile;
 
     int _numMessagesWritten;
 
     int _numMessagesRead;
 
-    bool _messagesWereWritten = false;
+    bool _messagesWereWritten;
 
-    bool _messagesWereRead = false;
+    bool _messagesWereRead;
 
-    bool _logFileWasIterated = false;
+    bool _logFileWasIterated;
 
 }; // END LogFileTestNode
 
 
-} /*!< end namespace datamodel */
-
-} /*!< end namespace polysync */
-
-#endif // LOGFILETESTNODE_HPP
+#endif // LOGFILEITERATORNODE_HPP

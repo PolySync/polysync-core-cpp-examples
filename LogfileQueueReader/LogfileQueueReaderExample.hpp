@@ -5,27 +5,24 @@
  * PUBLIC_HEADER
  */
 
-#ifndef LOGFILETESTNODE_HPP
-#define LOGFILETESTNODE_HPP
+#ifndef LOGFILEQUEUEREADERNODE_HPP
+#define LOGFILEQUEUEREADERNODE_HPP
 
 #include <PolySyncNode.hpp>
 #include <PolySyncDataModel.hpp>
+#include <PolySyncLogfile.hpp>
 
-#include "PolySyncLogFile.hpp"
-
-/**
- * @namespace polysync
- */
-namespace polysync
-{
-
-namespace datamodel
-{
-
-class LogFileTestNode : public polysync::Node
+class LogfileQueueReaderNode : public polysync::Node
 {
 
 public:
+
+    /**
+     * @brief LogfileTestNode Empty Constructor
+     * Initialize private variables and call polysync::Node::Node()
+     * (base class constructor)
+     */
+    LogfileQueueReaderNode();
 
     /**
      * @brief Called from initStateEvent(), this function sets up all the
@@ -137,27 +134,21 @@ protected:
 
 private:
 
-    Logfile * _logFile{ nullptr };
+    polysync::Logfile * _logFile;
 
     GAsyncQueue * _replayQueue;
-
-    LogfileAttributes _logFileAttributes;
 
     int _numMessagesWritten;
 
     int _numMessagesRead;
 
-    bool _messagesWereWritten = false;
+    bool _messagesWereWritten;
 
-    bool _messagesWereRead = false;
+    bool _messagesWereRead;
 
-    bool _logFileWasIterated = false;
+    bool _logFileWasIterated;
 
 }; // END LogFileTestNode
 
 
-} /*!< end namespace datamodel */
-
-} /*!< end namespace polysync */
-
-#endif // LOGFILETESTNODE_HPP
+#endif // LOGFILEQUEUEREADERNODE_HPP
