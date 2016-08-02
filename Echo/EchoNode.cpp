@@ -130,7 +130,7 @@ std::vector< std::string > PolySyncEcho::getAvailableMessageNames()
 {
     std::vector< std::string > messageNames;
 
-    for( auto index = 1;
+    for( auto index = 1U;
          index < getAvailableMessageCount() + 1;
          ++index )
     {

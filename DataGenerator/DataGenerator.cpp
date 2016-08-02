@@ -105,10 +105,8 @@ private:
  * Entry point for the publisher side of this tutorial application
  * The "connectPolySync" is a blocking call, users must use Ctrl-C to exit
  * this function.
- * @param argc Argument count from command line.
- * @param argv String buffer with command line arguments.
  */
-int main(int argc, char *argv[])
+int main()
 {
     DataGenerator dataGenerator;
 

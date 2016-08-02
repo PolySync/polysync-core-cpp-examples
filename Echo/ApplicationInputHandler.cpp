@@ -12,7 +12,7 @@ namespace polysync
 
 int ApplicationInputHandler::getFlagIndex( const char optret )
 {
-    for( auto index = 0; index < _optionInputFlags.size(); ++index )
+    for( auto index = 0U; index < _optionInputFlags.size(); ++index )
     {
         if( _optionInputFlags[ index ] == optret )
         {

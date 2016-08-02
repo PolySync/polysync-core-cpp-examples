@@ -103,7 +103,8 @@ public:
         vector< uchar > receiveBuffer;
         ps_timestamp timestamp;
 
-        ulong bytesRead = mySocket.receive( receiveBuffer, timestamp );
+        // Returns number of bytes received.
+        mySocket.receive( receiveBuffer, timestamp );
 
         // Up to the user on what to do with the data here.
         // Options include: print it, consume it, publish it, transform it...
@@ -127,12 +128,9 @@ public:
  *
  * The "connectPolySync" function begins the node's PolySync execution loop.
  *
- * @param argc - int, the number of parameters on the command-line
- * @param argv - char* [], the parsed command-line arguments
- * 
  * @return int - exit code
  */
-int main(int argc, char *argv[])
+int main()
 {
     // Create an instance of the SocketReaderNode and connect it to PolySync
     SocketReaderNode socketReaderNode;

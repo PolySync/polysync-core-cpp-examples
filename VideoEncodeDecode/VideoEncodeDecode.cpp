@@ -37,7 +37,7 @@
 
 using namespace std;
 
-int main( int argc, char *argv[] )
+int main()
 {
     // Set the desired format for video device.
     polysync::VideoFormat deviceFormat{

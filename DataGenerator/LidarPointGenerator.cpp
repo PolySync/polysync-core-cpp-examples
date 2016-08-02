@@ -76,7 +76,7 @@ void LidarPointGenerator::updatePoints()
     std::vector< LidarPoint > outputPoints;
     outputPoints.reserve( _numberOfPoints );
 
-    for( auto pointNum = 0; pointNum < _numberOfPoints; ++pointNum )
+    for( auto pointNum = 0U; pointNum < _numberOfPoints; ++pointNum )
     {
         polysync::datamodel::LidarPoint point;
         point.setIntensity( 255 );

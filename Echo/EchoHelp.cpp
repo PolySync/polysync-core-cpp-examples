@@ -79,7 +79,7 @@ void EchoHelp::printHelp(const std::vector< std::string > & helpFlags ,
 
     cout << "Usage: \n $polysync-echo [options] \n\n";
 
-    for( auto index = 0; index < getHelpFlags().size(); ++index )
+    for( auto index = 0U; index < getHelpFlags().size(); ++index )
     {
         cout  << helpFlags[ index ] <<endl;
         cout  << helpDescriptions[ index ] <<endl <<endl;

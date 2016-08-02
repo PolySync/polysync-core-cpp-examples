@@ -90,8 +90,8 @@ protected:
     {
         try
         {
-            // Read data from the device, we're not using the buffer, here.
-            auto CANFrame = _channel.read();
+            // Read data from the device.
+            auto canBuffer = _channel.read();
 
             // Output CAN frame data.
             std::cout << "CAN frame - ID: 0x"
@@ -99,6 +99,17 @@ protected:
 
             std::cout << "DLC: "
                       << _channel.getInputFramePayloadSize() << std::endl;
+
+            // Set output format to be hexadecimal.
+            std::cout << "Buffer: " << std::hex << std::endl;
+
+            for( auto byte : canBuffer )
+            {
+                std::cout << static_cast<int>( byte ) << std::endl;
+            }
+
+            // Reset output format to be decimal.
+            std::cout << std::dec << std::endl;
         }
         catch( polysync::DTCException & exception )
         {

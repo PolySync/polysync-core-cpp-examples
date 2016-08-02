@@ -72,12 +72,9 @@ class HelloWorldNode : public polysync::Node
  * Entry point for this tutorial application
  * The "connectPolySync" function begins the node's PolySync execution loop.
  *
- * @param argc - int, the number of parameters on the command-line
- * @param argv - char* [], the parsed command-line arguments
- * 
  * @return int - exit code
  */
-int main(int argc, char *argv[])
+int main()
 {
     // Create an instance of the HelloWorldNode and connect it to PolySync
     HelloWorldNode helloNode;

@@ -99,7 +99,8 @@ public:
         vector< uchar > sendBuffer
         { 'S', 'o', 'c', 'k', 'e', 't', ' ', 'W', 'r', 'i', 't', 'e', 'r' };
 
-        auto bytesSent = mySocket.send( sendBuffer );
+        // returns number of bytes sent
+        mySocket.send( sendBuffer );
     }
 
     /**
@@ -120,12 +121,9 @@ public:
  *
  * The "connectPolySync" function begins the node's PolySync execution loop.
  *
- * @param argc - int, the number of parameters on the command-line
- * @param argv - char* [], the parsed command-line arguments
- *
  * @return int - exit code
  */
-int main(int argc, char *argv[])
+int main()
 {
     // Create an instance of the SocketWriterNode and connect it to PolySync
     SocketWriterNode socketWriterNode;

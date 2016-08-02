@@ -87,12 +87,9 @@ class HelloWorldPublisherNode : public polysync::Node
  * The "connectToPolySync" is a blocking call, users must use Ctrl-C to exit
  * this function.
  *
- * @param argc - int, the number of parameters on the command-line
- * @param argv - char* [], the parsed command-line arguments
- * 
  * @return int - exit code
  */
-int main( int argc, char *argv[] )
+int main()
 {
     // Create an instance of the HelloWorldPublisherNode and connect it to PolySync
     HelloWorldPublisherNode publisherNode;
