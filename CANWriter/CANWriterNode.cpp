@@ -45,7 +45,9 @@
 
 class CANWriterNode : public polysync::Node
 {
+
 public:
+
     /**
      * @brief CANReaderNode constructor
      * Open @ref _channel
@@ -55,20 +57,22 @@ public:
         _flags( PSYNC_CAN_OPEN_ALLOW_VIRTUAL ),
         _bitRate( DATARATE_500K ),
         _channel( channelID, _flags )
-    {}
+    {
+        // empty
+    }
 
+    virtual ~CANWriterNode() = default;
 
 protected:
 
     /**
-     * @brief initStateEvent
-     *
      * This function is triggered once when the node has initialized in the
      * PolySync context.
      */
     virtual void initStateEvent()
     {
         std::cout << "CANWriterNode::initStateEvent()" << std::endl;
+
         try
         {
            _channel.setBitRate( _bitRate );
@@ -80,13 +84,12 @@ protected:
             // If interaction with the channel fails, print why and trigger
             // errorStateEvent
             std::cout << exception.what() << std::endl;
+
             activateFault( exception.getDtc(), NODE_STATE_ERROR );
         }
     }
 
     /**
-     * @brief okStateEvent
-     *
      * Called repeatedly while node is in an operational state. For this
      * example, 1 byte is written to the CAN channel passed in.
      */
@@ -95,6 +98,7 @@ protected:
         try
         {
            _channel.setOutputFrameId( 0x456 );
+
            _channel.setOutputFramePayloadSize( 1 );
 
             std::cout << "Writing CAN frame - ID: "
@@ -104,6 +108,7 @@ protected:
                       << std::endl;
 
             std::array< uchar, 8 > outputData{ 0 };
+
             outputData[ 0 ] = 0xFF;
 
             _channel.write( outputData );
@@ -130,13 +135,18 @@ protected:
     virtual void errorStateEvent()
     {
         std::cout << "CANWriterNode::errorStateEvent()" << std::endl;
+
         disconnectPolySync();
     }
 
 private:
+
     uint _flags;
+
     ps_datarate_kind _bitRate;
+
     polysync::CANChannel _channel;
+
 };
 
 /**
@@ -164,6 +174,7 @@ int main( int argc, char *argv[] )
         {
             std::cout << "Invalid argument, example expects an integer "
                          "representing a CAN channel." << std::endl;
+
             return 1;
         }
 
@@ -172,11 +183,13 @@ int main( int argc, char *argv[] )
             CANWriterNode canWriter( channel );
 
             canWriter.setNodeName( "polysync-can-writer-cpp" );
+
             canWriter.connectPolySync();
         }
         catch( polysync::DTCException & exception )
         {
             std::cout << exception.what() << std::endl;
+
             std::cout << "Make sure a CAN device is connected to your machine."
                       << std::endl;
 
