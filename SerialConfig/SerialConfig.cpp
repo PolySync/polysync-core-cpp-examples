@@ -117,7 +117,7 @@ public:
         
         for ( unsigned int i = 0; i < readBuffer.size(); i++ )
         {
-            command.push_back( (char)readBuffer[i] );
+            command.push_back( static_cast<char>( readBuffer[i] ) );
         }
         
         if ( command == "quit" )
