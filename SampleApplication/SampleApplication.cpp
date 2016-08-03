@@ -271,12 +271,9 @@ public:
  * The "connectPolySync" is a blocking call and does not return.  Use Ctrl-C to
  * exit.
  *
- * @param argc - int, the number of parameters on the command-line
- * @param argv - char* [], the parsed command-line arguments
- * 
  * @return int - exit code
  */
-int main( int argc, char *argv[] )
+int main()
 {
     SampleApplicationNode sampleAppNode;
 

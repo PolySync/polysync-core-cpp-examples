@@ -110,13 +110,14 @@ public:
         vector< uchar > readBuffer;
         ps_timestamp ts;
 
-        ulong bytesRead = myDevice.read( readBuffer, ts );
+        // Returns the number of bytes read.
+        myDevice.read( readBuffer, ts );
 
         string command;
         
-        for ( int i = 0; i < readBuffer.size(); i++ )
+        for ( unsigned int i = 0; i < readBuffer.size(); i++ )
         {
-            command.push_back( (char)readBuffer[i] );
+            command.push_back( static_cast<char>( readBuffer[i] ) );
         }
         
         if ( command == "quit" )
@@ -158,12 +159,9 @@ public:
  *
  * The "connectPolySync" function begins the node's PolySync execution loop.
  *
- * @param argc - int, the number of parameters on the command-line
- * @param argv - char* [], the parsed command-line arguments
- * 
  * @return int - exit code
  */
-int main(int argc, char *argv[])
+int main()
 {
     
     try
