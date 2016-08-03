@@ -40,7 +40,7 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 
     while ( ( optionArgumentIndex = getopt( argc, argv, "t:o:f:hH") ) != -1 )
     {
-        optionIndex = getFlagIndex( (const char) optionArgumentIndex );
+        optionIndex = getFlagIndex( static_cast<const char>( optionArgumentIndex ) );
 
         if( optionIndex == -1 )
         {
