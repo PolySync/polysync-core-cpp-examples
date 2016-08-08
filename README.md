@@ -10,7 +10,7 @@ Here you can find examples that demonstrate how to use PolySync's APIs.
 - [Publish & Subscribe](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/PublishSubscribe) - Use publish/subscribe routines.
 - [Coordinate Transformation (single)](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/SingleTransform) - Use the Transform API to create transform coordinate frames.
 - [Coordinate Transformation (stack)](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/TransformStack) - Use the Transform API to transform coordinate frames using a stack.
-- [Sample Application](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/SampleApplication) - Creeate an application node.
+- [Sample Application](https://github.com/PolySync/PolySync-CPP-Examples/tree/master/SampleApplication) - Create an application node.
 
 ## Message APIs
 
