@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 HARBRICK TECHNOLOGIES, INC
+ * Copyright (c) 2016 PolySync
  *
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
