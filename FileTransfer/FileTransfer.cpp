@@ -31,6 +31,11 @@
  * Demonstrates how to use the PolySync file transfer API to initiate and
  * support file transfer operations.
  *
+ * The need to transfer files across the PolySync domain arises rarely.
+ * Most data should be transmitted via traditional PolySync message types.
+ * Occasionally however, file transfer is useful for high level tasks
+ * such as system administration or file management.
+ *
  */
 
 #include <iostream>
@@ -43,6 +48,14 @@ using namespace std;
 using namespace polysync;
 using namespace datamodel;
 
+/**
+ * @brief TransferExample class
+ *
+ * The TransferExample class enumerates 'polysync-manager' nodes
+ * by publishing a PSYNC_COMMAND_GET_MANAGER_STATUS CommandMessage.
+ * For each ManagerStatusMessage response, the TransferExample then
+ * initiates a file transfer of EULA.txt from that 'polysync-manager'.
+ */
 class TransferExample : public DataSubscriber
 {
 
@@ -50,11 +63,15 @@ public:
 
     TransferExample()
     {
+        // Subscribe to ApplicationEventMessage to determine when
+        // the application connects to the PolySync bus.
         connectSubscriberMethod< TransferExample >(
                 ApplicationEventMessage::getName(),
                 &TransferExample::handleEvent,
                 this );
 
+        // Subscribe to ManagerStatusMessage to initiate file transfers
+        // from responding polysync-manager nodes.
         connectSubscriberMethod< TransferExample >(
                 ManagerStatusMessage::getName(),
                 &TransferExample::handleManagerStatus,
@@ -71,6 +88,8 @@ private:
     {
         if( auto event = getSubclass< ApplicationEventMessage >( message ) )
         {
+            // If the application has connected to the PolySync bus then
+            // publish a PSYNC_COMMAND_GET_MANAGER_STATUS CommandMessage.
             if( event->getEventKind() == EventKind::Init )
             {
                 CommandMessage managerStatusCommand{ *_application };
@@ -80,6 +99,8 @@ private:
                 auto managerStatusMessageType = _application->getMessageTypeByName(
                         ManagerStatusMessage::getName() );
 
+                // Set the subscription quality of service to reliable
+                // to prevent missing any responses from polysync-manager nodes.
                 _application->setSubscriberReliabilityQos(
                         managerStatusMessageType,
                         RELIABILITY_QOS_RELIABLE );
@@ -93,17 +114,30 @@ private:
     {
         if( auto managerStatus = getSubclass< ManagerStatusMessage >( message ) )
         {
+            // Build the string path of the source file to be transferred.
+            // e.g. "/usr/local/polysync/doc/EULA.txt"
             string sourceFile{ getenv( "PSYNC_HOME" ) };
 
-            sourceFile += _eulaPath;
+            sourceFile += "/doc/EULA.txt";
 
+            // Build the destination path for the transferred file.
+            // e.g. "{Current Directory}/copy_of_license_from_{GUID}.txt"
+            string destinationFile{
+                "copy_of_license_from_" +
+                to_string( managerStatus->getSourceGuid() )+
+                ".txt"
+            };
+
+            // Set the options of the file transfer operation using the
+            // above paths, polysync-manager's GUID, and the local node's GUID.
             FileTransferOptions transferOptions {
                 managerStatus->getSourceGuid(),
                 sourceFile,
                 _application->getGuid(),
-                _destinationPath
+                destinationFile
             };
 
+            // Subscribe to progress updates from the file transfer.
             auto transferSubscription =
                     make_shared< FileTransferSubscription >( transferOptions );
 
@@ -121,18 +155,22 @@ private:
             const FileTransferState & state,
             const FileTransferOptions & options )
     {
-        notUsed( options );
-
-        if( state.getCurrentChunkId() == state.getTotalChunks() )
+        // Check if the file transfer has encountered an error.
+        if( state.getDtc() != DTC_NONE )
+        {
+            cout << "File transfer has encountered an error" <<
+                    options << endl;
+        }
+        // If the final file chunk has arrived, then file transfer is complete.
+        else if( state.getCurrentChunkId() == state.getTotalChunks() )
         {
             _application->disconnectPolySync();
         }
     }
 
-    static constexpr auto _eulaPath = "/doc/EULA.txt";
-
-    static constexpr auto _destinationPath = "copy_of_license.txt";
-
+    // The FileTransferHandler class is required to participate in any
+    // PolySync file transfer operations. It is used to start, abort,
+    // and subscribe to file transfer operations.
     FileTransferHandler _transferHandler;
 
     Application * _application;
@@ -144,5 +182,9 @@ int main()
 {
     TransferExample transferExample;
 
-    Application::getInstance()->connectPolySync();
+    auto application = Application::getInstance();
+
+    application->setNodeName( "polysync-file-transfer-cpp" );
+
+    application->connectPolySync();
 }
