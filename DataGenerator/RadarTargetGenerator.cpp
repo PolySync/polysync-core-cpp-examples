@@ -43,8 +43,11 @@ void RadarTargetGenerator::initializeMessage()
     polysync::datamodel::SensorDescriptor descriptor;
 
     descriptor.setId( _sensorID );
+
     descriptor.setTransformParentId( PSYNC_COORDINATE_FRAME_LOCAL );
+
     descriptor.setType( PSYNC_SENSOR_KIND_NOT_AVAILABLE );
+
     _message.setSensorDescriptor( descriptor );
 
     _message.setHeaderTimestamp( polysync::getTimestamp() );
@@ -108,19 +111,31 @@ void RadarTargetGenerator::resetTargets()
                           PSYNC_SIZE_NOT_AVAILABLE } );
 
         target.setRangeType( RANGE_NOT_AVAILABLE );
+
         target.setZoneType( ZONE_NOT_AVAILABLE );
+
         target.setQuality( QUALITY_NOT_AVAILABLE );
+
         target.setMagnitude( PSYNC_MAGNITUDE_NOT_AVAILABLE );
+
         target.setAlias( PSYNC_VELOCITY_ALIAS_NOT_AVAILABLE );
+
         target.setCrossSection( PSYNC_RADAR_CROSS_SECTION_NOT_AVAILABLE );
+
         target.setScanIndex( 0 );
+
         target.setId( index + 1 );
+
         target.setTrackStatus( TRACK_STATUS_ACTIVE );
+
         target.setTimestamp( polysync::getTimestamp() );
+
         target.setAmplitude( _amplitude );
+
         target.setPosition( { ( index + 2 ) * 2.0,
                               ( index + 2 ) * 4.0,
                               0.5 } );
+
         target.setVelocity( { _velocityX, _velocityY, 0.0 } );
 
         _targetVector.emplace_back( target );
@@ -132,5 +147,6 @@ void RadarTargetGenerator::resetTargets()
 void RadarTargetGenerator::publishTargets()
 {
     _message.setHeaderTimestamp( polysync::getTimestamp() );
+
     _message.publish();
 }
