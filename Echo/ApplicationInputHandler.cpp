@@ -9,12 +9,13 @@ ApplicationInputHandler::ApplicationInputHandler()
     :
     _userFileName( {} ),
     _activeMessagesFlag( false ),
+    _ignoreSelfFlag( false ),
     _filteredForMessagesFlag( false ),
     _echoMessageHeadersOnlyFlag( false ),
     _echoMessageToFileFlag( false ),
     _getOptHelpFlag( false ),
     _durationSpecifiedFlag( false ),
-    _optionInputFlags( { 'f', 'h', 'H', 'o', 't', 'a' } ),
+    _optionInputFlags( { 'f', 'h', 'H', 'o', 't', 'a', 'i' } ),
     _filteredMessageNames( {} )
 {
     // empty
@@ -50,7 +51,7 @@ bool ApplicationInputHandler::optionsParse( const int argc, char * argv[] )
     opterr = 0;
 
     while ( ( optionArgumentIndex =
-              getopt( argc, argv, "t:o:f:hH:a") ) != -1 )
+              getopt( argc, argv, "t:o:f:hH:a:i") ) != -1 )
     {
         optionIndex =
                 getFlagIndex(
@@ -70,9 +71,13 @@ bool ApplicationInputHandler::optionsParse( const int argc, char * argv[] )
             {
                 case 'a':
 
-                    std::cout << "a flag" << std::endl;
-
                     _activeMessagesFlag = true;
+
+                break;
+
+                case 'i':
+
+                    _ignoreSelfFlag = true;
 
                 break;
 
@@ -257,6 +262,12 @@ bool ApplicationInputHandler::activeTypesWereRequested() const
 bool ApplicationInputHandler::durationWasSpecified () const
 {
     return _durationSpecifiedFlag;
+}
+
+
+bool ApplicationInputHandler::ignoreSelfWasRequested() const
+{
+    return _ignoreSelfFlag;
 }
 
 

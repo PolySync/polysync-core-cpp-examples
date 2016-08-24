@@ -146,7 +146,7 @@ private:
     /**
      * Manage command line input arguments.
      */
-    ApplicationInputHandler inputHandler;
+    ApplicationInputHandler _inputHandler;
 
     /**
      * Wrap notification to std::cout

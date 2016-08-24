@@ -9,6 +9,7 @@ std::vector< std::string > EchoHelp::getHelpFlags() const
 
     cmdLineFlagsHelp.emplace_back( "-h" );
     cmdLineFlagsHelp.emplace_back( "-a" );
+    cmdLineFlagsHelp.emplace_back( "-i" );
     cmdLineFlagsHelp.emplace_back( "-f <MESSAGE_TYPE>" );
     cmdLineFlagsHelp.emplace_back( "-H" );
     cmdLineFlagsHelp.emplace_back( "-o <FILE_NAME>" );
@@ -28,7 +29,12 @@ std::vector< std::string > EchoHelp::getHelpDescriptions() const
     flagDescriptionsHelp.emplace_back
         ( " Output message types that have been discovered by PolySync. \n"
           " Usage: "
-          " $ polysync-echo -a \n" );
+          " $ polysync-echo -a" );
+
+    flagDescriptionsHelp.emplace_back
+        ( " Ignore messages from this node. \n"
+          " Usage: "
+          " $ polysync-echo -i" );
 
     flagDescriptionsHelp.emplace_back
         ( " Filter for a single message type OR multiple message types [optional]. \n"

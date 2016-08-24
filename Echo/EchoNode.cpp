@@ -10,11 +10,11 @@ void PolySyncEcho::initStateEvent()
 { 
     _applicationStartTime = polysync::getTimestamp();
 
-    if( inputHandler.messageTypesWereFiltered() )
+    if( _inputHandler.messageTypesWereFiltered() )
     {
         registerFilteredMessages();
     }
-    else if( inputHandler.activeTypesWereRequested() )
+    else if( _inputHandler.activeTypesWereRequested() )
     {
         // do nothing
     }
@@ -27,7 +27,7 @@ void PolySyncEcho::initStateEvent()
 
 void PolySyncEcho::okStateEvent()
 {
-    if( inputHandler.durationWasSpecified() )
+    if( _inputHandler.durationWasSpecified() )
     {
         if( durationReached() )
         {
@@ -42,7 +42,7 @@ void PolySyncEcho::okStateEvent()
         }
     }
 
-    if( inputHandler.activeTypesWereRequested() )
+    if( _inputHandler.activeTypesWereRequested() )
     {
         printActiveMessageTypes();
     }
@@ -53,7 +53,7 @@ void PolySyncEcho::okStateEvent()
 
 void PolySyncEcho::registerFilteredMessages()
 {
-    for( auto messageName : inputHandler.getFilteredMessageNames() )
+    for( auto messageName : _inputHandler.getFilteredMessageNames() )
     {
         tryCatchRegisterAMessageListener( messageName );
     }
@@ -80,8 +80,14 @@ void PolySyncEcho::tryCatchRegisterAMessageListener( std::string messageName )
 
 
 void PolySyncEcho::messageEvent( std::shared_ptr< polysync::Message > message )
-{    
-    if( inputHandler.fileWasSpecified() )
+{
+    if( ( message->getSourceGuid() == getGuid() ) &&
+        _inputHandler.ignoreSelfWasRequested()  )
+    {
+        return;
+    }
+
+    if( _inputHandler.fileWasSpecified() )
     {
         printToFile( message );
     }
@@ -95,9 +101,9 @@ void PolySyncEcho::printToFile(
 {
     std::ofstream openUserFile;
 
-    openUserFile.open( inputHandler.getFileName(), std::ios::app );
+    openUserFile.open( _inputHandler.getFileName(), std::ios::app );
 
-    if( inputHandler.headersWereRequested() )
+    if( _inputHandler.headersWereRequested() )
     {
         message->printHeader( openUserFile );
     }
@@ -113,7 +119,7 @@ void PolySyncEcho::printToFile(
 void PolySyncEcho::printMessage(
         std::shared_ptr < polysync:: Message > message ) const
 {
-    if( inputHandler.headersWereRequested() )
+    if( _inputHandler.headersWereRequested() )
     {
         message->printHeader();
     }
@@ -126,13 +132,13 @@ void PolySyncEcho::printMessage(
 
 bool PolySyncEcho::optionsParse( const int argc, char * argv[] )
 {
-    return inputHandler.optionsParse( argc, argv );
+    return _inputHandler.optionsParse( argc, argv );
 }
 
 
 bool PolySyncEcho::helpWasRequested( ) const
 {
-    return inputHandler.helpWasRequested();
+    return _inputHandler.helpWasRequested();
 }
 
 
@@ -197,5 +203,5 @@ bool PolySyncEcho::durationReached() const
 
 ps_timestamp PolySyncEcho::getDuration() const
 {
-    return inputHandler.getUserSpecifiedDuration() * 1e6;
+    return _inputHandler.getUserSpecifiedDuration() * 1e6;
 }

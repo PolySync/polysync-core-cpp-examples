@@ -109,6 +109,14 @@ public:
     /**
      * @brief Member variable getter for command line getopt handling.
      *
+     * @return true if "-i" flag was input to the command line. This will
+     * not output ps_diagnostic_trace_msg data from this node.
+     */
+    bool ignoreSelfWasRequested() const;
+
+    /**
+     * @brief Member variable getter for command line getopt handling.
+     *
      * @return Returns unsigned long long to compute difference in UTC microsec.
      */
     unsigned long long getUserSpecifiedDuration() const;
@@ -120,6 +128,8 @@ private:
     unsigned long long _duration;
 
     bool _activeMessagesFlag;
+
+    bool _ignoreSelfFlag;
 
     bool _filteredForMessagesFlag;
 
