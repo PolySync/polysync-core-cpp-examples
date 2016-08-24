@@ -98,7 +98,7 @@ protected:
     /**
      * The release state is called once when polysync::Node::disconnectPolySync()
      * is called ( ctrl-c in this case ). In this event, the node is still
-     * valid in PolySync, we need to release the data generators to allow them
+     * valid in PolySync. We need to release the data generators to allow them
      * to free their polysync::datamodel messages while the node is still valid.
      */
     virtual void releaseStateEvent()
