@@ -8,11 +8,6 @@
 #ifndef APPLICATIONINPUTHANDLER_HPP
 #define APPLICATIONINPUTHANDLER_HPP
 
-/**
- * @namespace polysync
- */
-namespace polysync
-{
 
 /**
  * @brief ApplicationInputHandler class
@@ -27,22 +22,32 @@ class ApplicationInputHandler
 public:
 
     /**
+     * @brief ApplicationInputHandler constructor, initialize private data
+     */
+    ApplicationInputHandler();
+
+    /**
      * @brief Determines whether user supplied cmd line options are supported.
+     *
      * @param optchar Character of user supplied option on cmd line.
+     *
      * @return Returns -1 if not supported; returns index if supported (O-N)
      */
     int getFlagIndex( const char optionArgumentIndex );
 
     /**
      * @brief Parses cmd line arguments in C getopt style.
+     *
      * @param argv Argument vector.
      * @param argc Argument count.
+     *
      * @return Returns true if options were parsed successfully.
      */
     bool optionsParse( const int argc, char * argv[] );
 
     /**
      * @brief Member variable getter for multiple filtered message names.
+     *
      * @return Returns std::vector <std::string> containing multiple message names.
      */
     std::vector < std::string > getFilteredMessageNames() const;
@@ -50,30 +55,35 @@ public:
     /**
      * @brief Member variable getter for user-defined file name, so that
      *        user can print Echo output to file.
+     *
      * @return Returns std::string containing user-defined file name.
      */
     std::string getFileName() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
+     *
      * @return Returns true if single or multiple message types were filtered.
      */
     bool messageTypesWereFiltered() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
+     *
      * @return Returns true if only message headers (not data) were requested.
      */
     bool headersWereRequested() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
+     *
      * @return Returns boolean: true if user specified external file for output.
      */
     bool fileWasSpecified() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
+     *
      * @return Returns boolean: true if user either requested help directly,
      *          or user entered invalid options/arguments on command line.
      *
@@ -82,38 +92,50 @@ public:
     bool helpWasRequested() const;
 
     /**
-     * @brief Member veriable getter for command line getopt handling.
-     * @return Returns true if user specified a specific runtime for Echo.
+     * @brief Member variable getter for command line getopt handling.
+     *
+     * @return Returns true if user specified a duration for Echo.
      */
-    bool wasRunTimeSpecified() const;
+    bool durationWasSpecified() const;
 
     /**
      * @brief Member variable getter for command line getopt handling.
+     *
+     * @return true if "-a" flag was correctly input, this will output message
+     * types that PolySync nodes have registered for publishing.
+     */
+    bool activeTypesWereRequested() const;
+
+    /**
+     * @brief Member variable getter for command line getopt handling.
+     *
      * @return Returns unsigned long long to compute difference in UTC microsec.
      */
-    unsigned long long getUserRunTime() const;
+    unsigned long long getUserSpecifiedDuration() const;
 
 private:
 
     std::string _userFileName;
 
-    unsigned long long _echoRunTime;
+    unsigned long long _duration;
 
-    bool _filteredForMessagesFlag = false;
-    bool _echoMessageHeadersOnlyFlag = false;
-    bool _echoMessageToFileFlag = false;
-    bool _getOptHelpFlag = false;
-    bool _runTimeSpecifiedFlag = false;
+    bool _activeMessagesFlag;
 
-    const std::vector < char > _optionInputFlags
-    {
-      'f', 'h', 'H', 'o', 't'
-    };
+    bool _filteredForMessagesFlag;
+
+    bool _echoMessageHeadersOnlyFlag;
+
+    bool _echoMessageToFileFlag;
+
+    bool _getOptHelpFlag;
+
+    bool _durationSpecifiedFlag;
+
+    const std::vector < char > _optionInputFlags;
 
     std::vector < std::string > _filteredMessageNames;
 
-}; // END polysync::ApplicationInputHandler class
+};
 
-} /*!< end namespace polysync */
 
 #endif // APPLICATIONINPUTHANDLER_HPP

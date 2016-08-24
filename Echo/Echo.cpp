@@ -38,9 +38,6 @@
 
 #include "EchoNode.hpp"
 
-using namespace std;
-using namespace polysync;
-
 
 /**
  * Entry point for this tutorial application
@@ -60,7 +57,7 @@ int main( int argc, char *argv[] )
     // and, if all arguments are valid.
     if ( echo.optionsParse( argc, argv ) )
     {
-        if ( echo.wasHelpRequested() )
+        if ( echo.helpWasRequested() )
         {
             echo.printEchoHelpPage();
         }

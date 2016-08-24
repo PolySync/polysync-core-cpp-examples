@@ -3,26 +3,22 @@
 #include "EchoHelp.hpp"
 
 
-using namespace std;
-
-namespace polysync
-{
-
-std::vector< std::string > EchoHelp::getHelpFlags()
+std::vector< std::string > EchoHelp::getHelpFlags() const
 {
     std::vector< std::string > cmdLineFlagsHelp;
 
-        cmdLineFlagsHelp.emplace_back ( "-h" );
-        cmdLineFlagsHelp.emplace_back ( "-f <MESSAGE_TYPE>" );
-        cmdLineFlagsHelp.emplace_back ( "-H" );
-        cmdLineFlagsHelp.emplace_back ( "-o <FILE_NAME>" );
-        cmdLineFlagsHelp.emplace_back ( "-t <ECHO_RUNTIME>" );
+    cmdLineFlagsHelp.emplace_back( "-h" );
+    cmdLineFlagsHelp.emplace_back( "-a" );
+    cmdLineFlagsHelp.emplace_back( "-f <MESSAGE_TYPE>" );
+    cmdLineFlagsHelp.emplace_back( "-H" );
+    cmdLineFlagsHelp.emplace_back( "-o <FILE_NAME>" );
+    cmdLineFlagsHelp.emplace_back( "-t <ECHO_DURATION [sec]>" );
 
     return cmdLineFlagsHelp;
 }
 
 
-std::vector< std::string > EchoHelp::getHelpDescriptions()
+std::vector< std::string > EchoHelp::getHelpDescriptions() const
 {
     std::vector< std::string > flagDescriptionsHelp;
 
@@ -30,8 +26,13 @@ std::vector< std::string > EchoHelp::getHelpDescriptions()
         ( " Show this help message [optional]." );
 
     flagDescriptionsHelp.emplace_back
+        ( " Output message types that have been discovered by PolySync. \n"
+          " Usage: "
+          " $ polysync-echo -a \n" );
+
+    flagDescriptionsHelp.emplace_back
         ( " Filter for a single message type OR multiple message types [optional]. \n"
-        " Usage Example 1: Single Message: \n"
+        " Usage Example 1: Single Message: "
             " $ polysync-echo -f ps_diagnostic_trace_msg \n\n"
         " Usage Example 2: Multiple Messages: \n"
             " $ polysync-echo -f ps_diagnostic_trace_msg"
@@ -70,29 +71,26 @@ std::vector< std::string > EchoHelp::getHelpDescriptions()
 }
 
 
-void EchoHelp::printHelp(const std::vector< std::string > & helpFlags ,
-                             const std::vector< std::string> & helpDescriptions)
+void EchoHelp::printHelp(
+        const std::vector< std::string > & helpFlags ,
+        const std::vector< std::string> & helpDescriptions ) const
 {
-    cout << "\nPolySync Echo \n"
+    std::cout << "\nPolySync Echo \n"
             "Standard behavior (no options) is to echo all messages "
             "currently on the bus. \n\n";
 
-    cout << "Usage: \n $polysync-echo [options] \n\n";
+    std::cout << "Usage: \n $polysync-echo [options] \n\n";
 
     for( auto index = 0U; index < getHelpFlags().size(); ++index )
     {
-        cout  << helpFlags[ index ] <<endl;
-        cout  << helpDescriptions[ index ] <<endl <<endl;
+        std::cout  << helpFlags[ index ] << std::endl;
+
+        std::cout  << helpDescriptions[ index ] <<std::endl <<std::endl;
     }
 }
 
 
-void EchoHelp::printEchoHelp()
+void EchoHelp::printEchoHelp() const
 {
     printHelp( getHelpFlags(), getHelpDescriptions() );
 }
-
-
-// END polysync::EchoHelp class
-
-} // END namespace polysync
