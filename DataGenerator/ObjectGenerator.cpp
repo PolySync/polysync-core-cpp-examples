@@ -43,8 +43,11 @@ void ObjectGenerator::initializeMessage()
     polysync::datamodel::SensorDescriptor descriptor;
 
     descriptor.setId( _sensorID );
+
     descriptor.setTransformParentId( PSYNC_COORDINATE_FRAME_LOCAL );
+
     descriptor.setType( PSYNC_SENSOR_KIND_NOT_AVAILABLE );
+
     _message.setSensorDescriptor( descriptor );
 
     _message.setHeaderTimestamp( polysync::getTimestamp() );
@@ -116,6 +119,7 @@ void ObjectGenerator::resetObjects()
         object.setVelocity( { _velocityX, _velocityY, 0.0 } );
 
         object.setClassification( OBJECT_CLASSIFICATION_CAR );
+
         object.setClassificationQuality( QUALITY_9 );
 
         _objectVector.emplace_back( object );
@@ -127,5 +131,6 @@ void ObjectGenerator::resetObjects()
 void ObjectGenerator::publishObjects()
 {
     _message.setHeaderTimestamp( polysync::getTimestamp() );
+
     _message.publish();
 }

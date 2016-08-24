@@ -44,15 +44,16 @@
 #include "RadarTargetGenerator.hpp"
 #include "ObjectGenerator.hpp"
 
+
 using namespace polysync::datamodel;
+
 
 class DataGenerator : public polysync::Node
 {
+
 protected:
 
     /**
-     * @brief okStateEvent
-     *
      * Override the base class functionality to send messages when the node
      * reaches the "ok" state. This method is triggered continuously while
      * this node is in an operational state.
@@ -60,22 +61,23 @@ protected:
     virtual void okStateEvent()
     {
         _lidarPointGenerator->updatePoints();
+
         _lidarPointGenerator->publishPoints();
 
         _radarTargetGenerator->updateTargets();
+
         _radarTargetGenerator->publishTargets();
 
         _objectGenerator->updateObjects();
+
         _objectGenerator->publishObjects();
 
         polysync::sleepMicro( _updateInterval );
     }
 
     /**
-     * @brief initStateEvent
-     *
-     * This event is triggered once when this node is initialized in PolySync.
-     * This is a good place to initialize variables dependant on a
+     * The initStateEvent is triggered once when this node is initialized in
+     * PolySync. This is a good place to initialize variables dependant on a
      * polysync::Node reference.
      */
     virtual void initStateEvent()
@@ -93,15 +95,34 @@ protected:
                     new ObjectGenerator( *this ) };
     }
 
+    /**
+     * The release state is called once when polysync::Node::disconnectPolySync()
+     * is called ( ctrl-c in this case ). In this event, the node is still
+     * valid in PolySync. We need to release the data generators to allow them
+     * to free their polysync::datamodel messages while the node is still valid.
+     */
+    virtual void releaseStateEvent()
+    {
+        _lidarPointGenerator.release();
+
+        _radarTargetGenerator.release();
+
+        _objectGenerator.release();
+    }
+
 private:
+
     ps_timestamp _updateInterval{ 50000 };
+
     std::unique_ptr< LidarPointGenerator > _lidarPointGenerator;
+
     std::unique_ptr< RadarTargetGenerator > _radarTargetGenerator;
+
     std::unique_ptr< ObjectGenerator > _objectGenerator;
+
 };
 
 /**
- * @brief main
  * Entry point for the publisher side of this tutorial application
  * The "connectPolySync" is a blocking call, users must use Ctrl-C to exit
  * this function.
