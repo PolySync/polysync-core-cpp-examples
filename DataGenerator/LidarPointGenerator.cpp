@@ -103,9 +103,9 @@ void LidarPointGenerator::updatePoints()
 
         v = ( v * 2.0 ) - 1.0;
 
-        float w = sin( ( u * _sineFrequency ) + _relativeTime )
-                * cos( ( v * _sineFrequency ) + _relativeTime )
-                * 0.5;
+        float w = sin( ( u * _sineFrequency ) + _relativeTime ) *
+                  cos( ( v * _sineFrequency ) + _relativeTime ) *
+                  0.5;
 
         point.setPosition( { u * 10, v * 10, w * 10 } );
 
