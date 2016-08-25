@@ -1,50 +1,59 @@
 #include <fstream>
 
+#include <PolySyncRuntimeInfo.hpp>
+
 #include "EchoNode.hpp"
 #include "ApplicationInputHandler.hpp"
 
 
-using namespace std;
-
-namespace polysync
-{
-
 void PolySyncEcho::initStateEvent()
 { 
-    if( inputHandler.messageTypesWereFiltered() )
+    _applicationStartTime = polysync::getTimestamp();
+
+    if( _inputHandler.messageTypesWereFiltered() )
     {
         registerFilteredMessages();
+    }
+    else if( _inputHandler.activeTypesWereRequested() )
+    {
+        // do nothing
     }
     else
     {
         registerListenerToAllMessageTypes();
     }
-
-    _echoGetStartTime = getTimestamp();
 }
 
 
 void PolySyncEcho::okStateEvent()
 {
-    _echoGetCurrentTime = getTimestamp();
-
-    _echoDiffRunTime = ( _echoGetCurrentTime - _echoGetStartTime );
-
-    _userSpecifiedRunTime = inputHandler.getUserRunTime() * 1000000;
-
-    if( inputHandler.wasRunTimeSpecified()
-         && _echoDiffRunTime >= _userSpecifiedRunTime )
+    if( _inputHandler.durationWasSpecified() )
+    {
+        if( durationReached() )
         {
-            cout <<"\n\n\n Disconnecting PolySync successfully: \n "
-                   "The time you've specified with -t option argument has expired.\n" <<endl <<endl;
+            std::cout << std::endl << std::endl << std::endl
+                 << "Disconnecting PolySync successfully:"
+                 << std::endl
+                 << "The time you've specified with -t option argument has "
+                 << "expired."
+                 << std::endl << std::endl << std::endl;
+
             disconnectPolySync();
         }
+    }
+
+    if( _inputHandler.activeTypesWereRequested() )
+    {
+        printActiveMessageTypes();
+    }
+
+    polysync::sleepMicro( SecondsToMicro );
 }
 
 
 void PolySyncEcho::registerFilteredMessages()
 {
-    for( auto messageName : inputHandler.getFilteredMessageNames() )
+    for( auto messageName : _inputHandler.getFilteredMessageNames() )
     {
         tryCatchRegisterAMessageListener( messageName );
     }
@@ -59,7 +68,9 @@ void PolySyncEcho::tryCatchRegisterAMessageListener( std::string messageName )
     }
     catch ( ... )
     {
-        cout << "\nPlease enter a valid PS message type: \n\n";
+        std::cout << std::endl
+             << "Please enter a valid PS message type:"
+             << std::endl << std::endl;
 
         printAvailableMessage( getAvailableMessageNames() );
 
@@ -69,28 +80,34 @@ void PolySyncEcho::tryCatchRegisterAMessageListener( std::string messageName )
 
 
 void PolySyncEcho::messageEvent( std::shared_ptr< polysync::Message > message )
-{    
-    if( inputHandler.fileWasSpecified() )
+{
+    if( ( message->getSourceGuid() == getGuid() ) &&
+        _inputHandler.ignoreSelfWasRequested()  )
+    {
+        return;
+    }
+
+    if( _inputHandler.fileWasSpecified() )
     {
         printToFile( message );
     }
 
-    echoPolySyncMessagesToStdOut( message );
+    printMessage( message );
 }
 
 
-void PolySyncEcho::printToFile( std::shared_ptr < polysync:: Message > message )
+void PolySyncEcho::printToFile(
+        std::shared_ptr < polysync:: Message > message )
 {
-    ofstream openUserFile;
+    std::ofstream openUserFile;
 
-    openUserFile.open( inputHandler.getFileName(), ios::app );
+    openUserFile.open( _inputHandler.getFileName(), std::ios::app );
 
-    if( inputHandler.headersWereRequested() )
+    if( _inputHandler.headersWereRequested() )
     {
         message->printHeader( openUserFile );
     }
-
-    else if( !inputHandler.headersWereRequested() )
+    else
     {
         message->print( openUserFile );
     }
@@ -99,14 +116,13 @@ void PolySyncEcho::printToFile( std::shared_ptr < polysync:: Message > message )
 }
 
 
-void PolySyncEcho::echoPolySyncMessagesToStdOut
-    ( std::shared_ptr < polysync:: Message > message )
+void PolySyncEcho::printMessage(
+        std::shared_ptr < polysync:: Message > message ) const
 {
-    if( inputHandler.headersWereRequested() )
+    if( _inputHandler.headersWereRequested() )
     {
         message->printHeader();
     }
-
     else
     {
         message->print();
@@ -116,17 +132,17 @@ void PolySyncEcho::echoPolySyncMessagesToStdOut
 
 bool PolySyncEcho::optionsParse( const int argc, char * argv[] )
 {
-    return inputHandler.optionsParse( argc, argv );
+    return _inputHandler.optionsParse( argc, argv );
 }
 
 
-bool PolySyncEcho::wasHelpRequested( )
+bool PolySyncEcho::helpWasRequested( ) const
 {
-    return inputHandler.helpWasRequested();
+    return _inputHandler.helpWasRequested();
 }
 
 
-std::vector< std::string > PolySyncEcho::getAvailableMessageNames()
+std::vector< std::string > PolySyncEcho::getAvailableMessageNames() const
 {
     std::vector< std::string > messageNames;
 
@@ -136,25 +152,56 @@ std::vector< std::string > PolySyncEcho::getAvailableMessageNames()
     {
         messageNames.emplace_back( getMessageNameByType( index ) );
     }
+
     return messageNames;
 }
 
 
-void PolySyncEcho::printAvailableMessage( const std::vector< std::string > & messageTypeStrings )
+void PolySyncEcho::printAvailableMessage(
+        const std::vector< std::string > & messageTypeStrings ) const
 {
     for( auto messageTypeString : messageTypeStrings )
     {
-        cout << "    " << messageTypeString << endl;
+        std::cout << "    " << messageTypeString << std::endl;
     }
 }
 
 
-void PolySyncEcho::printEchoHelpPage()
+void PolySyncEcho::printEchoHelpPage() const
 {
     echoHelp.printEchoHelp();
 }
 
 
-// END polysync::PolySyncEcho class
+void PolySyncEcho::printActiveMessageTypes() const
+{
+    polysync::RuntimeInfo info( *this );
 
-} // END namespace polysync
+    auto typeInfoList = info.getDiscoveredMessageTypes();
+
+    std::cout << std::endl << std::endl
+              << "Active PolySync Message Types: "
+              << std::endl;
+
+    for( auto typeInfo : typeInfoList )
+    {
+        if( typeInfo.getMessageType() != PSYNC_MSG_TYPE_INVALID )
+        {
+            std::cout << "    "
+                      << typeInfo.getTypeName()
+                      << std::endl;
+        }
+    }
+}
+
+
+bool PolySyncEcho::durationReached() const
+{
+    return ( polysync::getTimestamp() - _applicationStartTime ) >= getDuration();
+}
+
+
+ps_timestamp PolySyncEcho::getDuration() const
+{
+    return _inputHandler.getUserSpecifiedDuration() * SecondsToMicro;
+}

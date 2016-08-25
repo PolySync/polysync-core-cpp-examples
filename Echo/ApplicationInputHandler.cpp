@@ -5,10 +5,21 @@
 #include "ApplicationInputHandler.hpp"
 
 
-using namespace std;
-
-namespace polysync
+ApplicationInputHandler::ApplicationInputHandler()
+    :
+    _userFileName( {} ),
+    _activeMessagesFlag( false ),
+    _ignoreSelfFlag( false ),
+    _filteredForMessagesFlag( false ),
+    _echoMessageHeadersOnlyFlag( false ),
+    _echoMessageToFileFlag( false ),
+    _getOptHelpFlag( false ),
+    _durationSpecifiedFlag( false ),
+    _optionInputFlags( { 'f', 'h', 'H', 'o', 't', 'a', 'i' } ),
+    _filteredMessageNames( {} )
 {
+    // empty
+}
 
 int ApplicationInputHandler::getFlagIndex( const char optret )
 {
@@ -19,11 +30,12 @@ int ApplicationInputHandler::getFlagIndex( const char optret )
             return index;
         }
     }
+
     return -1;
 }
 
 
-bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
+bool ApplicationInputHandler::optionsParse( const int argc, char * argv[] )
 {
     bool parsedOptSuccess = true;
 
@@ -38,13 +50,18 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 
     opterr = 0;
 
-    while ( ( optionArgumentIndex = getopt( argc, argv, "t:o:f:hH") ) != -1 )
+    while ( ( optionArgumentIndex =
+              getopt( argc, argv, "t:o:f:hH:a:i") ) != -1 )
     {
-        optionIndex = getFlagIndex( static_cast<const char>( optionArgumentIndex ) );
+        optionIndex =
+                getFlagIndex(
+                    static_cast< const char >( optionArgumentIndex ) );
 
         if( optionIndex == -1 )
         {
-            cout << "\n\nUsage: invalid options. Usage guide follows." <<endl;
+            std::cout << std::endl << std::endl
+                 << "Usage: invalid options. Usage guide follows."
+                 << std::endl;
 
             _getOptHelpFlag = true;
         }
@@ -52,15 +69,31 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
         {
             switch( optionArgumentIndex )
             {
+                case 'a':
+
+                    _activeMessagesFlag = true;
+
+                break;
+
+                case 'i':
+
+                    _ignoreSelfFlag = true;
+
+                break;
+
                 case 'f':
 
                     if( ( *argv[ optind - 1 ] )
                          && ( *argv[ optind - 1 ] == '-' ) )
                     {
-                        cout <<"\n\nInvalid usage for option -f filter single message type:\n"
-                             <<"-f should be followed by a PolySync message type,"
-                             << " not by another -option.\n"
-                             <<"A usage guide follows." << endl;
+                        std::cout << std::endl << std::endl
+                             << "Invalid usage for option -f filter single "
+                             << "message type:"
+                             << std::endl
+                             <<"-f should be followed by a PolySync "
+                             << "message type, not by another -option."
+                             << std::endl
+                             <<"A usage guide follows." << std::endl;
 
                         _getOptHelpFlag = true;
                     }
@@ -78,10 +111,14 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
                     if( ( *argv[ optind - 1 ] )
                          && ( *argv[ optind - 1 ] == '-' ) )
                     {
-                        cout <<"\n\nInvalid usage for option -o external file:\n"
-                             <<"-o should be followed by a filename yourfile.txt,"
-                             << " not by another -option.\n"
-                             <<"A usage guide follows." << endl;
+                        std::cout << std::endl << std::endl
+                             << "Invalid usage for option -o external file:"
+                             << std::endl
+                             << "-o should be followed by a filename "
+                             << "yourfile.txt, not by another -option."
+                             << std::endl << std::endl
+                             << "A usage guide follows."
+                             << std::endl;
 
                         _getOptHelpFlag = true;
                     }
@@ -99,28 +136,36 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
                 if( ( *argv[ optind - 1 ] )
                      && ( *argv[ optind - 1 ] == '-' ) )
                 {
-                    cout <<"\n\nInvalid usage for option -t run for specific time:\n"
-                         <<"-t should be followed by how long you want Echo to run,"
-                         << " not by another -option.\n"
-                         <<"A usage guide follows." << endl;
+                    std::cout << std::endl << std::endl
+                         << "Invalid usage for option -t run for specific time:"
+                         << std::endl
+                         << "-t should be followed by how long you want Echo to"
+                         << " run (sec), not by another -option."
+                         << std::endl
+                         << "A usage guide follows."
+                         << std::endl;
 
                     _getOptHelpFlag = true;
                 }
                 else if( ( *argv[ optind - 1 ] )
                      && isalpha(  *argv[ optind - 1 ] ) )
                 {
-                    cout <<"\n\nInvalid usage for option -t run for specific time:\n"
+                    std::cout << std::endl << std::endl
+                         << "Invalid usage for option -t run for specific time:"
+                         << std::endl
                          << "-t should be followed by a number"
-                         <<" representing  how long you want Echo to run.\n"
-                         <<"A usage guide follows." << endl;
+                         <<" representing  how long you want Echo to run."
+                         << std::endl
+                         << "A usage guide follows."
+                         << std::endl;
 
                     _getOptHelpFlag = true;
                 }
                 else
                 {
-                    _echoRunTime =  stoull( optarg );
+                    _duration =  std::stoull( optarg );
 
-                    _runTimeSpecifiedFlag = true;
+                    _durationSpecifiedFlag = true;
                 }
 
                 break;
@@ -139,19 +184,10 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 
                 case '?':
 
-                    if( optopt == 'f' )
-                    {
-                        _getOptHelpFlag = true;
-
-                        parsedOptSuccess = false;
-                    }
-                    else if( optopt == 'o' )
-                    {
-                        _getOptHelpFlag = true;
-
-                        parsedOptSuccess = false;
-                    }
-                    else if( optopt == 't' )
+                    if( ( optopt == 'f' ) or
+                        ( optopt == 'o' ) or
+                        ( optopt == 't' ) or
+                        ( optopt == 'a' ) )
                     {
                         _getOptHelpFlag = true;
 
@@ -167,8 +203,12 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 
     for( index = optind; index < argc; ++index )
     {
-        cout << "\n\nUsage: Non option argument: " << argv[ index ] <<endl
-             << "A usage guide follows." <<endl;
+        std::cout << std::endl << std::endl
+             << "Usage: Non option argument: "
+             << argv[ index ]
+             << std::endl
+             << "A usage guide follows."
+             << std::endl;
 
         _getOptHelpFlag = true;
     }
@@ -177,7 +217,7 @@ bool ApplicationInputHandler::optionsParse( const int argc, char *argv[] )
 }
 
 
-std::vector < std::string > ApplicationInputHandler::getFilteredMessageNames() const
+std::vector< std::string > ApplicationInputHandler::getFilteredMessageNames() const
 {
     return _filteredMessageNames;
 }
@@ -213,19 +253,25 @@ bool ApplicationInputHandler::helpWasRequested() const
 }
 
 
-bool ApplicationInputHandler::wasRunTimeSpecified () const
+bool ApplicationInputHandler::activeTypesWereRequested() const
 {
-    return _runTimeSpecifiedFlag;
+    return _activeMessagesFlag;
 }
 
 
-unsigned long long ApplicationInputHandler::getUserRunTime () const
+bool ApplicationInputHandler::durationWasSpecified () const
 {
-    return _echoRunTime;
+    return _durationSpecifiedFlag;
 }
 
 
-// END polysync::PolySyncGetOpt class
+bool ApplicationInputHandler::ignoreSelfWasRequested() const
+{
+    return _ignoreSelfFlag;
+}
 
 
-} // end namespace polysync
+unsigned long long ApplicationInputHandler::getUserSpecifiedDuration () const
+{
+    return _duration;
+}

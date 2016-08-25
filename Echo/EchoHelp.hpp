@@ -8,11 +8,6 @@
 #ifndef ECHOHELP_HPP
 #define ECHOHELP_HPP
 
-/**
- * @namespace polysync
- */
-namespace polysync
-{
 
 /**
  * @brief The EchoHelp class is a user interaction class to assist
@@ -28,29 +23,29 @@ public:
      * @return std::vector< std::string > - variable contains help descriptions.
      *
      */
-    std::vector< std::string > getHelpFlags();
+    std::vector< std::string > getHelpFlags() const;
 
     /**
      * @brief Get strings for help page display of descriptions for cmd line flags.
      * @return std::vector< std::string > - variable contains help descriptions.
      *
      */
-    std::vector< std::string > getHelpDescriptions();
+    std::vector< std::string > getHelpDescriptions() const;
 
     /**
      * @brief Print strings for help page display, append to end of list.
      * @param std::vector< std:: string > - variable containing help string.
      */
-    void printHelp( const std::vector< std::string > & helpFlags,
-                    const std::vector< std::string > & helpDescriptions);
+    void printHelp(
+            const std::vector< std::string > & helpFlags,
+            const std::vector< std::string > & helpDescriptions) const;
 
     /**
      * @brief Wrapper for caller class access to printHelp().
      */
-    void printEchoHelp();
+    void printEchoHelp() const;
 
 };
 
-} /*!< end namespace polysync */
 
 #endif // ECHOHELP_HPP
