@@ -47,7 +47,7 @@ void PolySyncEcho::okStateEvent()
         printActiveMessageTypes();
     }
 
-    polysync::sleepMicro( _oneSecond );
+    polysync::sleepMicro( SecondsToMicro );
 }
 
 
@@ -203,5 +203,5 @@ bool PolySyncEcho::durationReached() const
 
 ps_timestamp PolySyncEcho::getDuration() const
 {
-    return _inputHandler.getUserSpecifiedDuration() * 1e6;
+    return _inputHandler.getUserSpecifiedDuration() * SecondsToMicro;
 }

@@ -141,7 +141,7 @@ private:
     /**
      * Magic number wrapper. One second == 1000000 micro.
      */
-    static constexpr ps_timestamp _oneSecond = 1e6;
+    static constexpr ps_timestamp SecondsToMicro = 1e6;
 
     /**
      * Manage command line input arguments.
