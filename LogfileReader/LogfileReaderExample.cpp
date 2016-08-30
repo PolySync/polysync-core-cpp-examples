@@ -73,13 +73,13 @@
 
 #include <PolySyncLogfile.hpp>
 
-#include "LogfileQueueReaderExample.hpp"
+#include "LogfileReaderExample.hpp"
 
 
 using namespace std;
 
 
-LogfileQueueReaderNode::LogfileQueueReaderNode()
+LogfileReaderNode::LogfileReaderNode()
     :
       Node(),
     _logFile( nullptr ),
@@ -88,15 +88,17 @@ LogfileQueueReaderNode::LogfileQueueReaderNode()
     // empty
 }
 
-void LogfileQueueReaderNode::prepareLogfileToRead()
+void LogfileReaderNode::prepareLogfileToRead()
 {
+    // Uncomment this to demonstrate filtering out message types
+//    _logFile->setMessageTypeFilters(
+//        {}, { getMessageTypeByName( "ps_byte_array_msg" ) } );
+
     // 1. Set path to the logfile
     _logFile->setFilePath( DefaultLogfilePath  );
 
+    // Session id needs to be non-zero.
     _logFile->setSessionId( DefaultSessionId );
-
-    // 2. Enable the Replay Message Queue + get a reference to the Queue.
-    _logFile->enableOutputQueue( Enable );
 
     // 3. Begin replay. Enqueue messages onto Replay Queue if queue valid.
     _logFile->setModeRead();
@@ -111,40 +113,21 @@ void LogfileQueueReaderNode::prepareLogfileToRead()
 }
 
 
-void LogfileQueueReaderNode::readDequeuedMessage()
-{
-    // Replay: dequeue a single message for each okStateEvent() loop:
-    ps_msg_ref dequeuedMessage =
-            g_async_queue_try_pop( _logFile->getReplayMessageQueue() );
-
-    if( dequeuedMessage != PSYNC_MSG_REF_INVALID )
-    {
-        auto messageToPrint =
-                polysync::datamodel::buildMessage( *this, dequeuedMessage );
-
-        ++_numMessagesRead;
-
-        cout << endl
-             << "Printing message # " <<_numMessagesRead <<" in queue"
-             << endl;
-
-        messageToPrint->printHeader();
-    }
-}
-
-
-void LogfileQueueReaderNode::initStateEvent()
+void LogfileReaderNode::initStateEvent()
 {
     // 1. Init LogFile API resources:
     _logFile = new polysync::Logfile{ *this };
 
-    // 2. Set up parameters and validate before reading in okStateEvent() loop.
+    // 2. Connect to PolySync data
+    registerListener( getMessageTypeByName( "ps_byte_array_msg" ) );
+
+    // 3. Set up parameters and validate before reading in okStateEvent() loop.
     prepareLogfileToRead();
 
-    if( _logFile->eofHasBeenReached() or not _logFile->getReplayMessageQueue() )
+    if( _logFile->eofHasBeenReached() )
     {
         cout << endl
-             << "Disconnecting: either Replay Queue invalid, or Replay EOF."
+             << "Disconnecting: reached end of logfile."
              << endl;
 
         disconnectPolySync();
@@ -152,11 +135,8 @@ void LogfileQueueReaderNode::initStateEvent()
 }
 
 
-void LogfileQueueReaderNode::okStateEvent()
+void LogfileReaderNode::okStateEvent()
 {
-    // Pop a message from the queue and output data
-    readDequeuedMessage();
-
     if( _logFile->eofHasBeenReached() )
     {
         disconnectPolySync();
@@ -164,7 +144,7 @@ void LogfileQueueReaderNode::okStateEvent()
 }
 
 
-void LogfileQueueReaderNode::releaseStateEvent()
+void LogfileReaderNode::releaseStateEvent()
 {
     printResults();
 
@@ -178,7 +158,26 @@ void LogfileQueueReaderNode::releaseStateEvent()
 }
 
 
-void LogfileQueueReaderNode::printResults()
+void LogfileReaderNode::messageEvent(
+        std::shared_ptr<polysync::Message> message )
+{
+    if( message )
+    {
+        if( message->getMessageTypeString() == "ps_byte_array_msg" )
+        {
+            ++_numMessagesRead;
+
+            cout << endl
+                 << "Printing message # " <<_numMessagesRead << " in queue"
+                 << endl;
+
+            message->printHeader();
+        }
+    }
+}
+
+
+void LogfileReaderNode::printResults()
 {
     cout << endl << endl
          << "Read " << _numMessagesRead << " total messages."
@@ -194,11 +193,12 @@ void LogfileQueueReaderNode::printResults()
     }
 
     cout << endl
-         << "***  End PolySync LogFile C++ Queue Reader Example  ***"
+         << "***  End PolySync C++ LogFile API: Reader Example  ***"
          << endl
          << "*************************************************"
          << endl << endl;
 }
+
 
 
 int main()
@@ -206,12 +206,12 @@ int main()
     cout << endl << endl
          << "************************************************"
          << endl
-         << "***  End PolySync C++ LogFile API: Queue Reader Example  ***"
+         << " *** PolySync LogFile C++ API: Reader Example *** "
          << endl << endl;
 
     try
     {
-        LogfileQueueReaderNode logfileReader;
+        LogfileReaderNode logfileReader;
 
         sleep( 1 );
 

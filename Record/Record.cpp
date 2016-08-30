@@ -38,8 +38,16 @@
 #include "PolySyncNode.hpp"
 #include "PolySyncRecordReplay.hpp"
 
+
 using namespace polysync;
 using namespace std;
+
+
+// Utility function prototypes
+ps_rnr_session_id getSessionIdInput();
+
+void loopUntilQuitCommandReceived();
+
 
 /**
  * @brief RecordNode class
@@ -52,14 +60,6 @@ class RecordNode : public Node
 {
 
     /**
-     * @brief @ref polysync::RecordSession used to start and stop the
-     * recording session.
-     */
-    RecordSession *recording;
-
-    /**
-     * @brief initStateEvent
-     *
      * Override the base class functionality to create and
      * start a @ref polysync::RecordSession.
      */
@@ -70,11 +70,8 @@ class RecordNode : public Node
         // Record & Replay messages.
         recording = new RecordSession{ *this };
 
-        // Set the @ref ps_rnr_session_id of this recording.
-        ps_rnr_session_id sessionId;
-        cout << "Enter recording session id: ";
-        cin >> sessionId;
-        recording->setId( sessionId );
+        // Set session id to value input from command line.
+        recording->setId( getSessionIdInput() );
 
         // Activate the recording session.
         recording->activate();
@@ -83,23 +80,17 @@ class RecordNode : public Node
         recording->start();
 
         cout << "Recording started." << endl;
-    };
+    }
+
 
     /**
-     * @brief okStateEvent
-     *
      * Override the base class functionality to end the recording after
      * receiving user input.
      */
     void okStateEvent() override
     {
-        string input;
-        do
-        {
-            cout << endl << "Enter 'q' to end recording: ";
-            cin >> input;
-        }
-        while( input != "q" );
+        // Run until user inputs 'q'
+        loopUntilQuitCommandReceived();
 
         // Stop the recording session.
         recording->stop();
@@ -112,11 +103,16 @@ class RecordNode : public Node
 
         cout << "Recording stopped." << endl;
     }
+
+    /**
+     * @ref polysync::RecordSession used to start and stop the
+     * recording session.
+     */
+    RecordSession * recording;
+
 };
 
 /**
- * @brief main
- *
  * Entry point for this tutorial application.
  */
 int main()
@@ -130,4 +126,38 @@ int main()
     recordingNode.connectPolySync();
 
     return 0;
+}
+
+
+/**
+ * @brief Get session id value from command line input
+ *
+ * @return ps_rnr_session_id from user
+ */
+ps_rnr_session_id getSessionIdInput()
+{
+    ps_rnr_session_id sessionId;
+
+    cout << "Enter recording session id: ";
+
+    cin >> sessionId;
+
+    return sessionId;
+}
+
+
+/**
+ * @brief Run until user inputs quit command 'q'
+ */
+void loopUntilQuitCommandReceived()
+{
+    string input;
+
+    do
+    {
+        cout << endl << "Enter 'q' to end recording: ";
+
+        cin >> input;
+    }
+    while( input != "q" );
 }

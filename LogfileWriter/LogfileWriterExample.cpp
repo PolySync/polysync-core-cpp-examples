@@ -48,7 +48,10 @@
  *
  */
 
+#include <PolySyncLogfile.hpp>
+
 #include "LogfileWriterExample.hpp"
+
 
 using namespace std;
 
@@ -57,11 +60,7 @@ LogfileWriterNode::LogfileWriterNode()
     :
       Node(),
     _logFile( nullptr ),
-    _numMessagesWritten( 0 ),
-    _numMessagesRead( 0 ),
-    _messagesWereWritten( false ),
-    _messagesWereRead( false ),
-    _logFileWasIterated( false )
+    _numMessagesWritten( 0 )
 {
     // empty
 }
@@ -69,16 +68,13 @@ LogfileWriterNode::LogfileWriterNode()
 
 void LogfileWriterNode::prepareLogfileToWrite()
 {
-    // 1. Filter out certain message types from being written to disk (optional).
-    //filterOutMessages();
+    // 1. Set logfile file path (optional). Overrides default logic for Session ID.
+    _logFile->setFilePath( DefaultLogfilePath  );
 
-    // 2. Set logfile file path (optional). Overrides default logic for Session ID.
-    _logFile->setFilePath( "/tmp/polysync_logfile.plog"  );
-
-    // 3. Set session ID. You can use timestamp or arbitrary name such as 1234.
+    // 2. Set session ID. You can use timestamp or arbitrary name such as 1234.
     _logFile->setSessionId( polysync::getTimestamp() );
 
-    // 4. Begin Replay: Enable state in single node context.
+    // 3. Begin Replay: Enable state in single node context.
     _logFile->setModeWrite();
 
     _logFile->setStateEnabled( 0 );
@@ -93,7 +89,7 @@ void LogfileWriterNode::prepareLogfileToWrite()
      * _logFile->setStateEnabled( stateTimingOffsetDistributedContext );
      */
 
-    // 5. Set counter.
+    // 4. Set counter.
     _numMessagesWritten = 0;
 }
 
@@ -131,14 +127,13 @@ void LogfileWriterNode::writeMessage()
 
 void LogfileWriterNode::printResults()
 {
-    cout << "\n\nWrote " << _numMessagesWritten <<" total messages.\n"
-
-          "\n***  End PolySync LogFile C++ Writer Example  ***\n"
-          "*************************************************\n";
-
-    cout << "\nReleasing logfile resources. If all messages did not print "
-          "to Terminal \nin either read, write, or iterator, that is due to "
-          "i/o (printf / cout) \nbeing slower than CPU.\n\n";
+    cout << endl << endl
+         << "Wrote " << _numMessagesWritten <<" total messages."
+         << endl
+         << "***  End PolySync LogFile C++ Writer Example  ***"
+         << endl
+         << "*************************************************"
+         << endl << endl;
 }
 
 
@@ -164,7 +159,7 @@ void LogfileWriterNode::okStateEvent()
     writeMessage();
 
     // 2. Set write frequency for 1x Replay.
-    polysync::sleepMicro( 5000 );
+    polysync::sleepMicro( FiveMilliSeconds );
 }
 
 
@@ -176,7 +171,7 @@ void LogfileWriterNode::releaseStateEvent()
      * Sleep before turning mode off after last write to avoid flushing of queue.
      *
      */
-    polysync::sleepMicro( 5000000 );
+    polysync::sleepMicro( FiveSeconds );
 
     _logFile->setModeOff();
 
@@ -186,8 +181,11 @@ void LogfileWriterNode::releaseStateEvent()
 
 int main()
 {
-    cout << "\n\n************************************************\n"
-    "*** PolySync LogFile C++ API: Writer Example ***\n\n";
+    cout << endl << endl
+         << "************************************************"
+         << endl
+         << "*** PolySync C++ LogFile API: Writer Example ***"
+         << endl << endl;
 
     try
     {
@@ -201,7 +199,7 @@ int main()
     }
     catch( std::exception & e )
     {
-        cout<< e.what() << std::endl;
+        cout << e.what() << endl;
     }
 
     return 0;

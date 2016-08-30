@@ -38,8 +38,16 @@
 #include "PolySyncNode.hpp"
 #include "PolySyncRecordReplay.hpp"
 
+
 using namespace polysync;
 using namespace std;
+
+
+// Utility function prototypes
+ps_rnr_session_id getSessionIdInput();
+
+void loopUntilQuitCommandReceived();
+
 
 /**
  * @brief ReplayNode class
@@ -50,15 +58,8 @@ using namespace std;
  */
 class ReplayNode : public Node
 {
-    /**
-     * @brief @ref polysync::ReplaySession used to start and stop the
-     * replay session.
-     */
-    ReplaySession *replay;
 
     /**
-     * @brief initStateEvent
-     *
      * Override the base class functionality to create and
      * start a @ref polysync::ReplaySession.
      */
@@ -69,13 +70,9 @@ class ReplayNode : public Node
         // Record & Replay messages.
         replay = new ReplaySession{ *this };
 
-        // Set the @ref ps_rnr_session_id of this replay session.
-        // Check that the log session id below exists on your system.
-        // If it does not, run the RecordControl example and come back to this.
-        ps_rnr_session_id sessionId;
-        cout << "Enter replay session id: ";
-        cin >> sessionId;
-        replay->setId( sessionId );
+        // Set session id to value input from command line.
+        // This requires an exact value match, if incorrect value is received, restart example.
+        replay->setId( getSessionIdInput() );
 
         // Activate the session.
         replay->activate();
@@ -84,23 +81,17 @@ class ReplayNode : public Node
         replay->start();
 
         cout << "Replay started." << endl;
-    };
+    }
+
 
     /**
-     * @brief okStateEvent
-     *
      * Override the base class functionality to end the replay session until
      * the user provides some input.
      */
     void okStateEvent() override
     {
-        string input;
-        do
-        {
-            cout << endl << "Enter 'q' to end replay: ";
-            cin >> input;
-        }
-        while( input != "q" );
+        // Run until user inputs 'q'
+        loopUntilQuitCommandReceived();
 
         // Stop the replay.
         replay->stop();
@@ -111,11 +102,17 @@ class ReplayNode : public Node
         // Disconnect this Node.
         disconnectPolySync();
     }
+
+
+    /**
+     * @ref polysync::ReplaySession used to start and stop the
+     * replay session.
+     */
+    ReplaySession * replay;
+
 };
 
 /**
- * @brief main
- *
  * Entry point for this tutorial application.
  */
 int main()
@@ -129,4 +126,38 @@ int main()
     replayNode.connectPolySync();
 
     return 0;
+}
+
+
+/**
+ * @brief Get session id value from command line input
+ *
+ * @return ps_rnr_session_id from user
+ */
+ps_rnr_session_id getSessionIdInput() const
+{
+    ps_rnr_session_id sessionId;
+
+    cout << "Enter replay session id: ";
+
+    cin >> sessionId;
+
+    return sessionId;
+}
+
+
+/**
+ * @brief Run until user inputs quit command 'q'
+ */
+void loopUntilQuitCommandReceived() const
+{
+    string input;
+
+    do
+    {
+        cout << endl << "Enter 'q' to end replay: ";
+
+        cin >> input;
+    }
+    while( input != "q" );
 }

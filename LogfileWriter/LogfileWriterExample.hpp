@@ -1,6 +1,5 @@
 /**
- * @file LogFileTestNode.hpp
- * @brief PolySync Node used to test the PolySyncLogFile class functionality.
+ * @file LogfileWriterExample.hpp
  *
  * PUBLIC_HEADER
  */
@@ -8,74 +7,94 @@
 #ifndef LOGFILEWRITERNODE_HPP
 #define LOGFILEWRITERNODE_HPP
 
-#include <PolySyncNode.hpp>
-#include <PolySyncDataModel.hpp>
-#include <PolySyncLogfile.hpp>
 
+#include <PolySyncNode.hpp>
+
+
+// Forward declaration
+namespace polysync{
+    class Logfile;
+}
+
+
+/**
+ * @brief The LogfileWriterNode class
+ *
+ * @li Implement an interface to polysync::Node
+ * @li Open PolySync *.plog file using the PolySync C++ Logfile API.
+ * @li On each call to @ref okStateEvent() write a
+ * polysync::datamodel::ByteArrayMessage to the logfile.
+ */
 class LogfileWriterNode : public polysync::Node
 {
 
 public:
 
     /**
-     * @brief LogfileTestNode Empty Constructor
-     * Initialize private variables and call polysync::Node::Node()
-     * (base class constructor)
+     * @brief Destructor
+     *
+     * @li Call polysync::Node::Node() -- Base class constructor
      */
     LogfileWriterNode();
 
-    /**
-     * @brief Called from initStateEvent(), this function sets up all the
-     * parameters needed in order to Record (write) a Logfile.
-     *
-     * @note Sets filterOutMessages() by type (optional).
-     * Sets filepath (optional) and Session Id.
-     * Sets mode to write, and enables state.
-     * Sets _numMessagesWritten to 0; final result printed in releaseStateEvent.
-     *
-     * @note After this function is called in initStateEvent(), fall through
-     * to okStateEvent() to write a single message for each okStateEvent()
-     * loop.
-     */
-    void prepareLogfileToWrite();
 
     /**
-     * @brief Writes a single message for each okStateEvent() loop until
-     * Ctrl + C.
+     * @brief Default Desctructor -- Does nothing
+     *
+     * @note Dynamically allocated resources are deleted in @ref
+     * releaseStateEvent();
      */
-    void writeMessage();
+    virtual ~LogfileWriterNode() = default;
+
+   /**
+    * @note Default use case is on a single machine. Uncomment statements
+    * provided in the source to aid with distributed hosts.
+    *
+    * @li Set path to *.plog file
+    * @li Set Logfile mode to read
+    * @li Set Logfile state to enabled
+    */
+    virtual void prepareLogfileToWrite();
 
     /**
-     * @brief Prints results: if _messagesWereWritten, _numMessagesWritten.
-     * If _messagesWereRead, _numMessagesRead.
-     * If _logFileWasIterated, iterator completed.
+     * @li Create polysync::datamodel::ByteArrayMessage
+     * @li Write message to the Logfile queue
+     * @li Every 20 messages, notify user via std out.
      */
-    void printResults();
+    virtual void writeMessage();
+
+    /**
+     * @li Output number of messages processed
+     * @li Notify user that end of file was reached
+     */
+    virtual void printResults();
 
 protected:
 
     // allocate Logfile in initstate
-    void initStateEvent() override;
+    virtual void initStateEvent() override;
 
     // create message and write to file, disconnect.
-    void okStateEvent() override;
+    virtual void okStateEvent() override;
 
     // called once upon disconnect. Validate here with mode.
-    void releaseStateEvent() override;
+    virtual void releaseStateEvent() override;
 
-private:
+protected:
+
+    // Compile-time constants
+    // Default path assumes that the C or C++ Log Writer has been used.
+    static constexpr auto DefaultLogfilePath = "/tmp/polysync_logfile.plog";
+
+    static constexpr ps_timestamp FiveMilliSeconds = 5000;
+
+    static constexpr ps_timestamp FiveSeconds = 5000000;
+
+protected:
 
     polysync::Logfile * _logFile;
 
     int _numMessagesWritten;
-
-    int _numMessagesRead;
-
-    bool _messagesWereWritten;
-
-    bool _messagesWereRead;
-
-    bool _logFileWasIterated;
 
 }; // END LogFileTestNode
 

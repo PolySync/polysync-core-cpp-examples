@@ -1,5 +1,5 @@
 /**
- * @file LogfileQueueReaderExample.hpp
+ * @file LogfileReaderExample.hpp
  *
  * PUBLIC_HEADER
  */
@@ -18,14 +18,15 @@ namespace polysync{
 
 
 /**
- * @brief The LogfileQueueReaderNode class
+ * @brief The LogfileReaderNode class
  *
  * @li Implement an interface to polysync::Node
  * @li Open PolySync *.plog file using the PolySync C++ Logfile API.
- * @li Enable the Logfile object's message queue to receive data that has been
- * extracted from the logfile.
+ * @li Override polysync::Node::messageEvent() to receive data that has been
+ * extracted from the logfile and published to the PolySync bus via the Logfile
+ * API.
  */
-class LogfileQueueReaderNode : public polysync::Node
+class LogfileReaderNode : public polysync::Node
 {
 
 public:
@@ -35,7 +36,7 @@ public:
      *
      * @li Call polysync::Node::Node() -- Base class constructor
      */
-    LogfileQueueReaderNode();
+    LogfileReaderNode();
 
     /**
      * @brief Default Desctructor -- Does nothing
@@ -43,25 +44,19 @@ public:
      * @note Dynamically allocated resources are deleted in @ref
      * releaseStateEvent();
      */
-    virtual ~LogfileQueueReaderNode() = default;
+    virtual ~LogfileReaderNode() = default;
+
 
 protected:
 
     /**
+     * @note Uncomment the first statement to demonstrate message filtering.
+     *
      * @li Set path to *.plog file
-     * @li Enable message queue
      * @li Set Logfile mode to read
      * @li Set Logfile state to enabled
      */
     virtual void prepareLogfileToRead();
-
-    /**
-     * @li Dequeue PolySync message
-     * @li Validate dequeued message
-     * @li Increment message count
-     * @li Print message to std out
-     */
-    virtual void readDequeuedMessage();
 
     /**
      * @li Output number of messages processed
@@ -69,21 +64,21 @@ protected:
      */
     virtual void printResults();
 
+
     /**
      * @note Called once after polysync::Node::connectPolySync() is called
      *
      * @li Allocate Logfile object
      * @li Call @ref prepareLogfileToRead()
-     * @li If something went wrong, @ref polysync::Node::disconnectPolySync()
+     * @li If something went wrong, disconnectPolySync();
      */
     virtual void initStateEvent() override;
 
     /**
      * @note Called repeatedly during runtime
      *
-     * @li Pop message from the queue
      * @li Print message data to std out
-     * @li if end of logfile reached, @ref polysync::Node::disconnectPolySync()
+     * @li @ref disconnectPolySync() if end of logfile has been reached
      */
     virtual void okStateEvent() override;
 
@@ -95,6 +90,15 @@ protected:
      * @li delete dynamically allocated memory
      */
     virtual void releaseStateEvent() override;
+
+    /**
+     * @note Called repeatedly, any time data is available from the PolySync
+     * bus.
+     *
+     * @param std::shared_ptr< PolySyncMessage >
+     */
+    virtual void messageEvent(
+            std::shared_ptr< polysync::Message > message ) override;
 
 
 protected:
@@ -111,14 +115,13 @@ protected:
 
     static constexpr uint Enable = 1;
 
-
 protected:
 
     polysync::Logfile * _logFile;
 
     int _numMessagesRead;
 
-}; // END LogFileTestNode
+};
 
 
 #endif // LOGFILEQUEUEREADERNODE_HPP
