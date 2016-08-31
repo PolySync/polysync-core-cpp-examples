@@ -134,7 +134,7 @@ int main()
  *
  * @return ps_rnr_session_id from user
  */
-ps_rnr_session_id getSessionIdInput() const
+ps_rnr_session_id getSessionIdInput()
 {
     ps_rnr_session_id sessionId;
 
@@ -149,7 +149,7 @@ ps_rnr_session_id getSessionIdInput() const
 /**
  * @brief Run until user inputs quit command 'q'
  */
-void loopUntilQuitCommandReceived() const
+void loopUntilQuitCommandReceived()
 {
     string input;
 
