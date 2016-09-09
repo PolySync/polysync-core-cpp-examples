@@ -39,16 +39,12 @@
 
 using namespace std;
 
+int MAX_POINTS = 1000;
+
 /**
- * @brief HellowWorldSubscriberNode class
- *
- * The HelloWorldSubscriberNode class exists to override the functions defined
- * in the base Node class.  The functions exist in the base class but are
- * stubbed out and must be overloaded in order for them to do something.  In
- * this instance the initStateEvent and the messageHandlerEvent are overloaded
- * to register for the messages and receive them, respectively.
+ * @brief
  */
-class HelloWorldSubscriberNode : public polysync::Node
+class GroundPlaneDetection : public polysync::Node
 {
 private:
     ps_msg_type _messageType;
@@ -82,11 +78,34 @@ public:
     virtual void messageEvent( std::shared_ptr< polysync::Message > message )
     {
         using namespace polysync::datamodel;
-        if( LidarPointsMessage lidarPoints = getSubclass< LidarPointsMessage >( message ) )
-        {  
-//            lidarPoints->print();
+        if( std::shared_ptr <LidarPointsMessage > lidarPointsMessage = getSubclass< LidarPointsMessage >( message ) )
+        {
 
-            std::vector< polysync::datamodel::LidarPoint > lidarPoint = lidarPoints.getPoints();
+            LidarPointsMessage groundPlaneMessage ( *this );
+
+            groundPlaneMessage.setHeaderTimestamp( polysync::getTimestamp() );
+
+
+            std::vector< polysync::datamodel::LidarPoint > lidarPoints = lidarPointsMessage->getPoints();
+
+            std::vector< polysync::datamodel::LidarPoint > groundPlanePoints;
+
+            groundPlanePoints.reserve( MAX_POINTS );
+
+            for( polysync::datamodel::LidarPoint point : lidarPoints )
+            {
+                std::array< float, 3 > position = point.getPosition();
+
+                if( position[2] < 0.5 and
+                        position [0] >= 1.5 )
+                {
+                    groundPlanePoints.push_back( point );
+                }
+            }
+
+            groundPlaneMessage.setPoints( groundPlanePoints );
+
+            groundPlaneMessage.publish();
 
         }
     }
@@ -97,18 +116,18 @@ public:
  * @brief main
  *
  * Entry point for this tutorial application
- * The "connectPolySync" begins this node's PolySync execution loop.
+ * The "connectPolySync" begins the node's PolySync execution loop.
  *
  * @return int - exit code
  */
 int main()
 {
     // Create an instance of the HelloWorldNode and connect it to PolySync
-    HelloWorldSubscriberNode subscriberNode;
+    GroundPlaneDetection groundPlaneNode;
 
     // When the node has been created, it will cause an initStateEvent to
     // to be sent.
-    subscriberNode.connectPolySync();
+    groundPlaneNode.connectPolySync();
 
     return 0;
 }
