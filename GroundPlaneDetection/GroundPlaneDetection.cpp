@@ -80,33 +80,42 @@ public:
         using namespace polysync::datamodel;
         if( std::shared_ptr <LidarPointsMessage > lidarPointsMessage = getSubclass< LidarPointsMessage >( message ) )
         {
-
-            LidarPointsMessage groundPlaneMessage ( *this );
-
-            groundPlaneMessage.setHeaderTimestamp( polysync::getTimestamp() );
-
-
-            std::vector< polysync::datamodel::LidarPoint > lidarPoints = lidarPointsMessage->getPoints();
-
-            std::vector< polysync::datamodel::LidarPoint > groundPlanePoints;
-
-            groundPlanePoints.reserve( MAX_POINTS );
-
-            for( polysync::datamodel::LidarPoint point : lidarPoints )
+            // don't want to process our own messages
+            if( lidarPointsMessage->getHeaderSrcGuid() != this->getGUID() )
             {
-                std::array< float, 3 > position = point.getPosition();
+                LidarPointsMessage groundPlaneMessage ( *this );
 
-                if( position[2] < 0.5 and
-                        position [0] >= 1.5 )
+                groundPlaneMessage.setHeaderTimestamp( polysync::getTimestamp() );
+
+
+                std::vector< polysync::datamodel::LidarPoint > lidarPoints = lidarPointsMessage->getPoints();
+
+                std::vector< polysync::datamodel::LidarPoint > groundPlanePoints;
+
+                std::array< float, 3 > position;
+
+    //            groundPlanePoints.reserve( MAX_POINTS );
+
+                for( polysync::datamodel::LidarPoint point : lidarPoints )
                 {
-                    groundPlanePoints.push_back( point );
+                    position = point.getPosition();
+
+                    if( position[0] >= 2.5 and
+                            position[0] < 4 and
+                            position[2] < 0.5 )
+                    {
+                        groundPlanePoints.push_back( point );
+                    }
                 }
+
+                groundPlaneMessage.setPoints( groundPlanePoints );
+
+                groundPlaneMessage.publish();
+
+                groundPlanePoints.clear();
+                lidarPoints.clear();
+
             }
-
-            groundPlaneMessage.setPoints( groundPlanePoints );
-
-            groundPlaneMessage.publish();
-
         }
     }
 
