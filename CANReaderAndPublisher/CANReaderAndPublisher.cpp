@@ -44,7 +44,6 @@
 #include <PolySyncDTCException.hpp>
 #include <PolySyncDataModel.hpp>
 
-
 class CANReaderAndPublisher : public polysync::Node
 {
 
@@ -58,6 +57,47 @@ public:
     }
 
     virtual ~CANReaderAndPublisher() = default;
+
+
+    polysync::datamodel::CanFrameMessage buildCanFrameMessage()
+    {
+        // Read data from the device, timeout after one second.
+        auto payload = _channel.read( 1000000 );
+
+        std::vector < uchar > payloadVector;
+
+        payloadVector.assign( payload.begin(), payload.end() );
+
+        // Create a local CAN Frame message that we can pack with data
+        polysync::datamodel::CanFrameMessage canFrame( *this );
+
+        canFrame.setDataBuffer( payloadVector );
+
+        // The message timestamp represents the first instance when the data
+        // was received by PolySync
+        canFrame.setTimestamp( _channel.getInputFrameHardwareTimestamp() );
+
+        return canFrame;
+    }
+
+    void printData( std::vector < uchar > payloadVector )
+    {
+        // Output CAN frame data.
+        std::cout << "CAN frame - ID: 0x"
+                  << _channel.getInputFrameId()
+                  << std::endl;
+
+        std::cout << "DLC: "
+                  << _channel.getInputFramePayloadSize()
+                  << std::endl << std::endl;
+
+        std::cout << "Data Payload" << std::endl;
+
+        for( auto currentFrame : payloadVector )
+        {
+            std::cout << "\t" << (short) currentFrame << std::endl;
+        }
+    }
 
 protected:
 
@@ -92,37 +132,8 @@ protected:
     {
         try
         {
-            // Read data from the device, timeout after one second.
-            auto payload = _channel.read( 1000000 );
-
-            std::vector < uchar > payloadVector;
-
-            payloadVector.assign( payload.begin(), payload.end() );
-
-            // Create a local CAN Frame message that we can pack with data
-            polysync::datamodel::CanFrameMessage canFrame( *this );
-
-            canFrame.setDataBuffer( payloadVector );
-
-            // The message timestamp represents the first instance when the data
-            // was received by PolySync
-            canFrame.setTimestamp( _channel.getInputFrameHardwareTimestamp() );
-
-            // Output CAN frame data.
-            std::cout << "CAN frame - ID: 0x"
-                      << _channel.getInputFrameId()
-                      << std::endl;
-
-            std::cout << "DLC: "
-                      << _channel.getInputFramePayloadSize()
-                      << std::endl << std::endl;
-
-            std::cout << "Data Payload" << std::endl;
-
-            for( auto currentFrame : payloadVector )
-            {
-                std::cout << "\t" << (short) currentFrame << std::endl;
-            }
+            auto canFrame = buildCanFrameMessage();
+            printData( canFrame.getDataBuffer() );
 
             // The header timestamp represents when this message was
             // published to the bus by the producer
