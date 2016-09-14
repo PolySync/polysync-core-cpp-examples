@@ -27,15 +27,6 @@ public:
     ApplicationInputHandler();
 
     /**
-     * @brief Determines whether user supplied cmd line options are supported.
-     *
-     * @param optchar Character of user supplied option on cmd line.
-     *
-     * @return Returns -1 if not supported; returns index if supported (O-N)
-     */
-    int getFlagIndex( const char optionArgumentIndex );
-
-    /**
      * @brief Parses cmd line arguments in C getopt style.
      *
      * @param argv Argument vector.
@@ -140,8 +131,6 @@ private:
     bool _getOptHelpFlag;
 
     bool _durationSpecifiedFlag;
-
-    const std::vector < char > _optionInputFlags;
 
     std::vector < std::string > _filteredMessageNames;
 
