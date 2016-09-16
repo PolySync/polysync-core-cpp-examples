@@ -101,7 +101,9 @@ public:
                     position = point.getPosition();
 
                     if( position[0] >= 2.5 and
-                            position[0] < 4 and
+                            position[0] < 25 and
+                            position[1] > -12 and
+                            position[1] < 12 and
                             position[2] < 0.5 )
                     {
                         groundPlanePoints.push_back( point );
