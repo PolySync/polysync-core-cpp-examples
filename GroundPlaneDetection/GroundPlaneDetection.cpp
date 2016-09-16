@@ -39,23 +39,20 @@
 
 using namespace std;
 
-int MAX_POINTS = 1000;
 
 /**
  * @brief
  */
 class GroundPlaneDetection : public polysync::Node
 {
-private:
-    ps_msg_type _messageType;
     
 public:
+
     /**
-     * @brief initStateEvent
-     *
      * Subscribe to a message that the publisher node will send.
      *
      * @param void
+     *
      * @return void
      */
     void initStateEvent() override
@@ -68,64 +65,99 @@ public:
     }
     
     /**
-     * @brief messageEvent
-     * 
+     * Publish our current ground plane on each call to okStateEvent().
+     *
+     * @param void
+     *
+     * @return void
+     */
+    void okStateEvent() override
+    {
+        publishGroundPlane();
+
+        polysync::sleepMicro( _50_MS );
+    }
+
+    /**
      * Extract the information from the provided message
      * 
      * @param std::shared_ptr< Message > - variable containing the message
+     *
      * @return void
      */
     virtual void messageEvent( std::shared_ptr< polysync::Message > message )
     {
         using namespace polysync::datamodel;
-        if( std::shared_ptr <LidarPointsMessage > lidarPointsMessage = getSubclass< LidarPointsMessage >( message ) )
+        if( std::shared_ptr < LidarPointsMessage > lidarPointsMessage =
+                getSubclass< LidarPointsMessage >( message ) )
         {
             // don't want to process our own messages
-            if( lidarPointsMessage->getHeaderSrcGuid() != this->getGUID() )
+            if( lidarPointsMessage->getHeaderSrcGuid() != getGuid() )
             {
-                LidarPointsMessage groundPlaneMessage ( *this );
+                _groundPlanePoints.clear();
 
-                groundPlaneMessage.setHeaderTimestamp( polysync::getTimestamp() );
-
-
-                std::vector< polysync::datamodel::LidarPoint > lidarPoints = lidarPointsMessage->getPoints();
-
-                std::vector< polysync::datamodel::LidarPoint > groundPlanePoints;
-
-                std::array< float, 3 > position;
-
-    //            groundPlanePoints.reserve( MAX_POINTS );
-
-                for( polysync::datamodel::LidarPoint point : lidarPoints )
+                for( auto point : lidarPointsMessage->getPoints() )
                 {
-                    position = point.getPosition();
+                    auto position = point.getPosition();
 
-                    if( position[0] >= 2.5 and
-                            position[0] < 25 and
-                            position[1] > -12 and
-                            position[1] < 12 and
-                            position[2] < 0.5 )
+                    if( pointIsNearGround( position ) )
                     {
-                        groundPlanePoints.push_back( point );
+                        _groundPlanePoints.push_back( point );
                     }
                 }
-
-                groundPlaneMessage.setPoints( groundPlanePoints );
-
-                groundPlaneMessage.publish();
-
-                groundPlanePoints.clear();
-                lidarPoints.clear();
-
             }
         }
     }
 
+    /**
+     * Populate a LidarPointsMessage with our ground plane points, and publish
+     * the data to the bus.
+     *
+     * @param void
+     *
+     * @return void
+     */
+    void publishGroundPlane()
+    {
+        polysync::datamodel::LidarPointsMessage groundPlaneMessage ( *this );
+
+        groundPlaneMessage.setHeaderTimestamp(
+                    polysync::getTimestamp() );
+
+        groundPlaneMessage.setPoints( _groundPlanePoints );
+
+        groundPlaneMessage.publish();
+    }
+
+    /**
+     * Validate a 3d point, in this case, we're interested in points near the
+     * ground plane, close to the origin.
+     *
+     * @param [in] point 3d point
+     *
+     * @return true if point is near the ground plane and near the origin.
+     */
+    bool pointIsNearGround( const std::array< float, 3 > & point )
+    {
+        return point[ 0 ] >= 2.5 and
+               point[ 0 ] < 25 and
+               point[ 1 ] > -12 and
+               point[ 1 ] < 12 and
+               point[ 2 ] < 0.25 and
+               point[ 2 ] > -0.25;
+    }
+
+private:
+
+    static constexpr ps_timestamp _50_MS = 10000;
+
+    ps_msg_type _messageType;
+
+    std::vector< polysync::datamodel::LidarPoint > _groundPlanePoints;
+
 };
 
 /**
- * @brief main
- *
  * Entry point for this tutorial application
  * The "connectPolySync" begins the node's PolySync execution loop.
  *
