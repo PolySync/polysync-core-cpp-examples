@@ -5,22 +5,9 @@ using namespace cv;
 using namespace std;
 
 GridMap::GridMap( ) {
+    srand(time(NULL));
     generateMap( );
     generateRobot( );
-    moveRobot(1, 1);
-    moveRobot(100, 100);
-    moveRobot(200, 1);
-    moveRobot(1, 100);
-    moveRobot(300, 1);
-    moveRobot(225, 222);
-    moveRobot(4, 360);
-    moveRobot(2, 1);
-    moveRobot(300, 100);
-    moveRobot(200, 333);
-    moveRobot(15, 30);
-    moveRobot(121, 121);
-    moveRobot(325, 322);
-    moveRobot(4, 260);
     /*for(int i = 1; i < nCols - robSize-1; i++) {
         moveRobot(nRows-robSize-1, i);
     }*/
@@ -58,7 +45,6 @@ void GridMap::generateRobot( ) {
     resize(robot, robot, Size(robSize, robSize));
     robLoc[0][0] = nCols - robSize;
     robLoc[0][1] = nRows - robSize;
-    //fillRobotQuad( robSize );
     fillQuad(robLoc, robSize);
     robot.copyTo(map(cv::Rect(robLoc[0][0], robLoc[0][1], robSize, robSize)));
     updateMap( );
@@ -66,14 +52,15 @@ void GridMap::generateRobot( ) {
 }
 
 void GridMap::generateGoal( ) {
-    golLoc[0][0] = robSize;
-    golLoc[0][1] = robSize;
-    //golLoc[0][0] = rand() % 50;
-    //golLoc[0][1] = rand() % 50;
+    golLoc[0][0] = 0;
+    golLoc[0][1] = 0;
+    //golLoc[0][0] = rand() % 50 + 275;
+    //golLoc[0][1] = rand() % 50 + 1;
     fillQuad(golLoc, robSize);
 }
 
 void GridMap::moveRobot( int x, int y ){
+    // may make more sense to checkHit before moving.
     bool hit = checkHit( x, y, robSize );
     if (hit == false) {
         robLoc[0][0] = x;
@@ -108,8 +95,6 @@ void GridMap::updateMap( ) {
 bool GridMap::checkHit( int x, int y, int size ) {
     int tempLoc[4][2]{x, y, 0, 0, 0, 0, 0, 0};
     fillQuad(tempLoc, size);
-    cout << "temp " << tempLoc[0][0] << " " << tempLoc[0][1] << endl;
-    cout << "temp " << tempLoc[3][0] << " " << tempLoc[3][1] << endl;
     for (int i = 0; i < 4; i++) {
         if (map.at<uchar>(Point(3*tempLoc[i][0], tempLoc[i][1])) == 0){
             printf("HIT!! %i, %i, %i\n", tempLoc[i][0], tempLoc[i][1],
@@ -149,18 +134,4 @@ for(int i = map.cols - robot.cols; i <= map.cols - robot.cols; i++) {
         waitKey(1);
     }
 }
-printf("%i\n", robot.cols);
-printf("%i\n", robot.rows);
-
-printf("%i\n", map.cols);
-printf("%i\n", map.rows);
-
-printf("%i\n", staticMap.cols);
-printf("%i\n", staticMap.rows);
-
-//cout << map;
-
-Scalar intensity = map.at<int>(Point(50,50));
-printf("%f\n", intensity.val[0]);
-
 */
