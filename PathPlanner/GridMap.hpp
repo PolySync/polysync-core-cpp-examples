@@ -34,23 +34,33 @@ public:
 
     bool checkHit( int x, int y, int size );
 
-    bool checkGoal( );
+    bool checkGoal( int index );
 
-private:
+    bool checkMove( int index, int size );
+
+    int getIndexFromState( int x, int y );
+
+    void getStateFromIndex( int index );
 
     Mat map;
     Mat robot;
     Mat gol;
     Mat staticMap;
     Mat pathMap;
-    string mapID{ "maze2.pgm" };
-    string robID{ "robot.jpg" };
-    string golID{ "gold.jpg" };
     int nRows{ 500 };
     int nCols{ 500 };
     int robSize{ 29 };
     int robLoc[4][2];
     int golLoc[4][2];
+    int checkMoveIndexX;
+    int checkMoveIndexY;
+
+private:
+
+    string mapID{ "maze2.pgm" };
+    string robID{ "robot.jpg" };
+    string golID{ "gold.jpg" };
+
     /*
     float _relativeTime{ 0.0 };
     const float _gridScale{ 10.0 };

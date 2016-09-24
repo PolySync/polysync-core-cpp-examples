@@ -22,8 +22,9 @@ aux_source_directory( . SRC )
 
 add_executable( ${PROJECT_NAME}
     #${SRC}
-    PathPlanner.cpp
+    #PathPlanner.cpp
     GridMap.cpp
+		search.cpp
 )
 
 target_link_libraries( ${PROJECT_NAME}

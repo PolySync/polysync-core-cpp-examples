@@ -15,7 +15,7 @@ using namespace polysync::datamodel;
 
 int main( )
 {
-    GridMap map;
+    GridMap world;
     /*
     Mat src = imread("maze1.png", CV_LOAD_IMAGE_COLOR);
     Mat map = imread("maze2.pgm", CV_LOAD_IMAGE_COLOR);
