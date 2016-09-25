@@ -44,7 +44,7 @@ class LaneKeepAssist : public polysync::Node
 {
 
 private:
-    const string node_name = "polysync-lane-keep-assist-cpp";
+    const string nodeName = "polysync-lane-keep-assist-cpp";
 
     // Messages to subscribe to
     const string lane_model_msg_name = "ps_lane_model_msg";
@@ -76,7 +76,10 @@ public:
         setDomainID( PSYNC_DEFAULT_DOMAIN );
         setSDFID( PSYNC_SDF_ID_INVALID );
         setFlags( PSYNC_INIT_FLAG_STDOUT_LOGGING );
-        setNodeName( node_name );
+        setNodeName( nodeName );
+
+//        setSubscriberReliabilityQos( lane_model_msg_name, RELIABILITY_QOS_RELIABLE );
+//        setSubscriberReliabilityQos( platform_motion_msg_name, RELIABILITY_QOS_RELIABLE );
     }
     
     ~LaneKeepAssist()
@@ -90,8 +93,6 @@ public:
 
         _platformMotionMessageType = getMessageTypeByName( platform_motion_msg_name );
         
-        // Register as a listener for diagnostic messages that any nodes may 
-        // send.
         registerListener( _laneModelMessageType );
 
         registerListener( _platformMotionMessageType );
@@ -139,7 +140,7 @@ public:
 
         // The ok state is called periodically by the system so sleep to reduce
         // the number of messages sent.
-        polysync::sleepMicro( 1000000 );
+        polysync::sleepMicro( 10000 );
     }
     
     /**
@@ -147,7 +148,7 @@ public:
      * 
      * Extract the information from the provided message
      * 
-     * param [in] std::shared_ptr< Message > - variable containing the message
+     * param [in] std::shared_ptr< Message > - variable containing the base class message
      */
     void messageEvent( std::shared_ptr< polysync::Message > message ) override
     {
@@ -155,7 +156,7 @@ public:
 
         if( std::shared_ptr< polysync::datamodel::LaneModelMessage > incomingMessage =
                 getSubclass< LaneModelMessage >( message ) )
-        {  
+        {
             // Get an instance of the incoming lanes
             std::vector< polysync::datamodel::LaneModel > incomingLanes = incomingMessage->getLanes();
 
