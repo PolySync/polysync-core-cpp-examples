@@ -22,6 +22,7 @@ int main( )
     arma::Mat<int>searchMap(world.nRows, world.nCols, fill::ones);
     arma::Mat<float>heuristic(world.nRows, world.nCols, fill::zeros);
     arma::Mat<float>score(world.nRows, world.nCols, fill::zeros);
+    arma::Mat<float>pathScore(world.nRows, world.nCols, fill::zeros);
     int curLoc = world.getIndexFromState(world.robLoc[0][0], world.robLoc[0][1]);
     //int curLoc = world.getIndexFromState( world.robSize-1, world.robSize-1 );
     arma::uword curLocU = arma::uword(curLoc);
@@ -32,57 +33,84 @@ int main( )
     for (int i = 0; i < world.nCols; i++) {
         for (int j = 0; j < world.nRows; j++) {
             searchMap(i, j) = world.map.at<uchar>(Point(3*i, j));
-            heuristic(i, j) = pow(sqrt( (i^2) + (j^2) ), epsilon);
+            //heuristic(i, j) = pow(sqrt( (i^2) + (j^2) ), epsilon);
+            //heuristic(i, j) = sqrt( (i^2) + (j^2) );
+            heuristic(i, j) = (i + j) * epsilon;
             score(i, j) = 1e9;
+            pathScore(i, j) = 1e9;
         }
     }
-    score(curLoc) = heuristic(curLoc) + path[curLoc].size() - 1;
+
+    score(curLoc) = heuristic(curLoc) + path[curLoc].size();
+    pathScore(curLoc) = path[curLoc].size();
     find(score == score.min());
 
     arma::uword newLocU;
     int newLoc;
     bool endgame = false;
-    tempMoves = {curLoc - 1, curLoc + 1, curLoc - 500, curLoc + 500};
+    tempMoves = {curLoc - 1, curLoc + 1, curLoc - world.nRows, curLoc + world.nCols};
+    std::vector<int> closedSet;
+    std::vector<int> openSet;
+    openSet.push_back(curLoc);
     while ( !endgame ) {
+        int lowScore = 1e9;
+        for (uint i = 0; i < openSet.size(); i++) {
+            if ( score(openSet[i]) < lowScore ) {
+                lowScore = score(openSet[i]);
+                curLoc = openSet[i];
+                //cout << i << " " << openSet[i] << " " << lowScore <<endl;
+            }
+        }
         score.min(curLocU);
+        //curLocU = arma::uword(curLoc);
         curLoc = int(curLocU);
-        cout << score(curLocU) << endl;
+        //cout << score(curLocU) << endl;
         tempMoves = {curLoc - 1, curLoc + 1, curLoc - 500, curLoc + 500};
+        moves[curLoc].clear();
         for (uint i = 0; i < tempMoves.size(); i++) {
             if ( world.checkMove( tempMoves[i], world.robSize ) ) {
                 moves[curLoc].push_back(tempMoves[i]);
+                if ( std::find(openSet.begin(), openSet.end(), tempMoves[i]) != openSet.end() ) {
+                    openSet.push_back(tempMoves[i]);
+                }
                 /*cout << moves[curLoc].back() << " & " <<
                         world.checkMoveIndexX << " & " <<
                         world.checkMoveIndexY << " & " <<
                         moves[curLoc].size()<< endl; */
-            } else {
-                score(arma::uword(tempMoves[i])) = 1e18;
             }
         }
         for (uint j = 0; j < moves[curLoc].size(); j++) {
             newLoc = moves[curLoc][j];
             newLocU = arma::uword(newLoc);
+            if ( std::find(closedSet.begin(), closedSet.end(), newLoc) != closedSet.end() ) {
+                continue;
+            }
             if ( world.checkGoal(newLoc) ) {
                 cout << "GOAL!!" << endl;
                 curLoc = newLoc;
                 curLocU = newLocU;
                 endgame = true;
             } else  {
-                path[newLoc] = path[curLoc];
-                path[newLoc].push_back(newLoc);
-                score(newLocU) = heuristic(newLocU) + path[newLoc].size() - 1;
+                if ( path[curLoc].size() + 1 < pathScore(newLoc) ) {
+                    path[newLoc] = path[curLoc];
+                    path[newLoc].push_back(newLoc);
+                    score(newLocU) = heuristic(newLocU) + path[newLoc].size();
+                    pathScore(newLocU) = path[newLoc].size();
+                }
             }
         }
         score(curLocU) = 1e9;
+        openSet.erase(std::remove(openSet.begin(), openSet.end(), curLoc), openSet.end());
+        closedSet.push_back(curLoc);
         world.getStateFromIndex( curLoc );
         cout << curLoc << endl;
         world.moveRobot( world.checkMoveIndexX, world.checkMoveIndexY );
         //endgame = true;
-    }
+    }/*
 
     for( int k = 0; k < 500; ++k) {
         cout << heuristic(k, 499) << endl;
-    }
+    }*/
 /*
     score[1] = 4;
     score[2] = 4;

@@ -12,12 +12,12 @@ GridMap::GridMap( ) {
         moveRobot(nRows-robSize-1, i);
     }*/
     //moveRobot(0,0);
-    moveRobot(1,1);
-    moveRobot(robSize,robSize);
-    moveRobot(robSize*2,robSize*2);
-    moveRobot(robSize*2-1,robSize*2-1);
-    moveRobot(robSize-1,robSize-1);
-    moveRobot(nRows - robSize - 1, nCols - robSize - 1);
+    //moveRobot(1,1);
+    //moveRobot(robSize,robSize);
+    //moveRobot(robSize*2,robSize*2);
+    //moveRobot(robSize*2-1,robSize*2-1);
+    //moveRobot(robSize-1,robSize-1);
+    //moveRobot(nRows - robSize - 1, nCols - robSize - 1);
     //moveRobot(robSize*2-1,robSize*2);
 }
 
@@ -68,7 +68,7 @@ void GridMap::moveRobot( int x, int y ){
         robLoc[0][0] = x;
         robLoc[0][1] = y;
         fillQuad(robLoc, robSize);
-        cout << robLoc[3][0] << " " << robLoc[3][1] << endl;
+        //cout << robLoc[3][0] << " " << robLoc[3][1] << endl;
         updateMap( );
     } else {
         //printf("HIT!! %i, %i, %i\n", x, y, map.at<uchar>(Point(x, y)));
