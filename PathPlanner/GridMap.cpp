@@ -1,5 +1,7 @@
-//Opencv C++ Program to solve mazes using mathematical morphology
+//GridMap.cpp
 #include "GridMap.hpp"
+#include <unistd.h>
+
 
 using namespace cv;
 using namespace std;
@@ -7,18 +9,11 @@ using namespace std;
 GridMap::GridMap( ) {
     srand(time(NULL));
     generateMap( );
-    //generateRobot( );
     /*for(int i = 1; i < nCols - robSize-1; i++) {
         moveRobot(nRows-robSize-1, i);
     }*/
-    //moveRobot(0,0);
     //moveRobot(1,1);
-    //moveRobot(robSize,robSize);
-    //moveRobot(robSize*2,robSize*2);
-    //moveRobot(robSize*2-1,robSize*2-1);
-    //moveRobot(robSize-1,robSize-1);
     //moveRobot(nRows - robSize - 1, nCols - robSize - 1);
-    //moveRobot(robSize*2-1,robSize*2);
 }
 
 GridMap::~GridMap( ) {
@@ -34,10 +29,11 @@ void GridMap::generateMap( ) {
         return;
     }
     generateGoal( );
-    //gol.copyTo(map(cv::Rect(golLoc[0][0], golLoc[0][1], robSize, robSize)));
     staticMap = map.clone();
     pathMap = map.clone();
+    //generateQuery( );
     generateRobot( );
+    showMap( );
 }
 
 void GridMap::generateRobot( ) {
@@ -47,17 +43,25 @@ void GridMap::generateRobot( ) {
     robLoc[0][1] = nRows - robSize - 1;
     fillQuad(robLoc, robSize);
     robot.copyTo(map(cv::Rect(robLoc[0][0], robLoc[0][1], robSize, robSize)));
-    updateMap( );
-    cout << robLoc[3][0] << " " << robLoc[3][1] << endl;
+    //cout << robLoc[3][0] << " " << robLoc[3][1] << endl;
+}
+
+void GridMap::generateQuery( ) {
+    query = imread(queID, CV_LOAD_IMAGE_COLOR);
+    resize(query, query, Size(robSize, robSize));
+    queLoc[0][0] = nCols - robSize - 1;
+    queLoc[0][1] = nRows - robSize - 1;
+    fillQuad(queLoc, robSize);
+    query.copyTo(map(cv::Rect(queLoc[0][0], queLoc[0][1], robSize, robSize)));
 }
 
 void GridMap::generateGoal( ) {
     gol = imread(golID, CV_LOAD_IMAGE_COLOR);
     resize(gol, gol, Size(robSize, robSize));
-    golLoc[0][0] = 0;
-    golLoc[0][1] = 0;
-    //golLoc[0][0] = rand() % 50 + 275;
-    //golLoc[0][1] = rand() % 50 + 1;
+    //golLoc[0][0] = 0;
+    //golLoc[0][1] = 0;
+    golLoc[0][0] = rand() % 50 + 150;
+    golLoc[0][1] = rand() % 50 + 1;
     fillQuad(golLoc, robSize);
     gol.copyTo(map(cv::Rect(golLoc[0][0], golLoc[0][1], robSize, robSize)));
 }
@@ -68,14 +72,19 @@ void GridMap::moveRobot( int x, int y ){
         robLoc[0][0] = x;
         robLoc[0][1] = y;
         fillQuad(robLoc, robSize);
-        //cout << robLoc[3][0] << " " << robLoc[3][1] << endl;
         updateMap( );
     } else {
-        //printf("HIT!! %i, %i, %i\n", x, y, map.at<uchar>(Point(x, y)));
-        //waitKey(10);
         return;
     }
     checkGoal( getIndexFromState(robLoc[0][0], robLoc[0][1]) );
+}
+
+void GridMap::moveQuery( int index ){
+    getStateFromIndex( index );
+    queLoc[0][0] = checkMoveIndexX;
+    queLoc[0][1] = checkMoveIndexY;
+    fillQuad(queLoc, robSize);
+    updateMap( );
 }
 
 void GridMap::fillQuad( int (&location)[4][2], int size ){
@@ -87,10 +96,22 @@ void GridMap::fillQuad( int (&location)[4][2], int size ){
     location[3][1] = location[2][1];
 }
 
-void GridMap::updateMap( ) {
+void GridMap::showMap( ) {
     map = staticMap.clone();
+    //query.copyTo(map(cv::Rect(queLoc[0][0], queLoc[0][1], robSize, robSize)));
     robot.copyTo(map(cv::Rect(robLoc[0][0], robLoc[0][1], robSize, robSize)));
-    imshow("test", map);
+    imshow("PolySync Path Planner Example", map);
+    waitKey(50);
+}
+
+void GridMap::updateMap( ) {
+    int xCenter = int( floor( robLoc[0][0] + (robSize/2) ));
+    int yCenter = int( floor( robLoc[0][1] + (robSize/2) ));
+    map = pathMap.clone();
+    pathMap.at<uchar>( Point(3*xCenter-1, yCenter) )= 0;
+    //query.copyTo(map(cv::Rect(queLoc[0][0], queLoc[0][1], robSize, robSize)));
+    robot.copyTo(map(cv::Rect(robLoc[0][0], robLoc[0][1], robSize, robSize)));
+    imshow("PolySync Path Planner Example", map);
     waitKey(1);
 }
 
@@ -114,8 +135,8 @@ bool GridMap::checkGoal( int index ) {
     getStateFromIndex( index );
     if( abs(checkMoveIndexX - golLoc[0][0]) <= robSize-1
         && abs(checkMoveIndexY - golLoc[0][1]) <= robSize-1 ) {
-        printf("GOAL!! %i, %i, %i\n", checkMoveIndexX, checkMoveIndexY,
-            map.at<uchar>(Point(checkMoveIndexX, checkMoveIndexY)));
+        //printf("GOAL!! %i, %i, %i\n", checkMoveIndexX, checkMoveIndexY,
+            //map.at<uchar>(Point(checkMoveIndexX, checkMoveIndexY)));
         return true;
     }
     return false;
@@ -143,23 +164,3 @@ void GridMap::getStateFromIndex( int index ) {
         checkMoveIndexY = index - nCols + checkMoveIndexX;
     }
 }
-/*
-printf("map.rows - robot.rows: %i\n", map.rows - robot.rows);
-
-for(int i = map.cols - robot.cols; i <= map.cols - robot.cols; i++) {
-//for( int i = 1; i <= 300; i++) {
-    for(int j = 1; j < map.rows - robot.rows; j++) {
-        map = staticMap.clone();
-        //map.at<uchar>(Point(3*i,j))= 127;
-        cout << static_cast <short> (staticMap.at<uchar>(Point(3*i,j))) << " "
-        << static_cast <short> (map.at<uchar>(Point(3*i,j))) << endl;
-        //staticMap.copyTo(map);
-        checkHit(i, j);
-        robot.copyTo(map(cv::Rect(i, j, robot.cols, robot.rows)));
-        staticMap.at<uchar>(Point(3*i,j))= 127;
-        //printf("vals: %i\n", map.at<uchar>(Point(i+100, j)));
-        imshow("test", map);
-        waitKey(1);
-    }
-}
-*/

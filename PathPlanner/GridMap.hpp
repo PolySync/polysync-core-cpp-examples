@@ -1,4 +1,4 @@
-//Opencv C++ Program to solve mazes using mathematical morphology
+//GridMap.hpp
 #ifndef GRIDMAP_HPP
 #define GRIDMAP_HPP
 
@@ -20,19 +20,9 @@ public:
 
     ~GridMap( );
 
-    void generateMap( );
-
-    void generateRobot( );
-
-    void generateGoal( );
-
     void moveRobot( int x, int y );
 
-    void fillQuad(int (&location)[4][2], int size);
-
-    void updateMap( );
-
-    bool checkHit( int x, int y, int size );
+    void moveQuery( int index );
 
     bool checkGoal( int index );
 
@@ -44,6 +34,7 @@ public:
 
     Mat map;
     Mat robot;
+    Mat query;
     Mat gol;
     Mat staticMap;
     Mat pathMap;
@@ -51,24 +42,34 @@ public:
     int nCols{ 500 };
     int robSize{ 29 };
     int robLoc[4][2];
+    int queLoc[4][2];
     int golLoc[4][2];
     int checkMoveIndexX;
     int checkMoveIndexY;
 
 private:
 
+    void generateMap( );
+
+    void generateRobot( );
+
+    void generateQuery( );
+
+    void generateGoal( );
+
+    void fillQuad(int (&location)[4][2], int size);
+
+    void showMap( );
+
+    void updateMap( );
+
+    bool checkHit( int x, int y, int size );
+
     string mapID{ "maze2.pgm" };
     string robID{ "robot.jpg" };
     string golID{ "gold.jpg" };
+    string queID{ "question.jpg" };
 
-    /*
-    float _relativeTime{ 0.0 };
-    const float _gridScale{ 10.0 };
-    const ulong _gridSideLength{ 100 };
-    const ulong _sensorID{ 11 };
-    const ulong _numberOfPoints{ 10000 };
-    const float _sineFrequency{ 4.0 };
-    */
 };
 
 #endif // GRIDMAP_HPP
