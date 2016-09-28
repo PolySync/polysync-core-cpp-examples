@@ -93,7 +93,6 @@ public:
     void releaseStateEvent() override
     {
         // do nothing, sleep for 10 milliseconds
-        polysync::sleepMicro( 10000 );
     }
     
     void errorStateEvent() override
