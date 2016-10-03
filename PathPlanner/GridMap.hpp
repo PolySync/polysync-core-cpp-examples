@@ -5,9 +5,6 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
-#include <cmath>
-#include <iostream>
-//#include <cstdlib>
 
 using namespace cv;
 using namespace std;
@@ -19,6 +16,10 @@ public:
     GridMap( );
 
     ~GridMap( );
+
+    void generateMap( );
+
+    void generateMap( int x, int y );
 
     void moveRobot( int x, int y );
 
@@ -49,13 +50,13 @@ public:
 
 private:
 
-    void generateMap( );
-
     void generateRobot( );
 
     void generateQuery( );
 
     void generateGoal( );
+
+    void generateGoal( int x, int y );
 
     void fillQuad(int (&location)[4][2], int size);
 

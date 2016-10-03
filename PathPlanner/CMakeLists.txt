@@ -1,6 +1,10 @@
 cmake_minimum_required( VERSION 2.8 )
 
-project( polysync-path-planner-cpp )
+set(CMAKE_BUILD_TYPE "Debug")
+
+project( polysync-path-planner-algorithm-cpp )
+
+project( polysync-path-planner-robot-cpp )
 
 if( NOT PSYNC_HOME )
     if( $ENV{PSYNC_HOME} )
@@ -20,14 +24,28 @@ include_directories(
 
 aux_source_directory( . SRC )
 
-add_executable( ${PROJECT_NAME}
+add_executable( polysync-path-planner-algorithm-cpp
     #${SRC}
     #PathPlanner.cpp
     GridMap.cpp
-		search.cpp
+		Planner.cpp
+		SearchNode.cpp
+		SearchNodeMain.cpp
 )
 
-target_link_libraries( ${PROJECT_NAME}
+target_link_libraries( polysync-path-planner-algorithm-cpp
+    ${PSYNC_LIBS}
+    ${OpenCV_LIBS}
+)
+
+add_executable( polysync-path-planner-robot-cpp
+    #${SRC}
+		GridMap.cpp
+		RobotNode.cpp
+		RobotNodeMain.cpp
+)
+
+target_link_libraries( polysync-path-planner-robot-cpp
     ${PSYNC_LIBS}
     ${OpenCV_LIBS}
 )

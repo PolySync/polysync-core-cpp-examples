@@ -1,5 +1,7 @@
 //GridMap.cpp
 #include "GridMap.hpp"
+#include <cmath>
+#include <iostream>
 #include <unistd.h>
 
 
@@ -8,7 +10,7 @@ using namespace std;
 
 GridMap::GridMap( ) {
     srand(time(NULL));
-    generateMap( );
+    //generateMap( );
     /*for(int i = 1; i < nCols - robSize-1; i++) {
         moveRobot(nRows-robSize-1, i);
     }*/
@@ -29,6 +31,22 @@ void GridMap::generateMap( ) {
         return;
     }
     generateGoal( );
+    staticMap = map.clone();
+    pathMap = map.clone();
+    //generateQuery( );
+    generateRobot( );
+    showMap( );
+}
+
+void GridMap::generateMap( int x, int y ) {
+    map = imread(mapID, CV_LOAD_IMAGE_COLOR);
+    resize(map, map, Size(nRows, nCols));
+    threshold(map, map, 254.9, 255, THRESH_BINARY);
+    if( !map.data ) {
+        printf("Error loading src \n");
+        return;
+    }
+    generateGoal( x, y );
     staticMap = map.clone();
     pathMap = map.clone();
     //generateQuery( );
@@ -62,6 +80,15 @@ void GridMap::generateGoal( ) {
     //golLoc[0][1] = 0;
     golLoc[0][0] = rand() % 50 + 150;
     golLoc[0][1] = rand() % 50 + 1;
+    fillQuad(golLoc, robSize);
+    gol.copyTo(map(cv::Rect(golLoc[0][0], golLoc[0][1], robSize, robSize)));
+}
+
+void GridMap::generateGoal( int x, int y ) {
+    gol = imread(golID, CV_LOAD_IMAGE_COLOR);
+    resize(gol, gol, Size(robSize, robSize));
+    golLoc[0][0] = x;
+    golLoc[0][1] = y;
     fillQuad(golLoc, robSize);
     gol.copyTo(map(cv::Rect(golLoc[0][0], golLoc[0][1], robSize, robSize)));
 }
@@ -151,7 +178,7 @@ bool GridMap::checkMove( int index, int size ) {
 }
 
 int GridMap::getIndexFromState( int x, int y ) {
-    return int(y * map.rows + x);
+    return int(y * nRows + x);
 }
 
 void GridMap::getStateFromIndex( int index ) {

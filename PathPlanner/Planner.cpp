@@ -1,14 +1,20 @@
-//Search.cpp
-#include "Search.hpp"
+//Planner.cpp
+#include "Planner.hpp"
+#include <cmath>
+#include <iostream>
 
 using namespace arma;
 using namespace std;
-using namespace polysync::datamodel;
 
-Search::Search( ) {
-    world = new GridMap;
+
+Planner::Planner( )
+    :
+    world( ),
+    curLoc( world.getIndexFromState(world.robLoc[0][0], world.robLoc[0][1]) ),
+    path( )
+    {
+    world.generateMap( );
     initializeSearchSpace( );
-    curLoc = world->getIndexFromState(world->robLoc[0][0], world->robLoc[0][1]);
     curLocU = arma::uword(curLoc);
     path[curLoc].push_back(curLoc);
     globalScore(curLocU) = heuristic(curLocU) + path[curLoc].size();
@@ -16,20 +22,20 @@ Search::Search( ) {
     openSet.push_back(curLoc);
 }
 
-void Search::initializeSearchSpace( ) {
-    searchMap.ones(world->nRows, world->nCols);
-    heuristic.zeros(world->nRows, world->nCols);
-    globalScore.zeros(world->nRows, world->nCols);
-    pathScore.zeros(world->nRows, world->nCols);
-    path.resize(world->nRows * world->nCols);
-    moves.resize(world->nRows * world->nCols);
+void Planner::initializeSearchSpace( ) {
+    searchMap.ones(world.nRows, world.nCols);
+    heuristic.zeros(world.nRows, world.nCols);
+    globalScore.zeros(world.nRows, world.nCols);
+    pathScore.zeros(world.nRows, world.nCols);
+    path.resize(world.nRows * world.nCols);
+    moves.resize(world.nRows * world.nCols);
     float iDistance;
     float jDistance;
-    for (int i = 0; i < world->nCols; i++) {
-        for (int j = 0; j < world->nRows; j++) {
-            searchMap(i, j) = world->map.at<uchar>(Point(3*i, j));
-            iDistance = i - world->golLoc[0][0];
-            jDistance = j - world->golLoc[0][1];
+    for (int i = 0; i < world.nCols; i++) {
+        for (int j = 0; j < world.nRows; j++) {
+            searchMap(i, j) = world.map.at<uchar>(Point(3*i, j));
+            iDistance = i - world.golLoc[0][0];
+            jDistance = j - world.golLoc[0][1];
             //heuristic(i, j) = ( fabs(iDistance) + fabs(jDistance) ) * epsilon;
             //heuristic(i, j) = pow( (fabs(iDistance) + fabs(jDistance)), epsilon );
             heuristic(i, j) = pow (sqrt( pow(iDistance,2) + pow(jDistance,2) ), epsilon);
@@ -39,7 +45,7 @@ void Search::initializeSearchSpace( ) {
     }
 }
 
-int Search::getSearchNode( ) {
+int Planner::getSearchNode( ) {
     int lowScore = 1e9;
     for (uint i = 0; i < openSet.size(); i++) {
         if ( globalScore(openSet[i]) < lowScore ) {
@@ -50,13 +56,13 @@ int Search::getSearchNode( ) {
     return curLoc;
 }
 
-void Search::getNeighbors( int curLoc ) {
-    tempMoves = {curLoc - 1, curLoc + 1, curLoc - world->nRows, curLoc + world->nCols,
-              curLoc - 1 - world->nRows, curLoc - 1 + world->nRows,
-              curLoc + 1 - world->nRows, curLoc + 1 + world->nRows};
+void Planner::getNeighbors( int curLoc ) {
+    tempMoves = {curLoc - 1, curLoc + 1, curLoc - world.nRows, curLoc + world.nCols,
+              curLoc - 1 - world.nRows, curLoc - 1 + world.nRows,
+              curLoc + 1 - world.nRows, curLoc + 1 + world.nRows};
     moves[curLoc].clear();
     for (uint i = 0; i < tempMoves.size(); i++) {
-        if ( world->checkMove( tempMoves[i], world->robSize ) ) {
+        if ( world.checkMove( tempMoves[i], world.robSize ) ) {
             moves[curLoc].push_back(tempMoves[i]);
             if ( std::find(openSet.begin(), openSet.end(), tempMoves[i]) == openSet.end()
             && std::find(closedSet.begin(), closedSet.end(), tempMoves[i]) == closedSet.end()) {
@@ -66,7 +72,7 @@ void Search::getNeighbors( int curLoc ) {
     }
 }
 
-void Search::searchAStar( int curLoc ) {
+void Planner::searchAStar( int curLoc ) {
     float beginTime = clock();
     exploredNodes = 1;
     cout << endl << "Searching with A* . " << std::flush;
@@ -80,7 +86,7 @@ void Search::searchAStar( int curLoc ) {
             if ( std::find(closedSet.begin(), closedSet.end(), newLoc) != closedSet.end() ) {
                 continue;
             }
-            if ( world->checkGoal(newLoc) ) {
+            if ( world.checkGoal(newLoc) ) {
                 path[newLoc] = path[curLoc];
                 path[newLoc].push_back(newLoc);
                 curLoc = newLoc;
@@ -99,7 +105,7 @@ void Search::searchAStar( int curLoc ) {
         globalScore(curLocU) = 1e9;
         openSet.erase(std::remove(openSet.begin(), openSet.end(), curLoc), openSet.end());
         closedSet.push_back(curLoc);
-        //world->moveQuery( curLoc );
+        //world.moveQuery( curLoc );
         ++exploredNodes;
         if (exploredNodes % 1000 == 0) {
             cout << ". " << std::flush;
@@ -108,23 +114,38 @@ void Search::searchAStar( int curLoc ) {
     doneSearching:
     float endTime = float(clock() - beginTime) / float(CLOCKS_PER_SEC);
     cout << endl << "Path Optimized, " << exploredNodes << " nodes expanded.";
-    cout << endl <<"Total Optimization time: " << endTime << " seconds" << endl;
+    cout << endl << "Total Optimization time: " << endTime << " seconds" << endl;
+    cout << endl << "Press the return key to execute optimal path." << endl;
+    cin.get();
+    cout << "Optimal path is " << path[curLoc].size() << " steps long." << endl;
 }
 
-void Search::plotOptimalPath( ) {
+void Planner::plotOptimalPath( ) {
     cout << "Press the return key to execute optimal path." << endl;
     cin.get();
-    //world->queLoc[0][0] = 0;
-    //world->queLoc[0][1] = 0;
-    //world->fillQuad(world->queLoc, world->robSize);
+    //world.queLoc[0][0] = 0;
+    //world.queLoc[0][1] = 0;
+    //world.fillQuad(world.queLoc, world.robSize);
     cout << "Optimal path is " << path[curLoc].size() << " steps long." << endl;
     for( uint k = 0; k < path[curLoc].size(); k++) {
-        world->getStateFromIndex( path[curLoc][k] );
-        world->moveRobot( world->checkMoveIndexX, world->checkMoveIndexY );
+        world.getStateFromIndex( path[curLoc][k] );
+        world.moveRobot( world.checkMoveIndexX, world.checkMoveIndexY );
     }
     cout << "GOAL!!" << endl;
 }
 
-Search::~Search() {
-    delete world;
+int Planner::getGoalX( ) {
+    return world.golLoc[0][0];
+}
+
+int Planner::getGoalY( ) {
+    return world.golLoc[0][1];
+}
+
+int Planner::getNextWaypoint( int index ) {
+    return path[curLoc][index];
+}
+
+Planner::~Planner() {
+
 }

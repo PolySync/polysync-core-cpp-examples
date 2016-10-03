@@ -1,32 +1,36 @@
 //A* Searcher
-#ifndef SEARCH_HPP
-#define SEARCH_HPP
+#ifndef PLANNER_HPP
+#define PLANNER_HPP
 
 #include <PolySyncNode.hpp>
 #include <PolySyncDataModel.hpp>
-#include <cmath>
-#include <iostream>
 #include <armadillo>
 
 #include "GridMap.hpp"
 
 using namespace arma;
 using namespace std;
-using namespace polysync::datamodel;
 
-class Search {
+
+class Planner {
 
 public:
 
-    Search( );
+    Planner( );
 
-    ~Search( );
+    ~Planner( );
 
     void searchAStar( int startLoc );
 
     void plotOptimalPath( );
 
-    GridMap* world;
+    int getGoalX( );
+
+    int getGoalY( );
+
+    int getNextWaypoint( int index );
+
+    GridMap world;
     int curLoc;
     std::vector< std::vector<int> > path;
 
@@ -56,4 +60,4 @@ private:
 
 };
 
-#endif // SEARCH_HPP
+#endif // PLANNER_HPP
