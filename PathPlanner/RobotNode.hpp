@@ -7,6 +7,8 @@
 #include <PolySyncNode.hpp>
 #include <atomic>
 
+#include "GridMap.hpp"
+
 using namespace cv;
 using namespace std;
 
@@ -32,6 +34,6 @@ private:
     std::atomic_bool newLocation;
     std::atomic_int newRobLocX;
     std::atomic_int newRobLocY;
-}
+};
 
 #endif //ROBOTNODE_HPP

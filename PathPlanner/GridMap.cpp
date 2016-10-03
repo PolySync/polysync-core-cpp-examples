@@ -35,7 +35,7 @@ void GridMap::generateMap( ) {
     pathMap = map.clone();
     //generateQuery( );
     generateRobot( );
-    showMap( );
+    //showMap( );
 }
 
 void GridMap::generateMap( int x, int y ) {
