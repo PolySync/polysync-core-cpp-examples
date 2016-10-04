@@ -102,10 +102,11 @@ public:
             if( pointIsNearTheGround( point.getPosition() ) )
             {
                 // Block - helps visualization in Studio
+                // Remove for exact positioning, this just causes a "flicker" in the 3d plugin
                 auto pos = point.getPosition();
                 pos[ 2 ] += 0.1;
                 point.setPosition( pos );
-                // end block
+                // end Block
 
                 groundPoints.push_back( point );
             }
