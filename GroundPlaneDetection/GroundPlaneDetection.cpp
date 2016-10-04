@@ -105,7 +105,7 @@ public:
                 // Comment the next line out to get the exact position
                 // Having two LiDAR sources publishing points in the exact same postiion
                 // causes a "flicker" in 3D rendering
-                pos[ 2 ] += 0.1;
+                pos[ 2 ] += 0.05;
 
                 point.setPosition( pos );
 
