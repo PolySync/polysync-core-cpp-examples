@@ -33,7 +33,6 @@
  * in another `ps_lidar_points_msg`.
  *
  */
-#include <mutex>
 
 #include <PolySyncNode.hpp>
 #include <PolySyncDataModel.hpp>
@@ -52,7 +51,7 @@ class GroundPlaneDetection : public polysync::Node
 public:
 
     /**
-     * 1.) Register this node to listen for the PolySync LidarPointsMessage
+     * Register this node to listen for the PolySync LidarPointsMessage
      */
     void initStateEvent() override
     {
@@ -62,12 +61,12 @@ public:
 
 
     /**
-     * 1.) Safe downcast polysync::Message to LidarPointsMessage
-     * 2.) Ignore LidarPointsMessage from this node
-     * 3.) Filter points
-     * 4.) Publish filtered points
+     * First safe downcast polysync::Message to a LidarPointsMessage
+     * Ignore all LidarPointsMessage instances that orignated from this node
+     * Filter for ground points
+     * Publish filtered points in a new LidarPointsMessage
      * 
-     * @param [in] std::shared_ptr< Message > - variable containing the incoming message
+     * param [in] std::shared_ptr< Message > - variable containing the incoming message
      */
     virtual void messageEvent( std::shared_ptr< polysync::Message > message )
     {
@@ -85,12 +84,12 @@ public:
     }
 
     /**
-     * Take all 3d points from a LidarPointsMessage object and return only the
+     * Take all 3D points from a LidarPointsMessage object and return only the
      * points that are near the ground plane.
      *
-     * @param [in] pointsToFilter - Full set of points from a LidarPointsMessage.
+     * param [in] pointsToFilter - Full set of points from a LidarPointsMessage.
      *
-     * @return std::vector< LidarPoint > - Filtered ground plane points
+     * return std::vector< LidarPoint > - Filtered ground plane points
      */
     const std::vector< LidarPoint > buildGroundPoints(
             const std::vector< LidarPoint > & pointsToFilter )
@@ -101,12 +100,14 @@ public:
         {
             if( pointIsNearTheGround( point.getPosition() ) )
             {
-                // Block - helps visualization in Studio
-                // Remove for exact positioning, this just causes a "flicker" in the 3d plugin
                 auto pos = point.getPosition();
+
+                // Comment the next line out to get the exact position
+                // Having two LiDAR sources publishing points in the exact same postiion
+                // causes a "flicker" in 3D rendering
                 pos[ 2 ] += 0.1;
+
                 point.setPosition( pos );
-                // end Block
 
                 groundPoints.push_back( point );
             }
@@ -118,9 +119,9 @@ public:
     /**
      * Used to filter out lidar points that are not near the ground plane.
      *
-     * @param [in] point in 3d space
+     * param [in] point in 3D space
      *
-     * @return true if point is near the ground, relative to the platform
+     * return true if the point is near the ground, relative to the platform vehicle
      */
     bool pointIsNearTheGround( const std::array< float, 3 > & point )
     {
@@ -138,9 +139,9 @@ public:
 
 
     /**
-     * Take a set of 3d points and publish them as a PolySync LidarPointsMessage.
+     * Take a set of 3D points and publish them as a PolySync LidarPointsMessage.
      *
-     * @param [in] points std::vector of 3d points
+     * param [in] points std::vector of 3D points
      */
     void publishPoints(
             const std::vector< polysync::datamodel::LidarPoint > & points )
