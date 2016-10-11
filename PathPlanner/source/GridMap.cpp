@@ -39,6 +39,7 @@ void GridMap::generateMap( ) {
 }
 
 void GridMap::generateMap( int x, int y ) {
+    cout << "Robot is generating map!!" << endl;
     map = imread(mapID, CV_LOAD_IMAGE_COLOR);
     resize(map, map, Size(nRows, nCols));
     threshold(map, map, 254.9, 255, THRESH_BINARY);

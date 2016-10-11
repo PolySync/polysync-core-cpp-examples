@@ -16,6 +16,7 @@ RobotNode::RobotNode( )
     world( ),
     golLocX( INVALID_LOC ),
     golLocY( INVALID_LOC ),
+    initLocation(true),
     newLocation(false),
     newRobLocX( ),
     newRobLocY( )
@@ -36,9 +37,15 @@ void RobotNode::initStateEvent( ) {
 void RobotNode::okStateEvent( ) {
     //cout << "This is okStateEvent( )" << endl;
     if ( golLocX != INVALID_LOC && golLocY != INVALID_LOC && !newLocation ) {
-        cout << "Goal location set; generating map" << endl;
-        world = std::unique_ptr<GridMap>{}; //pass in goal location
-        world->generateMap( golLocX, golLocY );
+        if ( initLocation ) {
+            cout << "Goal location received by robot." << endl;
+            cout << "Generating map - - - - - - > " << std::flush;
+            world = std::unique_ptr<GridMap>{ new GridMap }; //pass in goal location
+            world->generateMap( golLocX, golLocY );
+            cout << "Map generated. " << endl;
+            cout << "Sending robot start location to planner algorithm." << endl;
+        }
+
         double actualRobLocX = double( world->robLoc[0][0] );
         double actualRobLocY = double( world->robLoc[0][1] );
 
@@ -47,8 +54,7 @@ void RobotNode::okStateEvent( ) {
         msg.setOrientation( {actualRobLocX, actualRobLocY, 0, 0} );
         msg.publish();
         polysync::sleepMicro(1000);
-        cout << "Map generated. Sending robot start location to planner algorithm.";
-        cout << endl;
+        initLocation = false;
     }
     else if ( newLocation ) {
         cout << "should not be in newLocation" << endl;
@@ -71,22 +77,24 @@ void RobotNode::okStateEvent( ) {
 }
 
 void RobotNode::messageEvent( std::shared_ptr<polysync::Message> newMsg ) {
-    cout << "HELLO 1" << endl;
+    //cout << "HELLO 1" << endl;
     if ( newMsg->getSourceGuid( ) == getGuid( ) ) {
-        cout << "My Message" << endl;
+        cout << "My Robot Message" << endl;
         return;
     }
-    cout << "HELLO 2" << endl;
+    //cout << "HELLO 2" << endl;
         if ( auto msg = getSubclass<PlatformMotionMessage>( newMsg ) ) {
-            cout << "HELLO 3" << endl;
+            //cout << "HELLO 3" << endl;
             if ( golLocX == INVALID_LOC && golLocY == INVALID_LOC ) {
-                cout << "HELLO 4" << endl;
+                //cout << "HELLO 4" << endl;
                 golLocX = msg->getOrientation()[0];
                 golLocY = msg->getOrientation()[1];
                 newLocation = false;
-                cout << endl << "Goal location received by robot." << endl;
-            }
-            else if ( msg->getOrientation()[0] != newRobLocX &&
+            } else if ( msg->getOrientation()[0] == golLocX ||
+                      msg->getOrientation()[1] == golLocY) {
+                //cout << "Still receiving goal state." << endl;
+                return;
+            } else if ( msg->getOrientation()[0] != newRobLocX &&
                       msg->getOrientation()[1] != newRobLocY ) {
                 cout << "HELLO 5" << endl;
                 newRobLocX = msg->getOrientation()[0];
@@ -95,7 +103,15 @@ void RobotNode::messageEvent( std::shared_ptr<polysync::Message> newMsg ) {
                 //PlatformMotionMessage.print();
                 newLocation = true;
             }
-            cout << "HELLO 6" << endl;
+            //cout << "HELLO 6" << endl;
       }
-      cout << "HELLO 7" << endl;
+      //cout << "HELLO 7" << endl;
+}
+
+int main( ) {
+
+    RobotNode robotNode;
+    robotNode.connectPolySync( );
+
+    return 0;
 }

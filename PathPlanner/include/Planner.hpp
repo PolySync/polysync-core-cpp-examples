@@ -31,7 +31,6 @@ public:
     int getNextWaypoint( int index );
 
     GridMap world;
-    int curLoc;
     std::vector< std::vector<int> > path;
 
 
@@ -49,6 +48,7 @@ private:
     arma::Mat<float> pathScore;
     float epsilon{2};
     bool endGame{false};
+    int curLoc;
     int newLoc;
     arma::uword curLocU;
     arma::uword newLocU;

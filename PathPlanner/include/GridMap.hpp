@@ -66,10 +66,10 @@ private:
 
     bool checkHit( int x, int y, int size );
 
-    string mapID{ "maze2.pgm" };
-    string robID{ "robot.jpg" };
-    string golID{ "gold.jpg" };
-    string queID{ "question.jpg" };
+    string mapID{ "resources/maze2.pgm" };
+    string robID{ "resources/robot.jpg" };
+    string golID{ "resources/gold.jpg" };
+    string queID{ "resources/question.jpg" };
 
 };
 

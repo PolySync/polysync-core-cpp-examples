@@ -31,6 +31,7 @@ private:
     std::unique_ptr<GridMap> world;
     std::atomic_int golLocX;
     std::atomic_int golLocY;
+    std::atomic_bool initLocation;
     std::atomic_bool newLocation;
     std::atomic_int newRobLocX;
     std::atomic_int newRobLocY;

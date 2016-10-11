@@ -10,11 +10,11 @@ using namespace std;
 Planner::Planner( )
     :
     world( ),
-    curLoc( world.getIndexFromState(world.robLoc[0][0], world.robLoc[0][1]) ),
     path( )
     {
     world.generateMap( );
     initializeSearchSpace( );
+    curLoc = world.getIndexFromState(world.robLoc[0][0], world.robLoc[0][1]);
     curLocU = arma::uword(curLoc);
     path[curLoc].push_back(curLoc);
     globalScore(curLocU) = heuristic(curLocU) + path[curLoc].size();
@@ -76,9 +76,13 @@ void Planner::searchAStar( int curLoc ) {
     float beginTime = clock();
     exploredNodes = 1;
     cout << endl << "Searching with A* . " << std::flush;
+    //cout << "openSet[0] = " << openSet[0] << endl;
     while ( !endGame ) {
         curLoc = getSearchNode( );
         curLocU = arma::uword(curLoc);
+        world.getStateFromIndex(curLoc);
+        //cout << "Current search node is: " << world.checkMoveIndexX << " & " << world.checkMoveIndexY << endl;
+        //cout << "openSet.size() = " << openSet.size() << endl;
         getNeighbors( curLoc );
         for (uint j = 0; j < moves[curLoc].size(); j++) {
             newLoc = moves[curLoc][j];

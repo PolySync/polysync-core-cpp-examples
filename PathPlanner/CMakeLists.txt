@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 2.8 )
 
-set(CMAKE_BUILD_TYPE "Debug")
+set( CMAKE_BUILD_TYPE "Debug" )
 
 project( polysync-path-planner-algorithm-cpp )
 
@@ -8,9 +8,9 @@ project( polysync-path-planner-robot-cpp )
 
 if( NOT PSYNC_HOME )
     if( $ENV{PSYNC_HOME} )
-        set( PSYNC_HOME $ENV{PSYNC_HOME} )
+    	set( PSYNC_HOME $ENV{PSYNC_HOME} )
     else()
-        set( PSYNC_HOME /usr/local/polysync )
+    	set( PSYNC_HOME /usr/local/polysync )
     endif()
 endif()
 
@@ -20,17 +20,13 @@ include( ${PSYNC_HOME}/BuildResources.cmake )
 
 include_directories(
     ${PSYNC_INCLUDE_DIRS}
+	include
 )
 
-aux_source_directory( . SRC )
-
 add_executable( polysync-path-planner-algorithm-cpp
-    #${SRC}
-    #PathPlanner.cpp
-    GridMap.cpp
-		Planner.cpp
-		SearchNode.cpp
-		SearchNodeMain.cpp
+	source/GridMap.cpp
+	source/Planner.cpp
+	SearchNode.cpp
 )
 
 target_link_libraries( polysync-path-planner-algorithm-cpp
@@ -39,10 +35,8 @@ target_link_libraries( polysync-path-planner-algorithm-cpp
 )
 
 add_executable( polysync-path-planner-robot-cpp
-    #${SRC}
-		GridMap.cpp
-		RobotNode.cpp
-		RobotNodeMain.cpp
+	source/GridMap.cpp
+	RobotNode.cpp
 )
 
 target_link_libraries( polysync-path-planner-robot-cpp
@@ -53,4 +47,4 @@ target_link_libraries( polysync-path-planner-robot-cpp
 install(
     TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION ${PSYNC_HOME}/bin
-    )
+)
