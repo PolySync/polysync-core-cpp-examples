@@ -2,9 +2,8 @@
 #ifndef GRIDMAP_HPP
 #define GRIDMAP_HPP
 
-#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/core/core.hpp>
+
 
 using namespace cv;
 using namespace std;
@@ -34,19 +33,14 @@ public:
     void getStateFromIndex( int index );
 
     Mat map;
-    Mat robot;
-    Mat query;
-    Mat gol;
-    Mat staticMap;
-    Mat pathMap;
     int nRows{ 500 };
     int nCols{ 500 };
     int robSize{ 29 };
     int robLoc[4][2];
     int queLoc[4][2];
     int golLoc[4][2];
-    int checkMoveIndexX;
-    int checkMoveIndexY;
+    int checkedMoveIndX;
+    int checkedMoveIndY;
 
 private:
 
@@ -66,6 +60,11 @@ private:
 
     bool checkHit( int x, int y, int size );
 
+    Mat robot;
+    Mat query;
+    Mat gol;
+    Mat staticMap;
+    Mat pathMap;
     string mapID{ "resources/maze2.pgm" };
     string robID{ "resources/robot.jpg" };
     string golID{ "resources/gold.jpg" };

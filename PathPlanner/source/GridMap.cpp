@@ -1,8 +1,12 @@
 //GridMap.cpp
-#include "GridMap.hpp"
 #include <cmath>
 #include <iostream>
 #include <unistd.h>
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+#include "GridMap.hpp"
 
 
 using namespace cv;
@@ -23,6 +27,7 @@ GridMap::~GridMap( ) {
 }
 
 void GridMap::generateMap( ) {
+    //generate map with random goal state
     map = imread(mapID, CV_LOAD_IMAGE_COLOR);
     resize(map, map, Size(nRows, nCols));
     threshold(map, map, 254.9, 255, THRESH_BINARY);
@@ -39,7 +44,7 @@ void GridMap::generateMap( ) {
 }
 
 void GridMap::generateMap( int x, int y ) {
-    cout << "Robot is generating map!!" << endl;
+    //generate map with specified goal state
     map = imread(mapID, CV_LOAD_IMAGE_COLOR);
     resize(map, map, Size(nRows, nCols));
     threshold(map, map, 254.9, 255, THRESH_BINARY);
@@ -109,8 +114,8 @@ void GridMap::moveRobot( int x, int y ){
 
 void GridMap::moveQuery( int index ){
     getStateFromIndex( index );
-    queLoc[0][0] = checkMoveIndexX;
-    queLoc[0][1] = checkMoveIndexY;
+    queLoc[0][0] = checkedMoveIndX;
+    queLoc[0][1] = checkedMoveIndY;
     fillQuad(queLoc, robSize);
     updateMap( );
 }
@@ -144,15 +149,17 @@ void GridMap::updateMap( ) {
 }
 
 bool GridMap::checkHit( int x, int y, int size ) {
-    int tempLoc[4][2]{x, y, 0, 0, 0, 0, 0, 0};
+    int tempLoc[4][2]{ x, y, 0, 0, 0, 0, 0, 0 };
     fillQuad(tempLoc, size);
     for (int i = 0; i < 4; i++) {
         if (map.at<uchar>(Point(3*tempLoc[i][0], tempLoc[i][1])) == 0){
-            //printf("HIT!! %i, %i, %i\n", tempLoc[i][0], tempLoc[i][1], map.at<uchar>(Point(tempLoc[i][0], tempLoc[i][1])));
+            //printf("HIT!! %i, %i, %i\n", tempLoc[i][0], tempLoc[i][1],
+                    //map.at<uchar>(Point(tempLoc[i][0], tempLoc[i][1])));
             return true;
         } else if ( tempLoc[i][0] < 0 || tempLoc[i][1] < 0 ||
                     tempLoc[i][0] >= nCols || tempLoc[i][1] >= nRows ) {
-            //printf("HIT!! %i, %i, %i\n", tempLoc[i][0], tempLoc[i][1], map.at<uchar>(Point(tempLoc[i][0], tempLoc[i][1])));
+            //printf("HIT!! %i, %i, %i\n", tempLoc[i][0], tempLoc[i][1],
+                    //map.at<uchar>(Point(tempLoc[i][0], tempLoc[i][1])));
             return true;
         }
     }
@@ -161,10 +168,10 @@ bool GridMap::checkHit( int x, int y, int size ) {
 
 bool GridMap::checkGoal( int index ) {
     getStateFromIndex( index );
-    if( abs(checkMoveIndexX - golLoc[0][0]) <= robSize-1
-        && abs(checkMoveIndexY - golLoc[0][1]) <= robSize-1 ) {
-        //printf("GOAL!! %i, %i, %i\n", checkMoveIndexX, checkMoveIndexY,
-            //map.at<uchar>(Point(checkMoveIndexX, checkMoveIndexY)));
+    if( abs(checkedMoveIndX - golLoc[0][0]) <= robSize-1
+        && abs(checkedMoveIndY - golLoc[0][1]) <= robSize-1 ) {
+        //printf("GOAL!! %i, %i, %i\n", checkedMoveIndX, checkedMoveIndY,
+                //map.at<uchar>(Point(checkedMoveIndX, checkedMoveIndY)));
         return true;
     }
     return false;
@@ -172,7 +179,7 @@ bool GridMap::checkGoal( int index ) {
 
 bool GridMap::checkMove( int index, int size ) {
     getStateFromIndex( index );
-    if ( !checkHit( checkMoveIndexX, checkMoveIndexY, size ) ) {
+    if ( !checkHit( checkedMoveIndX, checkedMoveIndY, size ) ) {
         return true;
     }
     return false;
@@ -183,12 +190,12 @@ int GridMap::getIndexFromState( int x, int y ) {
 }
 
 void GridMap::getStateFromIndex( int index ) {
-    checkMoveIndexX = index % nRows;
-    checkMoveIndexY = index / nCols;
-    return;
-    if (checkMoveIndexX == 0) {
-        checkMoveIndexY = 0;
+    checkedMoveIndX = index % nRows;
+    checkedMoveIndY = index / nCols;
+    return; /*
+    if (checkedMoveIndX == 0) {
+        checkedMoveIndY = 0;
     } else {
-        checkMoveIndexY = index - nCols + checkMoveIndexX;
-    }
+        checkedMoveIndY = index - nCols + checkedMoveIndX;
+    }*/
 }

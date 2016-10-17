@@ -2,13 +2,9 @@
 #ifndef PLANNER_HPP
 #define PLANNER_HPP
 
-#include <PolySyncNode.hpp>
-#include <PolySyncDataModel.hpp>
-#include <armadillo>
-
 #include "GridMap.hpp"
 
-using namespace arma;
+
 using namespace std;
 
 
@@ -33,7 +29,6 @@ public:
     GridMap world;
     std::vector< std::vector<int> > path;
 
-
 private:
 
     void initializeSearchSpace( );
@@ -42,16 +37,14 @@ private:
 
     void getNeighbors( int index );
 
-    arma::Mat<int> searchMap;
-    arma::Mat<float> heuristic;
-    arma::Mat<float> globalScore;
-    arma::Mat<float> pathScore;
+    std::vector< int > searchMap;
+    std::vector< float > heuristic;
+    std::vector< float > globalScore;
+    std::vector< float > pathScore;
     float epsilon{2};
     bool endGame{false};
     int curLoc;
     int newLoc;
-    arma::uword curLocU;
-    arma::uword newLocU;
     std::vector< std::vector<int> > moves;
     std::array<int, 8> tempMoves;
     std::vector<int> closedSet;
