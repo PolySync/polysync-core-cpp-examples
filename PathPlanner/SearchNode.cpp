@@ -1,4 +1,28 @@
-//PathPlanner
+/*
+ * Copyright (c) 2016 PolySync
+ *
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 #include <cmath>
 #include <iostream>
 
@@ -13,6 +37,20 @@ using namespace polysync::datamodel;
 
 constexpr int INVALID_LOC = -1;
 
+/**
+ * \example SearchNode.cpp
+ *
+ * PolySync Path Planner Example.
+ *
+ * Shows how to subscribe a simulated planning algorithm node to a simulated
+ * robot node.  Search node finds the optimal path from a start location to a
+ * generated goal location.  Then the node sends the optimal path one waypoint
+ * at a time in the form of platform motion messages.
+ *
+ * @file SearchNode.cpp
+ * @brief SearchNode Source
+ *
+ */
 SearchNode::SearchNode( )
     :
     searcher( ),
@@ -33,14 +71,36 @@ SearchNode::~SearchNode( ){
 
 }
 
+/**
+ * @brief initStateEvent
+ *
+ * The initStateEvent is triggered once when this node is initialized in
+ * PolySync. This is a good place to initialize variables dependant on a
+ * polysync::Node reference.
+ *
+ * @param void
+ * @return void
+ */
 void SearchNode::initStateEvent( ) {
+    // register node as a subscriber to platform motion messages from ANY node.
     registerListener( getMessageTypeByName( "ps_platform_motion_msg" ) );
     setSubscriberReliabilityQOS(
                                 getMessageTypeByName( "ps_platform_motion_msg" ),
                                 RELIABILITY_QOS_RELIABLE );
 }
 
+/**
+ * @brief okStateEvent
+ *
+ * Override the base class functionality to send messages when the node
+ * reaches the "ok" state. This is the state where the node is in its
+ * normal operating mode.
+ *
+ * @param void
+ * @return void
+ */
 void SearchNode::okStateEvent( ) {
+    // generate goal state at a pseudo-random location.
     if ( golLocX == INVALID_LOC && golLocY == INVALID_LOC ) {
         searcher = std::unique_ptr<Planner>{ new Planner };
         golLocX = searcher->getGoalX( );
@@ -50,16 +110,22 @@ void SearchNode::okStateEvent( ) {
         cout << "Sending goal location to robot." << endl << endl;
         cout << "Waiting for Robot Location." << endl << endl << std::flush;
         //polySyncLogDebug( "HELLO!!" );
+    // send goal location to robot repeatedly until it is received.
     } else if ( robLocX == INVALID_LOC  || robLocY == INVALID_LOC ){
         sendGoalToRobot( );
-        polysync::sleepMicro(1000);
+        // do nothing, sleep for 10 milliseconds
+        polysync::sleepMicro(10000);
+    // once robot reports its starting location, search the space for the
+    // optimal path from start to goal state.
     } else if ( newRobLocX == INVALID_LOC && newRobLocY == INVALID_LOC ) {
         cout << "Robot start location received by planner algorithm." << endl;
         cout << "Begin searching for optimal path from start location." << endl;
         int robIndex = searcher->world.getIndexFromState(robLocX, robLocY);
+        // use A* search to find optimal path.
         searcher->searchAStar( robIndex );
         newRobLocX = int(robLocX);
         newRobLocY = int(robLocY);
+    // wait until done searching, then send out next waypoint.
     } else if ( newRobLocX != INVALID_LOC || newRobLocY != INVALID_LOC ) {
         cout << "Sending waypoint " << waypointCounter+1 << " to robot." << endl;
         int robIndex = searcher->world.getIndexFromState(robLocX, robLocY);
@@ -67,21 +133,39 @@ void SearchNode::okStateEvent( ) {
             disconnectPolySync( );
             return;
         }
-        int newIndex = searcher->getNextWaypoint( waypointCounter+1 );
-        sendNextWaypoint( newIndex, int(waypointCounter+1) );
+        int newIndex = searcher->getNextWaypoint( waypointCounter + 1 );
+        sendNextWaypoint( newIndex, int(waypointCounter + 1) );
+        // The ok state is called periodically by the system so sleep to reduce
+        // the number of messages sent. do nothing, sleep for 1 millisecond.
         polysync::sleepMicro(1000);
     } else {
-        polysync::sleepMicro(1000);
+        // do nothing, sleep for 100 milliseconds
+        //cout << "I should never be here." << endl;
+        polysync::sleepMicro(100000);
         return;
     }
 }
 
+/**
+ * @brief messageEvent
+ *
+ * Extract the information from the provided message
+ *
+ * @param std::shared_ptr< Message > - variable containing the message
+ * @return void
+ */
 void SearchNode::messageEvent( std::shared_ptr<polysync::Message> newMsg ) {
+    // check whether new message is not your own. This check is only important
+    // since robotNode and searchNode both publish and subscribe to messages.
     if ( newMsg->getSourceGuid( ) == getGuid( ) ) {
         //cout << "This is Planner's Message" << endl;
         return;
     }
+    // now check whether new message is a PlatformMotionMessage.
     if ( auto msg = getSubclass<PlatformMotionMessage>( newMsg ) ) {
+        // all received platform motion messages will be current robot location.
+        // robot will also report back last waypoint received so planner can
+        // send the next waypoint.
         if ( msg->getOrientation()[0] != robLocX ||
                 msg->getOrientation()[1] != robLocY ) {
             robLocX = msg->getOrientation()[0];
@@ -95,27 +179,57 @@ void SearchNode::messageEvent( std::shared_ptr<polysync::Message> newMsg ) {
     }
 }
 
+/**
+ * @brief sendGoalToRobot
+ *
+ * SearchNode reports goal locatiion so that RobotNode can render the GridMap.
+ *
+ * @param void
+ * @return void
+ */
 void SearchNode::sendGoalToRobot( ) {
+    // Create a message
     PlatformMotionMessage msg( *this );
+    // Set publish time
     msg.setHeaderTimestamp( polysync::getTimestamp() );
-    //msg.setOrientation( {0.0,0.0,0.0,0.0});
+    // Populate buffer
     msg.setOrientation( {double(golLocX), double(golLocY), 0, 0} );
+    // Publish to the PolySync bus
     msg.publish( );
     //msg.print( );
 }
 
+/**
+ * @brief sendNextWaypoint
+ *
+ * Receive current robot location and send the next waypoint from there.
+ *
+ * @param void
+ * @return void
+ */
 void SearchNode::sendNextWaypoint( int newIndex, int waypointID ) {
     searcher->world.getStateFromIndex( newIndex );
     newRobLocX = searcher->world.checkedMoveIndX;
     newRobLocY = searcher->world.checkedMoveIndY;
 
+    // Create a message
     PlatformMotionMessage msg( *this );
+    // Set publish time
     msg.setHeaderTimestamp( polysync::getTimestamp() );
+    // Populate buffer
     msg.setPosition( {double(waypointID), 0, 0} );
     msg.setOrientation( {newRobLocX, newRobLocY, 0, 0} );
+    // Publish to the PolySync bus
     msg.publish();
     //msg.print();
 }
+
+/**
+ * Entry point for the SearchNode (planner) side of this tutorial application.
+ * The node will search the map and generate a set waypoints to send to the
+ * robot node. The "connectPolySync" is a blocking call, users must use Ctrl-C
+ * to exit this function.
+ */
 
 int main() {
 
