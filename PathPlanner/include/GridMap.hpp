@@ -8,6 +8,7 @@
 using namespace cv;
 using namespace std;
 
+
 class GridMap {
 
 public:
@@ -32,15 +33,27 @@ public:
 
     void getStateFromIndex( int index );
 
+
+public:
+
     Mat map;
+
     int nRows{ 500 };
+
     int nCols{ 500 };
+
     int robSize{ 29 };
+
     int robLoc[4][2];
+
     int queLoc[4][2];
+
     int golLoc[4][2];
+
     int checkedMoveIndX;
+
     int checkedMoveIndY;
+
 
 private:
 
@@ -60,14 +73,25 @@ private:
 
     bool checkHit( int x, int y, int size );
 
+
+private:
+
     Mat robot;
+
     Mat query;
+
     Mat gol;
+
     Mat staticMap;
+
     Mat pathMap;
+
     string mapID{ "resources/maze2.pgm" };
+
     string robID{ "resources/robot.jpg" };
+
     string golID{ "resources/gold.jpg" };
+
     string queID{ "resources/question.jpg" };
 
 };

@@ -1,4 +1,3 @@
-//A* Searcher
 #ifndef PLANNER_HPP
 #define PLANNER_HPP
 
@@ -16,7 +15,7 @@ public:
 
     ~Planner( );
 
-    void searchAStar( int startLoc );
+    int searchAStar( int startLoc );
 
     void plotOptimalPath( );
 
@@ -26,8 +25,15 @@ public:
 
     int getNextWaypoint( int index );
 
+    int getPathSize( );
+
+
+public:
+
     GridMap world;
-    std::vector< std::vector<int> > path;
+
+    std::vector< std::vector< int > > path;
+
 
 private:
 
@@ -37,19 +43,34 @@ private:
 
     void getNeighbors( int index );
 
+
+private:
+
     std::vector< int > searchMap;
+
     std::vector< float > heuristic;
+
     std::vector< float > globalScore;
+
     std::vector< float > pathScore;
-    float epsilon{2};
-    bool endGame{false};
+
+    float epsilon{ 2 };
+
+    bool endGame{ false };
+
     int curLoc;
+
     int newLoc;
-    std::vector< std::vector<int> > moves;
-    std::array<int, 8> tempMoves;
-    std::vector<int> closedSet;
-    std::vector<int> openSet;
-    int exploredNodes{1};
+
+    std::vector< std::vector< int > > moves;
+
+    std::array< int, 8 > tempMoves;
+
+    std::vector< int > closedSet;
+
+    std::vector< int > openSet;
+
+    int expandedNodes{ 1 };
 
 };
 

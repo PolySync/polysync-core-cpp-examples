@@ -11,6 +11,7 @@
 using namespace cv;
 using namespace std;
 
+
 class SearchNode : public polysync::Node {
 
 public:
@@ -19,26 +20,39 @@ public:
 
     ~SearchNode( );
 
+
 private:
 
     virtual void initStateEvent( ) override;
 
     virtual void okStateEvent( ) override;
 
-    virtual void messageEvent( std::shared_ptr<polysync::Message> ) override;
+    virtual void messageEvent( std::shared_ptr< polysync::Message > ) override;
 
     virtual void sendGoalToRobot( );
 
     virtual void sendNextWaypoint( int waypointIndex, int waypointID );
 
-    std::unique_ptr<Planner> searcher;
-    std::atomic_int golLocX;
-    std::atomic_int golLocY;
-    std::atomic_int robLocX;
-    std::atomic_int robLocY;
-    std::atomic_int newRobLocX;
-    std::atomic_int newRobLocY;
-    std::atomic_int waypointCounter;
+
+private:
+
+    std::unique_ptr< Planner > _searcher;
+
+    std::atomic_int _golLocX;
+
+    std::atomic_int _golLocY;
+
+    std::atomic_int _robLocX;
+
+    std::atomic_int _robLocY;
+
+    std::atomic_int _newRobLocX;
+
+    std::atomic_int _newRobLocY;
+
+    std::atomic_int _numWaypoints;
+
+    std::atomic_int _waypointCounter;
 
 };
 
