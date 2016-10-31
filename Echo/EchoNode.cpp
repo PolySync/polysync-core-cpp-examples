@@ -7,7 +7,7 @@
 
 
 void PolySyncEcho::initStateEvent()
-{ 
+{
     _applicationStartTime = polysync::getTimestamp();
 
     if( _inputHandler.messageTypesWereFiltered() )
@@ -21,6 +21,18 @@ void PolySyncEcho::initStateEvent()
     else
     {
         registerListenerToAllMessageTypes();
+    }
+
+    std::cout << "{\"polysync-echo\":[";
+
+    if( _inputHandler.fileWasSpecified() )
+    {
+        _openUserFile.open( _inputHandler.getFileName(), std::ios::app );
+
+        if( _openUserFile )
+        {
+            _openUserFile << "{\"polysync-echo\":[";
+        }
     }
 }
 
@@ -48,6 +60,18 @@ void PolySyncEcho::okStateEvent()
     }
 
     polysync::sleepMicro( SecondsToMicro );
+}
+
+void PolySyncEcho::releaseStateEvent()
+{
+    std::cout << "]}" << std::endl;
+
+    if( _openUserFile )
+    {
+        _openUserFile << "]}" << std::endl;
+    }
+
+    _openUserFile.close();
 }
 
 
@@ -87,7 +111,7 @@ void PolySyncEcho::messageEvent( std::shared_ptr< polysync::Message > message )
         return;
     }
 
-    if( _inputHandler.fileWasSpecified() )
+    if( _openUserFile )
     {
         printToFile( message );
     }
@@ -99,26 +123,42 @@ void PolySyncEcho::messageEvent( std::shared_ptr< polysync::Message > message )
 void PolySyncEcho::printToFile(
         std::shared_ptr < polysync:: Message > message )
 {
-    std::ofstream openUserFile;
+    static bool is_first_print = true;
 
-    openUserFile.open( _inputHandler.getFileName(), std::ios::app );
-
-    if( _inputHandler.headersWereRequested() )
+    if( is_first_print )
     {
-        message->printHeader( openUserFile );
+        is_first_print = false;
     }
     else
     {
-        message->print( openUserFile );
+        _openUserFile << ",";
     }
 
-    openUserFile.close();
+    if( _inputHandler.headersWereRequested() )
+    {
+        message->printHeader( _openUserFile );
+    }
+    else
+    {
+        message->print( _openUserFile );
+    }
 }
 
 
 void PolySyncEcho::printMessage(
         std::shared_ptr < polysync:: Message > message ) const
 {
+    static bool is_first_print = true;
+
+    if( is_first_print )
+    {
+        is_first_print = false;
+    }
+    else
+    {
+        std::cout << ",";
+    }
+
     if( _inputHandler.headersWereRequested() )
     {
         message->printHeader();

@@ -8,11 +8,12 @@
 #ifndef POLYSYNC_ECHO_HPP
 #define POLYSYNC_ECHO_HPP
 
+#include <fstream>
+
 #include <PolySyncDataModel.hpp>
 
 #include "ApplicationInputHandler.hpp"
 #include "EchoHelp.hpp"
-
 
 /**
  * @brief PolySyncEcho class
@@ -41,6 +42,8 @@ public:
      */
     void okStateEvent() override;
 
+    void releaseStateEvent() override;
+    
     /**
      * @brief Register filtered message type(s) per cmd line input.
      */
@@ -95,7 +98,6 @@ public:
      * @brief Wrapper for encapsulation of the EchoHelp class.
      */
     void printEchoHelpPage() const;
-
 
 private:
 
@@ -162,6 +164,10 @@ private:
      */
     ps_timestamp _applicationStartTime;
 
+    /**
+     * Output file stream option set.
+     */
+    std::ofstream _openUserFile;
 }; // END polysync::EchoNode class
 
 
