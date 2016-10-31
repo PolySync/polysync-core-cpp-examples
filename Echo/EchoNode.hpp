@@ -165,7 +165,7 @@ private:
     ps_timestamp _applicationStartTime;
 
     /**
-     * Output file stream option set.
+     * Output file stream if option set.
      */
     std::ofstream _openUserFile;
 }; // END polysync::EchoNode class
