@@ -34,10 +34,12 @@
  */
 
 #include <iostream>
+
 #include <PolySyncCore.hpp>
 #include <PolySyncDataModel.hpp>
 #include <PolySyncApplication.hpp>
 #include <PolySyncLogSessionTransfer.hpp>
+
 
 using namespace std;
 using namespace polysync;
@@ -51,8 +53,7 @@ class SessionImportExample : public DataSubscriber
 
 public:
 
-    SessionImportExample(
-            int sessionId )
+    SessionImportExample( int sessionId )
         :
         _sessionId( sessionId )
     {
@@ -67,6 +68,7 @@ public:
 
         _application->attachSubscriber( this );
     }
+
 
 private:
 
@@ -110,6 +112,7 @@ private:
         }
     }
 
+
     void handleTransferStatus(
             const LogSessionTransferStatus & status )
     {
@@ -120,14 +123,31 @@ private:
 
         switch( state )
         {
-            case LogSessionTransferState::Invalid : cout << "Invalid" << endl; break;
-            case LogSessionTransferState::Error : cout << "Error" << endl; break;
-            case LogSessionTransferState::Initial : cout << "Initial" << endl; break;
-            case LogSessionTransferState::Enumeration : cout << "Enumeration" << endl; break;
-            case LogSessionTransferState::TransferringSystemFiles : cout << "TransferringSystemFiles" << endl; break;
-            case LogSessionTransferState::TransformingSystemFile : cout << "TransformingSystemFile" << endl; break;
-            case LogSessionTransferState::TransferringLogfiles : cout << "TransferringLogfiles" << endl; break;
-            case LogSessionTransferState::Complete : cout << "Complete" << endl; _application->disconnectPolySync(); break;
+            case LogSessionTransferState::Invalid :
+                cout << "Invalid" << endl;
+                break;
+            case LogSessionTransferState::Error :
+                cout << "Error" << endl;
+                break;
+            case LogSessionTransferState::Initial :
+                cout << "Initial" << endl;
+                break;
+            case LogSessionTransferState::Enumeration :
+                cout << "Enumeration" << endl;
+                break;
+            case LogSessionTransferState::TransferringSystemFiles :
+                cout << "TransferringSystemFiles" << endl;
+                break;
+            case LogSessionTransferState::TransformingSystemFile :
+                cout << "TransformingSystemFile" << endl;
+                break;
+            case LogSessionTransferState::TransferringLogfiles :
+                cout << "TransferringLogfiles" << endl;
+                break;
+            case LogSessionTransferState::Complete :
+                cout << "Complete" << endl;
+                _application->disconnectPolySync();
+                break;
         }
     }
 
@@ -136,7 +156,6 @@ private:
     LogSessionImport * _importer;
 
     Application * _application;
-
 };
 
 
@@ -144,11 +163,11 @@ int main( int argc, char ** argv )
 {
     if( argc != 2 )
     {
-        cerr << "Usage: " << argv[0] << " [sessionId]" << endl;
+        cerr << "Usage: " << argv[ 0 ] << " [sessionId]" << endl;
         return -1;
     }
 
-    SessionImportExample importExample{ atoi(argv[1]) };
+    SessionImportExample importExample{ atoi( argv[ 1 ] ) };
 
     auto application = Application::getInstance();
 
