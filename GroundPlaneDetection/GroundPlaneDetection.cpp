@@ -37,7 +37,8 @@
 #include <PolySyncNode.hpp>
 #include <PolySyncDataModel.hpp>
 
-using namespace std;
+
+using namespace polysync::datamodel;
 
 
 /**
@@ -46,84 +47,82 @@ using namespace std;
  */
 class GroundPlaneDetection : public polysync::Node
 {
-private:
-    ps_msg_type _messageType;
 
-    std::vector< polysync::datamodel::LidarPoint > _groundPlanePoints;
-    
 public:
+
     /**
-     * initStateEvent
-     *
-     * Subscribe to the LiDAR points message that we expect to be on the bus
-     * when this node is running.
+     * Register this node to listen for the PolySync LidarPointsMessage
      */
     void initStateEvent() override
     {
-        // Get the integer representation for this message type, which dynamically changes for
-        // each instance of the PolySync runtime.
-        _messageType = getMessageTypeByName( "ps_lidar_points_msg" );
-
-        registerListener( _messageType );
+        // Connect messageEvent() to PolySync for the given message topic string
+        registerListener( getMessageTypeByName( "ps_lidar_points_msg" ) );
     }
-    
+
+
     /**
-     * messageEvent
-     * 
-     * Extract the information from the incoming message by promoting it from the base class
-     * to a LidarPointsMessage.
+     * First safe downcast polysync::Message to a LidarPointsMessage
+     * Ignore all LidarPointsMessage instances that orignated from this node
+     * Filter for ground points
+     * Publish filtered points in a new LidarPointsMessage
      * 
      * param [in] std::shared_ptr< Message > - variable containing the incoming message
      */
     virtual void messageEvent( std::shared_ptr< polysync::Message > message )
     {
-        using namespace polysync::datamodel;
-        if( std::shared_ptr <LidarPointsMessage > lidarPointsMessage = getSubclass< LidarPointsMessage >( message ) )
+        if( std::shared_ptr <LidarPointsMessage > lidarPointsMessage =
+                getSubclass< LidarPointsMessage >( message ) )
         {
-            // Filter out this nodes own messages
-            if( lidarPointsMessage->getHeaderSrcGuid() != getGUID() )
+            // Filter out messages from this node
+            if( lidarPointsMessage->getHeaderSrcGuid() != getGuid() )
             {
-                _groundPlanePoints.clear();
-
-                // Create a message, and set the message timestamp which represents when the data
-                // in this message was created, or when it originated
-                LidarPointsMessage groundPlaneMessage ( *this );
-
-                groundPlaneMessage.setHeaderTimestamp( polysync::getTimestamp() );
-
-                // Get the entire LiDAR point cloud from the incoming message
-                std::vector< polysync::datamodel::LidarPoint > lidarPoints = lidarPointsMessage->getPoints();
-
-                // Create a container that will hold all ground plane points that are found in the nodes processing
-                std::vector< polysync::datamodel::LidarPoint > groundPlanePoints;
-
-                // Create a container to hold a single point as the node iterates over the full point cloud
-                std::array< float, 3 > position;
-
-                for( polysync::datamodel::LidarPoint point : lidarPoints )
-                {
-                    // Get the x/y/z position for this point in the point cloud
-                    position = point.getPosition();
-
-                    if( pointIsNearTheGround( position ) )
-                    {
-                        // This point is close the ground, place it in our point vector
-                        _groundPlanePoints.push_back( point );
-                    }
-                }
-
-                // Set the message buffer
-                groundPlaneMessage.setPoints( _groundPlanePoints );
-
-                // Publish this message instance with the ground plane points that were found
-                groundPlaneMessage.publish();
-
-                groundPlanePoints.clear();
-                lidarPoints.clear();
+                publishPoints(
+                    buildGroundPoints( lidarPointsMessage->getPoints() ) );
             }
+
         }
     }
 
+    /**
+     * Take all 3D points from a LidarPointsMessage object and return only the
+     * points that are near the ground plane.
+     *
+     * param [in] pointsToFilter - Full set of points from a LidarPointsMessage.
+     *
+     * return std::vector< LidarPoint > - Filtered ground plane points
+     */
+    const std::vector< LidarPoint > buildGroundPoints(
+            const std::vector< LidarPoint > & pointsToFilter )
+    {
+        std::vector< LidarPoint > groundPoints;
+
+        for( auto point : pointsToFilter )
+        {
+            if( pointIsNearTheGround( point.getPosition() ) )
+            {
+                auto pos = point.getPosition();
+
+                // Comment the next line out to get the exact position
+                // Having two LiDAR sources publishing points in the exact same postiion
+                // causes a "flicker" in 3D rendering
+                pos[ 2 ] += 0.05;
+
+                point.setPosition( pos );
+
+                groundPoints.push_back( point );
+            }
+        }
+
+        return groundPoints;
+    }
+
+    /**
+     * Used to filter out lidar points that are not near the ground plane.
+     *
+     * param [in] point in 3D space
+     *
+     * return true if the point is near the ground, relative to the platform vehicle
+     */
     bool pointIsNearTheGround( const std::array< float, 3 > & point )
     {
         // The vehicle origin is at the center of the rear axle, on the ground
@@ -136,6 +135,30 @@ public:
                point[2] > -0.35 and     // z is greater than -0.35 meters from the vehicle origin (towards the ground),
                                         // this componsates for vehicle pitch as the vehicle drives
                point[2] < 0.25;         // z is less than 0.25 meters from the vehicle origin
+    }
+
+
+    /**
+     * Take a set of 3D points and publish them as a PolySync LidarPointsMessage.
+     *
+     * param [in] points std::vector of 3D points
+     */
+    void publishPoints(
+            const std::vector< polysync::datamodel::LidarPoint > & points )
+    {
+        using namespace polysync::datamodel;
+
+        // Create a message, and set the message timestamp which represents when the data
+        // in this message was created, or when it originated
+        LidarPointsMessage groundPlaneMessage ( *this );
+
+        // Set the message buffer
+        groundPlaneMessage.setPoints( points );
+
+        groundPlaneMessage.setHeaderTimestamp( polysync::getTimestamp() );
+
+        // Publish this message instance with the ground plane points that were found
+        groundPlaneMessage.publish();
     }
 
 };

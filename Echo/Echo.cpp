@@ -28,7 +28,7 @@
  * \example Echo.cpp
  *
  * PolySync Echo C++ API example application
- * 
+ *
  * Demonstrates a command line utility for echoing PolySync messges to stdout
  *
  * @file Echo.cpp
@@ -45,13 +45,14 @@
  *
  * @param argc - int, the number of parameters on the command-line
  * @param argv - char* [], the parsed command-line arguments
- * 
+ *
  * @return int - exit code
  */
 int main( int argc, char *argv[] )
 {
     // Create an instance of the PolySyncEcho and connect it to PolySync.
     PolySyncEcho echo;
+
 
     // Nodes will only connect if help option -h not used,
     // and, if all arguments are valid.

@@ -62,6 +62,8 @@ class TransferExample : public DataSubscriber
 public:
 
     TransferExample()
+        :
+            _transferHandler( FileTransferHandler::getInstance() )
     {
         // Subscribe to ApplicationEventMessage to determine when
         // the application connects to the PolySync bus.
@@ -168,10 +170,10 @@ private:
         }
     }
 
-    // The FileTransferHandler class is required to participate in any
+    // The FileTransferHandler singleton is required to participate in any
     // PolySync file transfer operations. It is used to start, abort,
     // and subscribe to file transfer operations.
-    FileTransferHandler _transferHandler;
+    FileTransferHandler & _transferHandler;
 
     Application * _application;
 
