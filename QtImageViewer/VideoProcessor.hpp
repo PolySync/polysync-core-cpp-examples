@@ -10,6 +10,8 @@
 #include <QImage>
 #include <QPixmap>
 
+using namespace std;
+
 /**
  * @brief The VideoProcessor class
  * This class is responsible for interaction with PolySync and the incoming image data
@@ -44,15 +46,15 @@ public:
          *
          * @param std::shared_ptr< Message > - variable containing the message
          */
-        virtual void messageEvent( std::shared_ptr< polysync::Message > message )
+        virtual void messageEvent( shared_ptr< polysync::Message > message )
         {
             using namespace polysync::datamodel;
-            if( std::shared_ptr< ImageDataMessage > incomingMessage = getSubclass< ImageDataMessage >( message ) )
+            if( shared_ptr< ImageDataMessage > incomingMessage = getSubclass< ImageDataMessage >( message ) )
             {
 
                 if( incomingMessage->getPixelFormat() != PIXEL_FORMAT_MJPEG )
                 {
-                    std::cout << "Warning: unsupported pixel format type; this image data is not viewable" << std::endl;
+                    cout << "Warning: unsupported pixel format type; this image data is not viewable" << endl;
                 }
 
                 auto buffer = incomingMessage->getDataBuffer();

@@ -20,7 +20,7 @@ int main( int argc, char *argv[] )
     QApplication app( argc, argv );
 
     auto videoProcessor =
-            std::unique_ptr< VideoProcessor >( new VideoProcessor );
+            unique_ptr< VideoProcessor >( new VideoProcessor );
 
     // Thread video processing loop, this will continously pull data from
     // a video device and send a QPixmap to the VideoViewer object for rendering.
@@ -29,7 +29,7 @@ int main( int argc, char *argv[] )
     processingThread->start();
 
     auto videoViewer =
-            std::unique_ptr< VideoViewer >( new VideoViewer );
+            unique_ptr< VideoViewer >( new VideoViewer );
 
     // Qt signal/slot connect for passing data between processor and viewer.
     QObject::connect( videoProcessor.get(), &VideoProcessor::signalPixmap,
