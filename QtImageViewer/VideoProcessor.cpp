@@ -5,7 +5,6 @@
 
 #include <QImage>
 #include <QPixmap>
-
 #include <iostream>
 
 using namespace std;
