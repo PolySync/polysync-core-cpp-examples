@@ -30,11 +30,9 @@
 
 #include "RobotNode.hpp"
 
-
 using namespace cv;
 using namespace std;
 using namespace polysync::datamodel;
-
 
 constexpr int INVALID_LOC = -1;
 
