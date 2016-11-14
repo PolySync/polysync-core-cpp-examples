@@ -7,7 +7,8 @@
 using namespace std;
 
 
-class Planner {
+class Planner
+{
 
 public:
 
@@ -46,31 +47,31 @@ private:
 
 private:
 
-    std::vector< int > searchMap;
+    std::vector< int > _searchMap;
 
-    std::vector< float > heuristic;
+    std::vector< float > _heuristic;
 
-    std::vector< float > globalScore;
+    std::vector< float > _globalScore;
 
-    std::vector< float > pathScore;
+    std::vector< float > _pathScore;
 
-    float epsilon{ 2 };
+    float _epsilon{ 2 };
 
-    bool endGame{ false };
+    bool _endGame{ false };
 
-    int curLoc;
+    int _curLoc;
 
-    int newLoc;
+    int _newLoc;
 
-    std::vector< std::vector< int > > moves;
+    std::vector< std::vector< int > > _moves;
 
-    std::array< int, 8 > tempMoves;
+    std::array< int, 8 > _tempMoves;
 
-    std::vector< int > closedSet;
+    std::vector< int > _closedSet;
 
-    std::vector< int > openSet;
+    std::vector< int > _openSet;
 
-    int expandedNodes{ 1 };
+    int _expandedNodes{ 1 };
 
 };
 

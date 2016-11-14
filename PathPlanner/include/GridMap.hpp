@@ -9,7 +9,8 @@ using namespace cv;
 using namespace std;
 
 
-class GridMap {
+class GridMap
+{
 
 public:
 
@@ -22,8 +23,6 @@ public:
     void generateMap( int x, int y );
 
     void moveRobot( int x, int y );
-
-    void moveQuery( int index );
 
     bool checkGoal( int index );
 
@@ -46,8 +45,6 @@ public:
 
     int robLoc[4][2];
 
-    int queLoc[4][2];
-
     int golLoc[4][2];
 
     int checkedMoveIndX;
@@ -59,13 +56,11 @@ private:
 
     void generateRobot( );
 
-    void generateQuery( );
-
     void generateGoal( );
 
     void generateGoal( int x, int y );
 
-    void fillQuad(int (&location)[4][2], int size);
+    void fillQuad(int ( &location )[ 4 ][ 2 ], int size);
 
     void showMap( );
 
@@ -76,23 +71,19 @@ private:
 
 private:
 
-    Mat robot;
+    Mat _robot;
 
-    Mat query;
+    Mat _gol;
 
-    Mat gol;
+    Mat _staticMap;
 
-    Mat staticMap;
+    Mat _pathMap;
 
-    Mat pathMap;
+    string _mapID{ "resources/maze2.pgm" };
 
-    string mapID{ "resources/maze2.pgm" };
+    string _robID{ "resources/robot.jpg" };
 
-    string robID{ "resources/robot.jpg" };
-
-    string golID{ "resources/gold.jpg" };
-
-    string queID{ "resources/question.jpg" };
+    string _golID{ "resources/gold.jpg" };
 
 };
 

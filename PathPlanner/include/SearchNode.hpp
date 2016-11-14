@@ -12,7 +12,8 @@ using namespace cv;
 using namespace std;
 
 
-class SearchNode : public polysync::Node {
+class SearchNode : public polysync::Node
+{
 
 public:
 

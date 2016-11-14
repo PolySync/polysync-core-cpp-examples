@@ -43,8 +43,11 @@ constexpr int INVALID_LOC = -1;
  *
  * Shows how to subscribe a simulated robot node to a planning algorithm node.
  * Robot node listens for platform motion messages with desired waypoints from
- * planner algorithm.  Robot moves to the new position and reports back its
- * new location.
+ * planner algorithm.  Specifically, each platform motion message has a position
+ * and an orientation.  The incoming position fields give the current waypoint
+ * number and total number of waypoints.  The incoming orientation fields give
+ * the x and y axis coordinate that the robot should move to.  Robot moves to
+ * the new position and reports back its new location.
  *
  * @file RobotNode.cpp
  * @brief RobotNode Source
@@ -63,8 +66,8 @@ RobotNode::RobotNode( )
     setNodeName( "robotNode" );
 }
 
-RobotNode::~RobotNode( ){
-
+RobotNode::~RobotNode( )
+{
 }
 
 /**
@@ -74,10 +77,9 @@ RobotNode::~RobotNode( ){
  * PolySync. This is a good place to initialize variables dependant on a
  * polysync::Node reference.
  *
- * @param void
- * @return void
  */
-void RobotNode::initStateEvent( ) {
+void RobotNode::initStateEvent( )
+{
 
     // register node as a subscriber to platform motion messages from ANY node.
     registerListener( getMessageTypeByName( "ps_platform_motion_msg" ) );
@@ -85,7 +87,6 @@ void RobotNode::initStateEvent( ) {
     setSubscriberReliabilityQOS(
             getMessageTypeByName( "ps_platform_motion_msg" ),
             RELIABILITY_QOS_RELIABLE );
-    //registerListener( getMessageTypeByName( "ps_diagnostic_trace_msg" ) );
 }
 
 /**
@@ -95,20 +96,23 @@ void RobotNode::initStateEvent( ) {
  * reaches the "ok" state. This is the state where the node is in its
  * normal operating mode.
  *
- * @param void
- * @return void
  */
-void RobotNode::okStateEvent( ) {
+void RobotNode::okStateEvent( )
+{
 
     // wait for a goal location message from searchNode to be received
-    if ( _golLocX == INVALID_LOC || _golLocY == INVALID_LOC ) {
+    if ( _golLocX == INVALID_LOC || _golLocY == INVALID_LOC )
+    {
 
         // do nothing, sleep for 10 milliseconds
         polysync::sleepMicro(10000);
         return;
 
+    }
+
     // when goal received, generate a map with that goal state.
-    } else if ( _newRobLocX == INVALID_LOC || _newRobLocY == INVALID_LOC ) {
+    else if ( _newRobLocX == INVALID_LOC || _newRobLocY == INVALID_LOC )
+    {
 
         cout << endl << "Goal location received by robot.";
         cout << endl << "Generating map - - - - - - > " << std::flush;
@@ -125,20 +129,27 @@ void RobotNode::okStateEvent( ) {
         cout << "Sending robot start location to planner algorithm." << endl;
         cout << endl << "RobotNode waiting for waypoints." << endl;
 
+    }
+
     // with map generated, begin sending location messages to searchNode
-    } else if ( _golLocX != INVALID_LOC && _golLocY != INVALID_LOC ) {
+    else if ( _golLocX != INVALID_LOC && _golLocY != INVALID_LOC )
+    {
 
         sendLocationToPlanner( );
 
         // have I recieved the final waypoint?  if so, ask the user to shut down
-        if ( _waypointCounter == _numWaypoints - 2) {
+        if ( _waypointCounter == _numWaypoints - 2)
+        {
             cout << endl << "Robot is at goal state after ";
             cout << _waypointCounter << " waypoints. " <<  endl << endl;
             cout << "Press return key or Ctrl-C to shut down RobotNode.";
             cout << endl;
+
             cin.get();
             cout << endl << "Shutting down RobotNode." << endl << endl;
+
             disconnectPolySync( );
+
             return;
         }
 
@@ -146,12 +157,15 @@ void RobotNode::okStateEvent( ) {
         // the number of messages sent. do nothing, sleep for 1 millisecond.
         polysync::sleepMicro(1000);
 
-    } else {
+    }
+
+    else
+    {
 
         // do nothing, sleep for 100 milliseconds
-        //cout << "I should never be here." << endl;
         polysync::sleepMicro(100000);
         return;
+
     }
 }
 
@@ -161,37 +175,38 @@ void RobotNode::okStateEvent( ) {
  * Extract the information from the provided message
  *
  * @param std::shared_ptr< Message > - variable containing the message
- * @return void
  */
-void RobotNode::messageEvent( std::shared_ptr< polysync::Message > newMsg ) {
+void RobotNode::messageEvent( std::shared_ptr< polysync::Message > newMsg )
+{
 
     // check whether new message is not your own. This check is only important
     // since robotNode and searchNode both publish and subscribe to messages.
-    if ( newMsg->getSourceGuid( ) == getGuid( ) ) {
-
-        //cout << "This is Robot's message." << endl;
+    if ( newMsg->getSourceGuid( ) == getGuid( ) )
+    {
         return;
     }
 
     // now check whether new message is a PlatformMotionMessage.
-    if ( auto msg = getSubclass< PlatformMotionMessage >( newMsg ) ) {
+    if ( auto msg = getSubclass< PlatformMotionMessage >( newMsg ) )
+    {
 
         // the first received message from searchNode will be the goal location.
-        if ( _golLocX == INVALID_LOC && _golLocY == INVALID_LOC ) {
-
+        if ( _golLocX == INVALID_LOC && _golLocY == INVALID_LOC )
+        {
             _golLocX = msg->getOrientation()[0];
             _golLocY = msg->getOrientation()[1];
+        }
 
         // discard any received messages still containing the goal location
-        } else if ( msg->getOrientation()[0] == _golLocX &&
-                  msg->getOrientation()[1] == _golLocY ) {
-
-            //cout << "Still receiving goal state." << endl;
+        else if ( msg->getOrientation()[0] == _golLocX &&
+                  msg->getOrientation()[1] == _golLocY )
+        {
             return;
+        }
 
         // if a new waypoint, send it to the robot and move to the new location.
-        } else if ( msg->getPosition()[0] > _waypointCounter ) {
-
+        else if ( msg->getPosition()[0] > _waypointCounter )
+        {
             _waypointCounter = msg->getPosition()[0];
             _numWaypoints = msg->getPosition()[2];
 
@@ -201,10 +216,8 @@ void RobotNode::messageEvent( std::shared_ptr< polysync::Message > newMsg ) {
             cout << "Received waypoint " << _waypointCounter;
             cout << " from Planner.  X = " << _newRobLocX << ", Y = ";
             cout << _newRobLocY << endl << std::flush;
-            //msg->print();
         }
     }
-    //cout << "HELLO" << endl;
 }
 
 /**
@@ -212,12 +225,12 @@ void RobotNode::messageEvent( std::shared_ptr< polysync::Message > newMsg ) {
  *
  * Move robot to new desired location and report back current position.
  *
- * @param void
  * @return int - GridMap index of robot's new position.
  */
-void RobotNode::sendLocationToPlanner( ) {
+void RobotNode::sendLocationToPlanner( )
+{
 
-    _world->moveRobot(_newRobLocX, _newRobLocY);
+    _world->moveRobot( _newRobLocX, _newRobLocY );
 
     double actualRobLocX = double( _world->robLoc[0][0] );
     double actualRobLocY = double( _world->robLoc[0][1] );
@@ -234,7 +247,6 @@ void RobotNode::sendLocationToPlanner( ) {
 
     // Publish to the PolySync bus
     msg.publish();
-    //msg.print();
 
 }
 
@@ -245,7 +257,8 @@ void RobotNode::sendLocationToPlanner( ) {
  * use Ctrl-C to exit this function.
  */
 
-int main( ) {
+int main( )
+{
 
     RobotNode robotNode;
     robotNode.connectPolySync( );

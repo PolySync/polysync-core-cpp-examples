@@ -12,7 +12,8 @@ using namespace cv;
 using namespace std;
 
 
-class RobotNode : public polysync::Node {
+class RobotNode : public polysync::Node
+{
 
 public:
 
