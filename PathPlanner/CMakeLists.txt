@@ -24,8 +24,8 @@ include_directories(
 )
 
 add_executable( polysync-path-planner-algorithm-cpp
-	source/GridMap.cpp
-	source/Planner.cpp
+	src/GridMap.cpp
+	src/Planner.cpp
 	SearchNode.cpp
 )
 
@@ -35,7 +35,7 @@ target_link_libraries( polysync-path-planner-algorithm-cpp
 )
 
 add_executable( polysync-path-planner-robot-cpp
-	source/GridMap.cpp
+	src/GridMap.cpp
 	RobotNode.cpp
 )
 
