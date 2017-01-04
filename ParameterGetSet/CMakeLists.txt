@@ -10,9 +10,13 @@ add_definitions(
     -std=c++11
     )
 
-set( PSYNC_HOME
-    /usr/local/polysync
-    )
+if( NOT PSYNC_HOME )
+    if( $ENV{PSYNC_HOME} )
+        set( PSYNC_HOME $ENV{PSYNC_HOME} )
+    else()
+        set( PSYNC_HOME /usr/local/polysync )
+    endif()
+endif()
 
 include_directories(
     ${PSYNC_HOME}/include
