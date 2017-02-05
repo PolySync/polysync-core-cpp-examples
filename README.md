@@ -36,8 +36,7 @@ Here you can find examples that demonstrate how to use PolySync's APIs.
 
 
 ## PolySync Resources
-- [Complete List of Examples](https://support.harbrick.com/hc/en-us/articles/216961138)
-- [Knowledge Base](https://support.harbrick.com/hc/en-us)
-- [Support Center](https://support.harbrick.com/)
+- [Complete List of Examples](https://help.polysync.io/articles/)
+- [Help Center](https://help.polysync.io)
 
 
