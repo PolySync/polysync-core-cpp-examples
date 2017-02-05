@@ -1,5 +1,5 @@
-### HelloWorld
-This code is part of a tutorial in which we demonstrate the basics of connecting to the PolySync bus to allow you to read and write information.
+### HelloWorldSubscriber
+This example is the most basic C++ application you can have that subscribes to data through high-level messages from the PolySync bus.
 
 ### Hardware requirements
 
@@ -7,11 +7,11 @@ This code is part of a tutorial in which we demonstrate the basics of connecting
 
 ### Building and Running the Node
 ```bash
-$ cd HelloWorld 
+$ cd HelloWorldSubscriber 
 $ mkdir build && cd build
 $ cmake ..
 $ make
-$ ./polysync-helloworld-cpp
+$ ./polysync-helloworld-subscriber-cpp
 ```
 
 For more API examples visit the "Turorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/)

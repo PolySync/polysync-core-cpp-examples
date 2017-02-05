@@ -1,5 +1,5 @@
-### HelloWorld
-This code is part of a tutorial in which we demonstrate the basics of connecting to the PolySync bus to allow you to read and write information.
+### SampleApplication
+This is an example of the application node template, as opposed to the node template
 
 ### Hardware requirements
 
@@ -7,11 +7,11 @@ This code is part of a tutorial in which we demonstrate the basics of connecting
 
 ### Building and Running the Node
 ```bash
-$ cd HelloWorld 
+$ cd SampleApplication 
 $ mkdir build && cd build
 $ cmake ..
 $ make
-$ ./polysync-helloworld-cpp
+$ ./polysync-sample-application-cpp
 ```
 
 For more API examples visit the "Turorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/)

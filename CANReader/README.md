@@ -6,6 +6,7 @@ This example will give you experience for the times you need a node to listen to
 - linuxcan-compatible hardware is connected, i.e. a Kvaser Leaf Light
 
 ### Dependencies
+You need to have an CAN channel to run this example see:  [Connecting To A CAN Sensor](https://help.polysync.io/articles/configuration/runtime-node-configuration/connecting-to-a-can-radar-sensor/)
 
 ### Building and Running the Node
 ```bash
@@ -13,7 +14,6 @@ $ cd CANReader
 $ mkdir build && cd build
 $ cmake ..
 $ make
-# You need to have an CAN channel to run this example see:  [Connecting To A CAN Sensor](https://help.polysync.io/articles/configuration/runtime-node-configuration/connecting-to-a-can-radar-sensor/)
 $ ./polysync-can-reader-cpp 1
 ```
 
