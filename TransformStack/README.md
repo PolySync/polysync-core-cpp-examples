@@ -8,13 +8,13 @@ It pushes a transform to the stack.
 
 Packages: libglib2.0-dev
 
-To install on Ubuntu
+To install on Ubuntu:
 
 ```bash
 sudo apt-get install <package>
 ```
 
-### Building and Running the Node
+### Building and running the node
 
 ```bash
 $ cd TransformStack 
@@ -24,4 +24,4 @@ $ make
 $ ./polysync-transform-stack-cpp
 ```
 
-For more API examples visit the "Turorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/)
+For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).
