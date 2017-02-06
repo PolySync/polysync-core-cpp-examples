@@ -6,13 +6,13 @@ This example demonstrates how to use the PolySync Log Session Transfer API to ex
 
 Packages: libglib2.0-dev
 
-To install on Ubuntu
+To install on Ubuntu:
 
 ```bash
 sudo apt-get install <package>
 ```
 
-### Building and Running the Node
+### Building and running the node
 
 ```bash
 $ cd LogSessionExport 
@@ -22,4 +22,4 @@ $ make
 $ ./polysync-log-session-export-cpp
 ```
 
-For more API examples visit the "Turorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/)
+For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).
