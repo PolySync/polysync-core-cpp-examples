@@ -1,6 +1,7 @@
 ### CSVExporter
 
-Subscribes to a limited set of message types (below), and writes the incoming data to a CSV file (one CSV file for each message type)
+This subscribes to a limited set of message types (below), and writes the incoming data to a CSV file (one CSV file for each message type):
+
    `ps_platform_motion_msg`
    `ps_objects_msg`
    `ps_lane_model_msg`
@@ -12,13 +13,13 @@ Subscribes to a limited set of message types (below), and writes the incoming da
 
 Packages: libglib2.0-dev
 
-To install on Ubuntu
+To install on Ubuntu:
 
 ```bash
 sudo apt-get install <package>
 ```
 
-### Building and Running the Node
+### Building and running the node
 
 ```bash
 $ cd CSVExporter 
@@ -28,4 +29,4 @@ $ make
 $ ./polysync-csv-export
 ```
 
-For more API examples visit the "Turorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/)
+For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).
