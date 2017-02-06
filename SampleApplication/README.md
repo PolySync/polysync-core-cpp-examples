@@ -1,18 +1,18 @@
 ### SampleApplication
 
-This is an example of the application node template, as opposed to the node template
+This is an example of the application node template, as opposed to the node template.
 
 ### Dependencies
 
 Packages: libglib2.0-dev
 
-To install on Ubuntu
+To install on Ubuntu:
 
 ```bash
 sudo apt-get install <package>
 ```
 
-### Building and Running the Node
+### Building and running the node
 
 ```bash
 $ cd SampleApplication 
@@ -22,4 +22,4 @@ $ make
 $ ./polysync-sample-application-cpp
 ```
 
-For more API examples visit the "Turorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/)
+For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).
