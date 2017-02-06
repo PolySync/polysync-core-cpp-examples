@@ -1,20 +1,19 @@
 ### ParameterGetSet
 
-This example demonstrates the logic used to filter for a specific node on the bus, and use the Parameter get/set API to update a specific parameter ID at runtime
-It publishes and subscribes the `ps_parameters_msg`
-It checks and then updates the coordinate frame identifier, specifically for a video device node
+This example demonstrates the logic used to filter for a specific node on the bus, and uses the ParameterGetSet API to update a specific parameter ID at runtime.
+It publishes and subscribes the `ps_parameters_msg`, and checks and then updates the coordinate frame identifier, specifically for a video device node.
 
 ### Dependencies
 
 Packages: libglib2.0-dev
 
-To install on Ubuntu
+To install on Ubuntu:
 
 ```bash
 sudo apt-get install <package>
 ```
 
-### Building and Running the Node
+### Building and running the node
 
 ```bash
 $ cd ParameterGetSet 
@@ -24,4 +23,4 @@ $ make
 $ ./polysync-parameter-get-set-cpp
 ```
 
-For more API examples visit the "Turorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/)
+For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).
