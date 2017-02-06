@@ -1,6 +1,6 @@
 ### TransformStack
 
-This example shows how to use the transform API to perform multiple transforms in the same stack.
+This example illustrates how to use the transform API to perform multiple transforms in the same stack.
 It demonstrates PolySync transform API usage.
 It pushes a transform to the stack.
 
