@@ -1,12 +1,20 @@
 ### FileTransfer
+
 This example shows you how to use the PolySync file transfer API to transfer files.  It transfers
 the PolySync EULA.txt file to a destination location.
 
-### Hardware requirements
-
 ### Dependencies
 
+Packages: libglib2.0-dev
+
+To install on Ubuntu
+
+```bash
+sudo apt-get install <package>
+```
+
 ### Building and Running the Node
+
 ```bash
 $ cd FileTransfer 
 $ mkdir build && cd build

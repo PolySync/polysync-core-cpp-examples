@@ -1,4 +1,5 @@
 ### LogfileReader
+
 This example uses the Logfile API to replay a PolySync logfile `plog` file.
 It Depends on a file in `/tmp/` directory, but can easily be updated to point to any existing `plog` file (the intention of the example)
    /tmp/polysync_logfile.plog
@@ -7,11 +8,18 @@ Steps to run:
    2. Compile
    3. Run
 
-### Hardware requirements
-
 ### Dependencies
 
+Packages: libglib2.0-dev
+
+To install on Ubuntu
+
+```bash
+sudo apt-get install <package>
+```
+
 ### Building and Running the Node
+
 ```bash
 $ cd LogfileReader 
 $ mkdir build && cd build

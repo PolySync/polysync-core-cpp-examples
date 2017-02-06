@@ -1,12 +1,20 @@
 ### SingleTransform
+
 This example demonstrates PolySync transform API usage.
 It pushes a transform to the stack and then shows resulting transformation.
 
-### Hardware requirements
-
 ### Dependencies
 
+Packages: libglib2.0-dev
+
+To install on Ubuntu
+
+```bash
+sudo apt-get install <package>
+```
+
 ### Building and Running the Node
+
 ```bash
 $ cd SingleTransform 
 $ mkdir build && cd build

@@ -1,14 +1,22 @@
 ### SerialReader
+
 You would use this as a reference if you needed a node to listen to a device over a serial connection.
 This example creates and reads data through a serial connection, to a hardware device, or another software application.
 It exercises the Serial API.
 It pairs nicely with the `SerialWriter` example.
 
-### Hardware requirements
-
 ### Dependencies
 
+Packages: libglib2.0-dev
+
+To install on Ubuntu
+
+```bash
+sudo apt-get install <package>
+```
+
 ### Building and Running the Node
+
 ```bash
 $ cd SerialReader 
 $ mkdir build && cd build

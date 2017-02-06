@@ -1,11 +1,19 @@
 ### HelloWorld
-This code is part of a tutorial in which we demonstrate the basics of connecting to the PolySync bus to allow you to read and write information.
 
-### Hardware requirements
+This code is part of a tutorial in which we demonstrate the basics of connecting to the PolySync bus to allow you to read and write information.
 
 ### Dependencies
 
+Packages: libglib2.0-dev
+
+To install on Ubuntu
+
+```bash
+sudo apt-get install <package>
+```
+
 ### Building and Running the Node
+
 ```bash
 $ cd HelloWorld 
 $ mkdir build && cd build

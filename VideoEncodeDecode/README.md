@@ -1,4 +1,5 @@
 ### VideoDeviceViewer
+
 This example demonstrates how to use the Video API routines to communicate with a video device, and encode/decode the data.
 
 You would use this example if you needed a node to talk directly to a video device, and didn’t want to use the `generic-video-device` driver, which supports all V4L USB video devices.
@@ -8,9 +9,21 @@ It expects XXXXX pixel format
 
 ### Hardware requirements
 
+Sensors: LiDAR, RADAR
+Video Device
+
 ### Dependencies
 
+Packages: libglib2.0-dev libgstreamer1.0-0
+
+To install on Ubuntu
+
+```bash
+sudo apt-get install <package>
+```
+
 ### Building and Running the Node
+
 ```bash
 $ cd VideoDeviceViewer 
 $ mkdir build && cd build

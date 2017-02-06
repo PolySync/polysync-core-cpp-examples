@@ -1,4 +1,5 @@
 ### LogfileIterator
+
 This example is very powerful and very popular. It uses the logfile API.
 It allows a user to iterate over a specified logfile manually and read its contents.
 A logfile iterator callback is set up, which is called every time a new “record” is popped from the logfile. 
@@ -10,11 +11,18 @@ a message type doesn’t mean it logs that same message type.
 For example most CAN drivers log with `ps_can_frame_msg` but publish `ps_radar_targets_msg`, `ps_objects_msg` etc. 
 This results in them trying to cast new logfile frames to `ps_radar_targets_msg` etc instead of their actual format.
 
-### Hardware requirements
-
 ### Dependencies
 
+Packages: libglib2.0-dev
+
+To install on Ubuntu
+
+```bash
+sudo apt-get install <package>
+```
+
 ### Building and Running the Node
+
 ```bash
 $ cd LogfileIterator
 $ mkdir build && cd build

@@ -1,14 +1,21 @@
 ### ParameterGetSet
+
 This example demonstrates the logic used to filter for a specific node on the bus, and use the Parameter get/set API to update a specific parameter ID at runtime
 It publishes and subscribes the `ps_parameters_msg`
 It checks and then updates the coordinate frame identifier, specifically for a video device node
 
-
-### Hardware requirements
-
 ### Dependencies
 
+Packages: libglib2.0-dev
+
+To install on Ubuntu
+
+```bash
+sudo apt-get install <package>
+```
+
 ### Building and Running the Node
+
 ```bash
 $ cd ParameterGetSet 
 $ mkdir build && cd build

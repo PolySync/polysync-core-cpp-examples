@@ -1,11 +1,19 @@
 ### HelloWorldSubscriber
-This example is the most basic C++ application you can have that subscribes to data through high-level messages from the PolySync bus.
 
-### Hardware requirements
+This example is the most basic C++ application you can have that subscribes to data through high-level messages from the PolySync bus.
 
 ### Dependencies
 
+Packages: libglib2.0-dev
+
+To install on Ubuntu
+
+```bash
+sudo apt-get install <package>
+```
+
 ### Building and Running the Node
+
 ```bash
 $ cd HelloWorldSubscriber 
 $ mkdir build && cd build

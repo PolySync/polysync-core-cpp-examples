@@ -1,4 +1,5 @@
 ### DataGenerator
+
 This example covers how to populate and publish data from a single node into a PolySync message on the bus, 
 enable multiple nodes to subscribe to messages to access data asynchronously, and visualize all data being 
 published to the PolySync bus.
@@ -10,11 +11,18 @@ It uses a lightweight diagnostic tool to tell if a system is properly up and run
 There is an article in our help center that describes the C++ version of this example.
 [Data Generation Tutorial](https://help.polysync.io/articles/tutorials-and-examples/tutorials/data-generation-tutorial/)
 
-### Hardware requirements
-
 ### Dependencies
 
+Packages: libglib2.0-dev
+
+To install on Ubuntu
+
+```bash
+sudo apt-get install <package>
+```
+
 ### Building and Running the Node
+
 ```bash
 $ cd DataGenerator 
 $ mkdir build && cd build

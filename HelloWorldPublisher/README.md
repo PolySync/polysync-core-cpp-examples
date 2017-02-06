@@ -1,11 +1,19 @@
 ### HelloWorldPublisher
-This example is the most basic C++ application you can have that publishes data to the PolySync bus.
 
-### Hardware requirements
+This example is the most basic C++ application you can have that publishes data to the PolySync bus.
 
 ### Dependencies
 
+Packages: libglib2.0-dev
+
+To install on Ubuntu
+
+```bash
+sudo apt-get install <package>
+```
+
 ### Building and Running the Node
+
 ```bash
 $ cd HelloWorldPublisher 
 $ mkdir build && cd build
