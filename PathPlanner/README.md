@@ -3,7 +3,7 @@
 This is a C++ algorithm example.
 This example will build a basic path planner algorithm in PolySync. We will apply a basic A\* planner to a simulated search space, generate the optimal path to the goal state, and then move a simulated robot along that path to the goal. The optimal path is sent one waypoint at a time as a `PlatformMotionMessage`, which is defined in the [C++ Sensor Data Model](http://polysync.github.io/Docs-2.0/#platformmotionmessage) Module.
 
-For a detailed description see:  [Path Planner Tutorial](https://help.polysync.io/articles/tutorials-and-examples/tutorials/path-planner-tutorial/)
+For a detailed description, see:  [Path Planner Tutorial](https://help.polysync.io/articles/tutorials-and-examples/tutorials/path-planner-tutorial/).
 
 ### Dependencies
 
@@ -11,13 +11,13 @@ For a detailed description see:  [Path Planner Tutorial](https://help.polysync.i
 
 Packages: libglib2.0-dev
 
-To install on Ubuntu
+To install on Ubuntu:
 
 ```bash
 sudo apt-get install <package>
 ```
 
-### Building and Running the Node
+### Building and running the node
 
 ```bash
 $ cd PathPlanner 
@@ -29,4 +29,4 @@ $ ./polysync-path-planner-robot-cpp
 $ ./polysync-path-planner-algorithm-cpp
 ```
 
-For more API examples visit the "Turorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/)
+For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).
