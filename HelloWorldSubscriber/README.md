@@ -6,13 +6,13 @@ This example is the most basic C++ application you can have that subscribes to d
 
 Packages: libglib2.0-dev
 
-To install on Ubuntu
+To install on Ubuntu:
 
 ```bash
 sudo apt-get install <package>
 ```
 
-### Building and Running the Node
+### Building and running the node
 
 ```bash
 $ cd HelloWorldSubscriber 
@@ -22,4 +22,4 @@ $ make
 $ ./polysync-helloworld-subscriber-cpp
 ```
 
-For more API examples visit the "Turorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/)
+For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).
