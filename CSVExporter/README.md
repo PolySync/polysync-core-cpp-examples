@@ -1,6 +1,13 @@
-### HelloWorld
+### CSVExporter
 
-This code is part of a tutorial that demonstrates the basics of connecting to the PolySync bus. This allows you to read and write information.
+This subscribes to a limited set of message types (below), and writes the incoming data to a CSV file (one CSV file for each message type):
+
+   `ps_platform_motion_msg`
+   `ps_objects_msg`
+   `ps_lane_model_msg`
+   `ps_lidar_points_msg`
+   `ps_radar_targets_msg`
+   `ps_traffic_sign_msg`
 
 ### Dependencies
 
@@ -15,11 +22,11 @@ sudo apt-get install <package>
 ### Building and running the node
 
 ```bash
-$ cd HelloWorld 
+$ cd CSVExporter 
 $ mkdir build && cd build
 $ cmake ..
 $ make
-$ ./polysync-helloworld-cpp
+$ ./polysync-csv-export
 ```
 
 For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).

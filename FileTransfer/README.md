@@ -1,6 +1,7 @@
-### HelloWorld
+### FileTransfer
 
-This code is part of a tutorial that demonstrates the basics of connecting to the PolySync bus. This allows you to read and write information.
+This example illustrates how to use the PolySync file transfer API to transfer files.  It transfers
+the PolySync EULA.txt file to a destination location.
 
 ### Dependencies
 
@@ -15,11 +16,11 @@ sudo apt-get install <package>
 ### Building and running the node
 
 ```bash
-$ cd HelloWorld 
+$ cd FileTransfer 
 $ mkdir build && cd build
 $ cmake ..
 $ make
-$ ./polysync-helloworld-cpp
+$ ./polysync-file-transfer-cpp
 ```
 
 For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).

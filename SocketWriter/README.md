@@ -1,6 +1,7 @@
-### HelloWorld
+### SocketWriter
 
-This code is part of a tutorial that demonstrates the basics of connecting to the PolySync bus. This allows you to read and write information.
+This is a simple example illustrating UDP socket communication in PolySync when using the PolySync socket API.
+It writes from UDP socket using API calls and socket class.
 
 ### Dependencies
 
@@ -15,11 +16,11 @@ sudo apt-get install <package>
 ### Building and running the node
 
 ```bash
-$ cd HelloWorld 
+$ cd SocketWriter 
 $ mkdir build && cd build
 $ cmake ..
 $ make
-$ ./polysync-helloworld-cpp
+$ ./polysync-socket-writer-cpp
 ```
 
 For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).

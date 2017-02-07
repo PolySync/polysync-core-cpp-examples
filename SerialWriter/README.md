@@ -1,6 +1,8 @@
-### HelloWorld
+### SerialWriter
 
-This code is part of a tutorial that demonstrates the basics of connecting to the PolySync bus. This allows you to read and write information.
+This can be used as a reference if a node is required to speak directly to a device over a serial connection.
+It pairs nicely with the `SerialReader` example.
+This example creates and writes data to a serial connection, to a hardware device, or to another software application.
 
 ### Dependencies
 
@@ -15,11 +17,11 @@ sudo apt-get install <package>
 ### Building and running the node
 
 ```bash
-$ cd HelloWorld 
+$ cd SerialWriter 
 $ mkdir build && cd build
 $ cmake ..
 $ make
-$ ./polysync-helloworld-cpp
+$ ./polysync-serial-writer-cpp
 ```
 
 For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).

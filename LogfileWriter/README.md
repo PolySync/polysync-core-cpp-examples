@@ -1,6 +1,7 @@
-### HelloWorld
+### LogfileWriter
 
-This code is part of a tutorial that demonstrates the basics of connecting to the PolySync bus. This allows you to read and write information.
+This is an example that uses the Logfile API to replay a PolySync logfile `plog` file.
+It shows how to use the Logfile API routines to write a PolySync byte array message to a PolySync logfile `plog`.
 
 ### Dependencies
 
@@ -15,11 +16,11 @@ sudo apt-get install <package>
 ### Building and running the node
 
 ```bash
-$ cd HelloWorld 
+$ cd LogfileWriter 
 $ mkdir build && cd build
 $ cmake ..
 $ make
-$ ./polysync-helloworld-cpp
+$ ./polysync-logfile-writer-cpp
 ```
 
 For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).

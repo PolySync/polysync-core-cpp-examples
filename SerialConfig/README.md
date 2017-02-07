@@ -1,6 +1,7 @@
-### HelloWorld
+### SerialConfig
 
-This code is part of a tutorial that demonstrates the basics of connecting to the PolySync bus. This allows you to read and write information.
+This is an example of the Serial API used to configure a serial port.
+It requires two serial ports, as the example prints strings between the two ports.
 
 ### Dependencies
 
@@ -15,11 +16,11 @@ sudo apt-get install <package>
 ### Building and running the node
 
 ```bash
-$ cd HelloWorld 
+$ cd SerialConfig 
 $ mkdir build && cd build
 $ cmake ..
 $ make
-$ ./polysync-helloworld-cpp
+$ ./polysync-serial-config-cpp
 ```
 
 For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).
