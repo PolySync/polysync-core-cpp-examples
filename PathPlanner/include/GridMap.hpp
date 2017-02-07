@@ -79,11 +79,11 @@ private:
 
     Mat _pathMap;
 
-    string _mapID{ "resources/maze2.pgm" };
+    string _mapID{ "../resources/maze2.pgm" };
 
-    string _robID{ "resources/robot.jpg" };
+    string _robID{ "../resources/robot.jpg" };
 
-    string _golID{ "resources/gold.jpg" };
+    string _golID{ "../resources/gold.jpg" };
 
 };
 
