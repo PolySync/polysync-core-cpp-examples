@@ -21,6 +21,7 @@ include( ${PSYNC_HOME}/BuildResources.cmake )
 include_directories(
     ${PSYNC_INCLUDE_DIRS}
 	include
+    res
 )
 
 add_executable( polysync-path-planner-algorithm-cpp
