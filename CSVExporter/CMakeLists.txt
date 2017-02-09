@@ -27,8 +27,3 @@ target_link_libraries( ${PROJECT_NAME}
     getopt_cpp 
     ${PSYNC_LIBS}
 )
-
-install(
-    TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION ${PSYNC_HOME}/bin
-)

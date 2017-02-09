@@ -42,7 +42,3 @@ target_link_libraries(
     polysync_data_model
 )
 
-install(
-    TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION ${PSYNC_HOME}/bin
-)
