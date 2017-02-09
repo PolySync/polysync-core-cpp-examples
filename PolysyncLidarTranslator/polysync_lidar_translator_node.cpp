@@ -62,7 +62,7 @@ void publishLidarTransform(
 }
 
 
-// CallBack for PolySync Lidar Targets
+// CallBack for PolySync Lidar Points
 void lidarCallback(
         const polysync_ros_bridge::ps_lidar_points_msg::ConstPtr& msg,
         ros::Publisher * lidar_pub )
@@ -77,7 +77,7 @@ void lidarCallback(
     std::string src_guid = src_guid_ss.str();
 
     // get PS timestamp in nanoseconds
-    long long ps_nanoseconds = msg->ps_header.timestamp*1000;
+    unsigned long long ps_nanoseconds = msg->ps_header.timestamp*1000;
 
     //Consistant timestamp for all lidar points in this single message
     uint headerSize = sizeof( msg->points[0].header );
