@@ -1,4 +1,14 @@
-This example is a generalized Lidar message translator for messages coming from PolySync into ROS via the PolySync ROS bridge. It is generalized to work with any Lidar driver or application running in PolySync. Each PointCloud2 message will contain the source GUID of the driver sending the `ps_lidar_points_msg` in it's frame_id field. Thus you can differentiate the incoming data as necessary. Similarly the PolySync timestamp is copied over to the native PointCloud2 messages. The transform for each incoming message of a particular GUID can be manually modified to match what is in the PolySync SDF. This allows simple sensor translation so that the data is correctly kept relative to the vehicles center frame, as in PolySync. It would be easy to adapt this example to publish in the other direction if necessary. Finally, with a little work this example could be adapted to republish `ps_radar_targets_msg` to PointCloud2, thus allowing you to use all Radar drivers in PolySync with ROS. This example is intended to be very easy to use but very powerful in it's potential applications.
+## Lidar Translator
+
+This example is a generalized Lidar message translator for messages coming from PolySync into ROS via the PolySync ROS bridge. It is generalized to work with any Lidar driver or application running in PolySync. 
+
+Each PointCloud2 message will contain the source GUID of the driver sending the `ps_lidar_points_msg` in it's frame_id field. Thus you can differentiate the incoming data as necessary. Similarly the PolySync timestamp is copied over to the native PointCloud2 messages. 
+
+The transform for each incoming message of a particular GUID can be manually modified to match what is in the PolySync SDF. This allows simple sensor translation so that the data is correctly kept relative to the vehicles center frame, as in PolySync. 
+
+It would be easy to adapt this example to publish data in the other direction. This example could be adapted to republish `ps_radar_targets_msg` to PointCloud2, allowing you to use all RADAR drivers in PolySync with ROS. This example is intended to be very easy to use but very powerful in it's potential applications.
+
+### Building and Running the Example
 
 To properly build this example with the generated PolySync messages in ROS, you will first need to set up your catkin workspace with the ros_bridge.
 
