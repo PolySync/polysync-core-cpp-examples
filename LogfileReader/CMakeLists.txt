@@ -27,9 +27,3 @@ target_link_libraries( ${PROJECT_NAME}
     ${PSYNC_LIBS}
     glib-2.0
 )
-
-install(
-    TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION ${PSYNC_HOME}/bin
-)
-

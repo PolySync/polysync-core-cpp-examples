@@ -44,8 +44,3 @@ target_link_libraries( polysync-path-planner-robot-cpp
     ${PSYNC_LIBS}
     ${OpenCV_LIBS}
 )
-
-install(
-    TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION ${PSYNC_HOME}/bin
-)

@@ -24,8 +24,3 @@ add_executable(
 target_link_libraries( ${PROJECT_NAME}
     ${PSYNC_LIBS}
 )
-
-install(
-    TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION ${PSYNC_HOME}/bin
-    )
