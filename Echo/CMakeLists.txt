@@ -33,8 +33,3 @@ target_link_libraries(
     polysync_cpp_message_support
     polysync_data_model
     )
-
-install(
-    TARGETS polysync-echo
-    DESTINATION ${PSYNC_HOME}/bin
-)

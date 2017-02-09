@@ -31,8 +31,3 @@ target_link_libraries( ${PROJECT_NAME}
     ${PSYNC_LIBS}
     Qt5::Widgets
 )
-
-install(
-    TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION ${PSYNC_HOME}/bin
-)
