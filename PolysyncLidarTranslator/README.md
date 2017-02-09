@@ -1,14 +1,14 @@
-## Lidar Translator
+## LiDAR Translator
 
-This example is a generalized Lidar message translator for messages coming from PolySync into ROS via the PolySync ROS bridge. It is generalized to work with any Lidar driver or application running in PolySync. 
+This example is a generalized LiDAR message translator for messages coming from PolySync into ROS via the PolySync ROS bridge. It is generalized to work with any LiDAR driver or application running in PolySync. 
 
-Each PointCloud2 message will contain the source GUID of the driver sending the `ps_lidar_points_msg` in it's frame_id field. Thus you can differentiate the incoming data as necessary. Similarly the PolySync timestamp is copied over to the native PointCloud2 messages. 
+Each PointCloud2 message will contain the source GUID of the driver sending the `ps_lidar_points_msg` in its frame_id field. Thus, you can differentiate the incoming data as necessary. Similarly, the PolySync timestamp is copied over to the native PointCloud2 messages. 
 
 The transform for each incoming message of a particular GUID can be manually modified to match what is in the PolySync SDF. This allows simple sensor translation so that the data is correctly kept relative to the vehicles center frame, as in PolySync. 
 
-It would be easy to adapt this example to publish data in the other direction. This example could be adapted to republish `ps_radar_targets_msg` to PointCloud2, allowing you to use all RADAR drivers in PolySync with ROS. This example is intended to be very easy to use but very powerful in it's potential applications.
+It would be easy to adapt this example to publish data in the other direction. This example could be adapted to republish `ps_radar_targets_msg` to PointCloud2, allowing you to use all RADAR drivers in PolySync with ROS. This example is intended to be very easy to use while still being powerful in its potential applications.
 
-### Building and Running the Example
+### Building and running the example
 
 To properly build this example with the generated PolySync messages in ROS, you will first need to set up your catkin workspace with the ros_bridge.
 
@@ -16,7 +16,7 @@ If you do not have a catkin workspace already, follow these steps to set one up.
 
 http://wiki.ros.org/catkin/Tutorials/create_a_workspace
 
-If you do have a workspace feel free to continue with the steps below. First source your ROS install and then create a package in the src directory of your catkin workspace as shown below.
+If you do have a workspace, feel free to continue with the steps below. First source your ROS install, and then create a package in the src directory of your catkin workspace, as shown below.
 
 ```bash
 $ cd ~/catkin_ws/src
@@ -46,7 +46,7 @@ target_link_libraries(polysync_lidar_translator_node
  )
 ```
 
-Generate the ros_bridge files in the src folder of your catkin workspace and copy the ros_bridge project into the root directory of your catkin workspace; as shown below.
+Generate the ros_bridge files in the src folder of your catkin workspace, and copy the ros_bridge project into the root directory of your catkin workspace, as shown below.
 
 ```bash
 $ cd ~/catkin_ws/src
@@ -63,7 +63,7 @@ $ source ros_bridge/setup.bash
 $ catkin_make
 ```
 
-Run ROS bridge node as shown below. (remember to source ros_bridge/setup.bash if using a different terminal)
+Run ROS bridge node as shown below, remembering to source ros_bridge/setup.bash if using a different terminal.
 
 ```bash
 $ cd ~/catkin_ws/ros_bridge/share/polysync_ros_bridge
@@ -89,4 +89,4 @@ Open up rviz.
 $ rosrun rviz rviz
 ```
 
-In "Global Options" for the fixed frame select "world". Then hit "add" and add a new "PointCloud2" visualization. For the topic of this new visualization select "/polysync/lidar_points". You can change the style to "Points" to have a little more realistic looking lidar point cloud.
+In "Global Options" for the fixed frame select "world," then hit "add" and add a new "PointCloud2" visualization. For the topic of this new visualization select "/polysync/lidar_points." You can change the style to "Points" to have a little more realistic looking LiDAR point cloud.
