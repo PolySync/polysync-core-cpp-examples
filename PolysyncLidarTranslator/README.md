@@ -27,7 +27,7 @@ $ catkin_create_pkg polysync_lidar_translator std_msgs roscpp tf
 Copy "polysync_lidar_translator_node.cpp" to the src directory of the polysync_lidar_translator package you created.
 
 ```bash
-    $ cp PolySync-Core-CPP-Examples/PolysyncLidarTranslator/polysync_lidar_translator_node.cpp ~/catkin_ws/src/polysync_lidar_translator/src/
+$ cp PolySync-Core-CPP-Examples/PolysyncLidarTranslator/polysync_lidar_translator_node.cpp ~/catkin_ws/src/polysync_lidar_translator/src/
 ```
 
 Make sure that in the "Build" section of the CMakeLists file for your PolysyncLidarTranslator project are uncommented. All other lines in the "Build" section should be commented.
