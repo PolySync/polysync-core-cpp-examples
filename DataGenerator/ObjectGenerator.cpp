@@ -65,7 +65,7 @@ void ObjectGenerator::updateObjects()
     for( auto index = 0; index < _objectCount; ++index )
     {
         // Get time difference from last update
-        auto timeDelta = time - _message.getTimestamp();
+        auto timeDelta = time - _message.getHeaderTimestamp();
 
         // Convert to seconds
         auto timeDeltaSeconds = static_cast< double >( timeDelta )/ 1000000.0;
