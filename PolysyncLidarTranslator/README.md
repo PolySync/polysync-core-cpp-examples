@@ -50,7 +50,7 @@ Generate the ros_bridge files in the src folder of your catkin workspace, and co
 
 ```bash
 $ cd ~/catkin_ws/src
-$ pdm-gen -r /usr/local/polysync/modules/sensor/sensor.idl /usr/local/polysync/modules/navigation/navigation.idl /usr/local/polysync/modules/control/control.idl /usr/local/polysync/modules/dtc/dtc.idl
+$ pdm-gen -r -c /usr/local/polysync/modules/sensor/sensor.idl /usr/local/polysync/modules/navigation/navigation.idl /usr/local/polysync/modules/control/control.idl /usr/local/polysync/modules/dtc/dtc.idl
 $ mv pdm/ros_bridge ../
 $ rm -rf pdm
 ```
