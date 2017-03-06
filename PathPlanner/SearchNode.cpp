@@ -201,7 +201,7 @@ void SearchNode::messageEvent( std::shared_ptr< polysync::Message > newMsg )
 
     // check whether new message is not your own. This check is only important
     // since robotNode and searchNode both publish and subscribe to messages.
-    if ( newMsg->getSourceGuid( ) == getGuid( ) )
+    if ( newMsg->getHeaderSrcGuid( ) == getGuid( ) )
     {
         return;
     }
@@ -273,8 +273,8 @@ void SearchNode::sendNextWaypoint( int newIndex, int waypointID )
     msg.setHeaderTimestamp( polysync::getTimestamp() );
 
     // Populate buffer
-    msg.setPosition( { double(waypointID), 0, double(_numWaypoints) } );
-    msg.setOrientation( { _newRobLocX, _newRobLocY, 0, 0 } );
+    msg.setPosition( { double( waypointID ), 0, double( _numWaypoints ) } );
+    msg.setOrientation( { double(_newRobLocX), double(_newRobLocY), 0, 0 } );
 
     // Publish to the PolySync bus
     msg.publish();
