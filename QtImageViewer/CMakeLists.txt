@@ -23,8 +23,9 @@ find_package( Qt5Widgets )
 
 add_executable( ${PROJECT_NAME}
     main.cpp
-    VideoViewer.cpp
-    VideoProcessor.cpp
+    ImageDataNode.cpp
+    ImageDataProcessor.cpp
+    ImageDataView.cpp
 )
 
 target_link_libraries( ${PROJECT_NAME}

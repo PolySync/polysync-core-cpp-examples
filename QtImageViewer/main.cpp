@@ -1,8 +1,9 @@
 #include <QApplication>
 #include <QTimer>
 
-#include "VideoProcessor.hpp"
-#include "VideoViewer.hpp"
+#include "ImageDataNode.hpp"
+#include "ImageDataProcessor.hpp"
+#include "ImageDataView.hpp"
 
 
 int main( int argc, char *argv[] )
@@ -10,18 +11,25 @@ int main( int argc, char *argv[] )
     // Object required to execute Qt GUI functionality
     QApplication app( argc, argv );
 
-    VideoProcessor videoProcessor;
+    ImageDataNode imageDataNode;
 
-    VideoViewer videoViewer;
+    ImageDataProcessor imageDataProcessor;
 
-    // Qt signal/slot connect for passing data between processor and viewer.
-    QObject::connect( &videoProcessor, &VideoProcessor::signalPixmap,
-                      &videoViewer, &VideoViewer::slotUpdatePixmap );
+    ImageDataView imageDataView;
 
-    // Start processing in fifty milliseconds, this allows for the next line of
-    // code to be called, spawning the Qt application context.
-    QTimer::singleShot( 50/*ms*/, &videoProcessor, SLOT( slotRun() ) );
+    // Qt Signal/Slot connections
+    // Enables async message passing from node to processor
+    QObject::connect( &imageDataNode, &ImageDataNode::signalFrameBuffer,
+                      &imageDataProcessor, &ImageDataProcessor::slotFrameBuffer );
 
-    // Blocking loop until the Viewer widget is closed.
+    // Enable async message passing between processor and view
+    QObject::connect( &imageDataProcessor, &ImageDataProcessor::signalPixmap,
+                      &imageDataView, &ImageDataView::slotRenderImage );
+
+    // Start the PolySync event loop in 50 milliseconds. Allow the next
+    // statement to spawn the Qt event loop.
+    QTimer::singleShot( 50/*ms*/, &imageDataNode, SLOT( slotRun() ) );
+
+    // Begin the blocking Qt event loop
     app.exec();
 }
