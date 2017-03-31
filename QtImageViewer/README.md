@@ -1,17 +1,15 @@
 ### QtImageViewer
 
-This is an example of a threaded C++ PolySync node.
-This code is an example application intended to demonstrate an interaction with PolySync image data using the C++ PolySync APIs.
-It will visualize LiDAR, RADAR, and object data from multiple sources in a Qt window.
-This example has tools to freeze frame and measure distance, color by source or type, and are great for building sensor fusion applications.
-The graphics were built with OpenGL and are very extendable.
-It has a built-in system/node management tool to dynamically handle nodes coming on/off bus.
+This example creates a GUI application using Qt to visualize PolySync image data.
+It contains a threaded VideoProcessor (polysync::Node) that receives image data from the PolySync
+bus and packages it for rendering in a QWidget.
 
 ### Hardware requirements
 
-Sensors: LiDAR, RADAR
-Video Device
+Sensors: Video Device
 
+* Note: Sensor must be configured to publish MJPEG.
+ 
 ### Dependencies
 
 A system installation of Qt is required for this to compile.
