@@ -4,8 +4,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-#include <iostream>
-
 
 VideoViewer::VideoViewer()
     :
@@ -13,10 +11,11 @@ VideoViewer::VideoViewer()
     _label( new QLabel( this ) )
 {
     // Set viewing window to an appropriate size.
-    resize( 640, 480 );
+    resize( 320, 240 );
 
     // Add layout element to this widget.
     setLayout( _layout );
+
     _label = new QLabel( this );
 
     // Add label to this widget. The label contains the QPixmap that we update.
@@ -26,8 +25,11 @@ VideoViewer::VideoViewer()
     show();
 }
 
-void VideoViewer::slotUpdatePixmap( const QPixmap &pixmap )
+void VideoViewer::slotUpdatePixmap( const QPixmap & pixmap )
 {
-    // Update the view
-    _label->setPixmap( pixmap );
+    if( not pixmap.isNull() )
+    {
+        // Update the view
+        _label->setPixmap( pixmap );
+    }
 }

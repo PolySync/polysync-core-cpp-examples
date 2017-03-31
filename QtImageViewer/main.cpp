@@ -5,22 +5,16 @@
 #include "VideoProcessor.hpp"
 #include "VideoViewer.hpp"
 
-#warning "Qt natively supports the MJPEG pixel format; a decoder is required for other pixel formats"
-
 #include <memory>
 
-using namespace std;
 
 int main( int argc, char *argv[] )
 {
-    cout << "Qt natively supports the MJPEG pixel format; a decoder is required" <<
-            "for other incoming source pixel formats" << endl;
-
     // Object required to execute Qt GUI functionality
     QApplication app( argc, argv );
 
     auto videoProcessor =
-            unique_ptr< VideoProcessor >( new VideoProcessor );
+            std::unique_ptr< VideoProcessor >( new VideoProcessor );
 
     // Thread video processing loop, this will continously pull data from
     // a video device and send a QPixmap to the VideoViewer object for rendering.
@@ -29,7 +23,7 @@ int main( int argc, char *argv[] )
     processingThread->start();
 
     auto videoViewer =
-            unique_ptr< VideoViewer >( new VideoViewer );
+            std::unique_ptr< VideoViewer >( new VideoViewer );
 
     // Qt signal/slot connect for passing data between processor and viewer.
     QObject::connect( videoProcessor.get(), &VideoProcessor::signalPixmap,
