@@ -5,14 +5,23 @@
 
 VideoProcessor::VideoProcessor()
     :
-    decoder( { PIXEL_FORMAT_MJPEG, 320, 240, 30 },
-             { PIXEL_FORMAT_RGB24, 320, 240, 30 } )
-{}
+    decoder( { PIXEL_FORMAT_MJPEG, IMAGE_WIDTH, IMAGE_HEIGHT, FRAME_RATE },
+             { PIXEL_FORMAT_RGB24, IMAGE_WIDTH, IMAGE_HEIGHT, FRAME_RATE } ),
+    thread()
+{
+    moveToThread( &thread );
+
+    thread.start();
+}
 
 
 VideoProcessor::~VideoProcessor()
 {
     disconnectPolySync();
+
+    thread.quit();
+
+    thread.wait();
 }
 
 
@@ -24,8 +33,6 @@ void VideoProcessor::slotRun()
 
 void VideoProcessor::initStateEvent()
 {
-    // Register as a listener for the message type that the publisher
-    // is going to send.  Message types are defined in later tutorials.
     registerListener( getMessageTypeByName( "ps_image_data_msg" ) );
 }
 
@@ -67,7 +74,9 @@ std::vector< uchar > VideoProcessor::decodeBuffer(
 }
 
 
-QImage VideoProcessor::buildQImageFromFrameBuffer( const std::vector< uchar > & buffer )
+QImage VideoProcessor::buildQImageFromFrameBuffer(
+        const std::vector< uchar > & buffer )
 {
-    return QImage{ buffer.data(), 320, 240, QImage::Format_RGB888 };
+    return QImage{
+        buffer.data(), IMAGE_WIDTH, IMAGE_HEIGHT, QImage::Format_RGB888 };
 }

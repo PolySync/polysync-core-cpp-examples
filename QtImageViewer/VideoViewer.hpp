@@ -25,6 +25,7 @@ public:
      */
     VideoViewer();
 
+
 public slots:
 
     /**
@@ -33,9 +34,13 @@ public slots:
      */
     void slotUpdatePixmap( const QPixmap & pixmap );
 
+
 private:
-    QHBoxLayout * _layout{ nullptr };
-    QLabel * _label{ nullptr };
+
+    QHBoxLayout * _layout;
+
+    QLabel * _label;
+
 };
 
 

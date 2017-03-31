@@ -8,7 +8,7 @@
 
 #include <QObject>
 #include <QPixmap>
-
+#include <QThread>
 
 /**
  * @brief The VideoProcessor class
@@ -29,6 +29,10 @@ public:
 
     ~VideoProcessor();
 
+    /**
+     * This method is called once after calling polysync::Node::connectPolySync.
+     * It is used here to register as a listener for image data messaages.
+     */
     void initStateEvent() override;
 
     /**
@@ -67,6 +71,13 @@ private:
 
     polysync::VideoDecoder decoder;
 
+    QThread thread;
+
+    static constexpr auto IMAGE_WIDTH = 320;
+
+    static constexpr auto IMAGE_HEIGHT = 240;
+
+    static constexpr auto FRAME_RATE = 30;
 };
 
 #endif // VIDEOPROCESSOR_H
