@@ -1,5 +1,6 @@
-#ifndef VIDEOVIEWER_H
-#define VIDEOVIEWER_H
+#ifndef IMAGE_DATA_VIEW_H
+#define IMAGE_DATA_VIEW_H
+
 
 #include <QWidget>
 
@@ -7,11 +8,11 @@ class QHBoxLayout;
 class QLabel;
 
 /**
- * @brief The VideoViewer class
- * The class inherits from QWidget and contains elements necessary to view
- * a video frame.
+ * @brief The ImageDataView class
+ * This class contains the Qt GUI view. It's job is to receive and render image
+ * data.
  */
-class VideoViewer : public QWidget
+class ImageDataView : public QWidget
 {
     // Qt Macro enabling Qt signals and slots
     Q_OBJECT
@@ -23,7 +24,7 @@ public:
      * to this widget. Calls QWidget::show() to make the widget appear on
      * screen.
      */
-    VideoViewer();
+    ImageDataView();
 
 
 public slots:
@@ -32,7 +33,7 @@ public slots:
      * Triggered from VideoProcessor when new data is available to render.
      * @param [in] pixmap Updated pixmap to render on @ref _label.
      */
-    void slotUpdatePixmap( const QPixmap & pixmap );
+    void slotRenderImage( const QImage & pixmap );
 
 
 private:
@@ -44,4 +45,4 @@ private:
 };
 
 
-#endif // VIDEOVIEWER_H
+#endif // IMAGE_DATA_VIEW_H

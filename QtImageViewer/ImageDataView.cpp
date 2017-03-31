@@ -1,11 +1,11 @@
-#include "VideoViewer.hpp"
+#include "ImageDataView.hpp"
 
 #include <QPixmap>
 #include <QHBoxLayout>
 #include <QLabel>
 
 
-VideoViewer::VideoViewer()
+ImageDataView::ImageDataView()
     :
     _layout( new QHBoxLayout( this ) ),
     _label( new QLabel( this ) )
@@ -16,8 +16,6 @@ VideoViewer::VideoViewer()
     // Add layout element to this widget.
     setLayout( _layout );
 
-    _label = new QLabel( this );
-
     // Add label to this widget. The label contains the QPixmap that we update.
     _layout->addWidget( _label );
 
@@ -25,8 +23,10 @@ VideoViewer::VideoViewer()
     show();
 }
 
-void VideoViewer::slotUpdatePixmap( const QPixmap & pixmap )
+void ImageDataView::slotRenderImage( const QImage & image )
 {
+    auto pixmap = QPixmap::fromImage( image );
+
     if( not pixmap.isNull() )
     {
         // Update the view
