@@ -1,5 +1,5 @@
-#ifndef VIDEOPROCESSOR_H
-#define VIDEOPROCESSOR_H
+#ifndef IMAGE_DATA_PROCESSOR_H
+#define IMAGE_DATA_PROCESSOR_H
 
 
 #include <PolySyncNode.hpp>
@@ -59,4 +59,4 @@ private:
 };
 
 
-#endif // VIDEOPROCESSOR_H
+#endif // IMAGE_DATA_PROCESSOR_H
