@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 2.8 )
 
-project( polysync-groud-plane-detection-cpp )
+project( polysync-ground-plane-detection-cpp )
 
 if( NOT PSYNC_HOME )
     if( $ENV{PSYNC_HOME} )
