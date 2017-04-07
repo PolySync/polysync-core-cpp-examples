@@ -21,7 +21,7 @@ $ cd Echo
 $ mkdir build && cd build
 $ cmake ..
 $ make
-$ ./polysync-echo
+$ ./polysync-groud-plane-detection-cpp
 ```
 
 For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).
