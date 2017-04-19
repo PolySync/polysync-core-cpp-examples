@@ -10,23 +10,34 @@ Sensors: Video Device
 
 * Note: Sensor must be configured to publish MJPEG.
  
-### Dependencies
+### Install Dependencies
 
-A system installation of Qt is required for this to compile.
-Qt operates under [LGPLv3](http://www.gnu.org/licenses/lgpl-3.0.en.html) 
-Download and install Qt [here](http://www.qt.io/download/)
+A Qt install and mesa-common-dev Debian package are required to run this example.
 
-Packages: libglib2.0-dev
+1. [Download Qt installer here](http://www.qt.io/download/)
 
-To install on Ubuntu:
+2. Navigate to Downloads directory
 
-```bash
-sudo apt-get install <package>
-```
+    `cd ~/Downloads`
+
+3. Make the installer executable **NOTE**: make sure the name of the *.run file matches
+
+    `chmod +x qt-unified-online-installer.run`
+
+4. Run the installer, this can take up to 30 minutes **NOTE**: Only the desktop libraries are required, you can uncheck other elements (such as QtCreator) in the installer to speed up the process.
+
+    `./qt-unified-online-installer.run`
+
+5. Install OpenGL
+
+    `sudo apt install mesa-common-dev`
+
 
 ### Building and running the node
 
 ```bash
+# Tell cmake where to find Qt, note that the path listed below may be different (your version may not be 5.8)
+$ export CMAKE_PREFIX_PATH=/path/to/Qt/5.8/gcc_64/lib/cmake
 $ cd QtImageViewer 
 $ mkdir build && cd build
 $ cmake ..
