@@ -48,7 +48,6 @@ public:
     SessionExportExample(
             int sessionId, const std::string & sessionPath = {} );
 
-    ~SessionExportExample(){ std::cout << "dtor" << std::endl; }
 private:
 
     void handleEvent( std::shared_ptr< polysync::Message > message );
