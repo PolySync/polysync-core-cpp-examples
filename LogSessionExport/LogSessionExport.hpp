@@ -58,7 +58,7 @@ private:
 
     const ps_rnr_session_id _sessionId;
 
-    const std::string & _sessionPath;
+    const std::string _sessionPath;
 
     std::unique_ptr< polysync::LogSessionExport > _exporter;
 
