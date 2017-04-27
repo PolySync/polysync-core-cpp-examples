@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 HARBRICK TECHNOLOGIES, INC
+ * Copyright (c) 2015 PolySync
  *
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,115 +22,93 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-/**
- * \example LogSessionExport.cpp
- *
- * Log session export example.
- *
- * Demonstrates how to use the PolySync log session transfer API to export a previously
- * recorded log session from a new distributed system.
- *
- */
-
 #include <iostream>
+
+#include <PolySyncApplication.hpp>
 #include <PolySyncCore.hpp>
 #include <PolySyncDataModel.hpp>
-#include <PolySyncApplication.hpp>
-#include <PolySyncLogSessionTransfer.hpp>
 
-using namespace std;
-using namespace polysync;
-using namespace datamodel;
+#include "LogSessionExport.hpp"
 
-/**
- * @brief SessionExportExample class
- */
-class SessionExportExample : public DataSubscriber
+
+SessionExportExample::SessionExportExample(
+        int sessionId,
+        const std::string & sessionPath )
+    :
+    _sessionId( sessionId ),
+    _sessionPath( sessionPath ),
+    _exporter()
 {
+    // Subscribe to ApplicationEventMessage to determine when
+    // the application connects to the PolySync bus.
+    connectSubscriberMethod< SessionExportExample >(
+            polysync::ApplicationEventMessage::getName(),
+            &SessionExportExample::handleEvent,
+            this );
 
-public:
+    polysync::Application::getInstance()->attachSubscriber( this );
+}
 
-    SessionExportExample(
-            int sessionId )
-        :
-        _sessionId( sessionId )
+
+void SessionExportExample::handleEvent(
+        std::shared_ptr< polysync::Message > message )
+{
+    if( auto event = polysync::datamodel::getSubclass<
+                polysync::ApplicationEventMessage >( message ) )
     {
-        // Subscribe to ApplicationEventMessage to determine when
-        // the application connects to the PolySync bus.
-        connectSubscriberMethod< SessionExportExample >(
-                ApplicationEventMessage::getName(),
-                &SessionExportExample::handleEvent,
-                this );
-
-        _application = Application::getInstance();
-
-        _application->attachSubscriber( this );
-    }
-
-private:
-
-    void handleEvent( shared_ptr< Message > message )
-    {
-        if( auto event = getSubclass< ApplicationEventMessage >( message ) )
+        if( event->getEventKind() == polysync::EventKind::Init )
         {
-            if( event->getEventKind() == EventKind::Init )
-            {
-                // This is the actual usage of the export API.
-                _exporter = new LogSessionExport( _sessionId );
+            // This is the actual usage of the export API.
+            _exporter = std::unique_ptr< polysync::LogSessionExport >{
+                    new polysync::LogSessionExport{
+                        _sessionId, _sessionPath } };
 
-                // Export can be started with or without a progress callback.
-                // When complete, results will be located at "PSYNC_HOME/rnr_logs/export/[sessionId]"
-                _exporter->start(
-                        this,
-                        &SessionExportExample::handleTransferStatus );
-            }
+            // Export can be started with or without a progress callback.
+            // When complete, results will be located at
+            // "PSYNC_HOME/rnr_logs/export/[sessionId]"
+            _exporter->start(
+                    this,
+                    &SessionExportExample::handleTransferStatus );
         }
     }
-
-    void handleTransferStatus(
-            const LogSessionTransferStatus & status )
-    {
-        // Status has other information available as well
-        auto state = status.getState();
-
-        cout << "State: ";
-
-        switch( state )
-        {
-            case LogSessionTransferState::Invalid : cout << "Invalid" << endl; break;
-            case LogSessionTransferState::Error : cout << "Error" << endl; break;
-            case LogSessionTransferState::Initial : cout << "Initial" << endl; break;
-            case LogSessionTransferState::Enumeration : cout << "Enumeration" << endl; break;
-            case LogSessionTransferState::TransferringSystemFiles : cout << "TransferringSystemFiles" << endl; break;
-            case LogSessionTransferState::TransformingSystemFile : cout << "TransformingSystemFile" << endl; break;
-            case LogSessionTransferState::TransferringLogfiles : cout << "TransferringLogfiles" << endl; break;
-            case LogSessionTransferState::Complete : cout << "Complete" << endl; _application->disconnectPolySync(); break;
-        }
-    }
-
-    int _sessionId;
-
-    LogSessionExport * _exporter;
-
-    Application * _application;
-
-};
+}
 
 
-int main( int argc, char ** argv )
+void SessionExportExample::handleTransferStatus(
+        const polysync::LogSessionTransferState state,
+        const std::shared_ptr< polysync::datamodel::FileSyncStatusMessage > & )
 {
-    if( argc != 2 )
+    std::cout << "State: ";
+
+    switch( state )
     {
-        cerr << "Usage: " << argv[0] << " [sessionId]" << endl;
-        return -1;
+        case polysync::LogSessionTransferState::Invalid:
+            std::cout << "Invalid" << std::endl;
+            break;
+        case polysync::LogSessionTransferState::Error:
+            std::cout << "Error" << std::endl;
+            break;
+        case polysync::LogSessionTransferState::Initial:
+            std::cout << "Initial" << std::endl;
+            break;
+        case polysync::LogSessionTransferState::Enumeration:
+            std::cout << "Enumeration" << std::endl;
+            break;
+        case polysync::LogSessionTransferState::TransferringSystemFiles:
+            std::cout << "TransferringSystemFiles" << std::endl;
+            break;
+        case polysync::LogSessionTransferState::TransformingSystemFile:
+            std::cout << "TransformingSystemFile" << std::endl;
+            break;
+        case polysync::LogSessionTransferState::TransferringLogfiles:
+            std::cout << "TransferringLogfiles" << std::endl;
+            break;
+        case polysync::LogSessionTransferState::Complete:
+            std::cout << "Complete" << std::endl;
+            polysync::Application::getInstance()->disconnectPolySync();
+            break;
+        default:
+            std::cout << "Unknown polysync::LogSessionTransferState"
+                      << std::endl;
     }
-
-    SessionExportExample exportExample{ atoi(argv[1]) };
-
-    auto application = Application::getInstance();
-
-    application->setNodeName( "polysync-log-session-export-cpp" );
-
-    application->connectPolySync();
 }
