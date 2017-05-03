@@ -33,6 +33,11 @@ $ cp PolySync-Core-CPP-Examples/PolysyncLidarTranslator/polysync_lidar_translato
 Make sure that in the "Build" section of the CMakeLists file for your PolysyncLidarTranslator project are uncommented. All other lines in the "Build" section should be commented.
 
 ```bash
+## include_directories(include)
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
+
 ## Declare a C++ executable
 add_executable(polysync_lidar_translator_node src/polysync_lidar_translator_node.cpp)
 
@@ -73,7 +78,13 @@ $ ./BridgeNode -t ps_lidar_points_msg
 Start up PolySync data generator in another terminal.
 
 ```bash
-$ polysync-data-generator-c
+$ git clone git@github.com:PolySync/PolySync-Core-CPP-Examples.git
+$ cd PolySync-Core-CPP-Examples/DataGenerator
+$ sudo apt-get install libglib2.0-dev  # this is required for this example to build, documented in the examples README.md file
+$ mkdir build && cd build
+$ cmake ..
+$ make
+$ ./polysync-data-generator-cpp
 ```
 
 Run the translator project you just built. The executable should be in the devel folder of your catkin workspace.
