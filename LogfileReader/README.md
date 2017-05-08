@@ -17,7 +17,7 @@ Packages: libglib2.0-dev
 To install on Ubuntu:
 
 ```bash
-sudo apt-get install <package>
+sudo apt-get install libglib2.0-dev
 ```
 
 ### Building and running the node

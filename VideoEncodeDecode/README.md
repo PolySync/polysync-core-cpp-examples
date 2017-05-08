@@ -19,7 +19,7 @@ Packages: libglib2.0-dev libgstreamer1.0-0
 To install on Ubuntu:
 
 ```bash
-sudo apt-get install <package>
+sudo apt-get install libglib2.0-dev libgstreamer1.0-0
 ```
 
 ### Building and running the node
