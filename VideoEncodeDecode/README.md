@@ -1,4 +1,4 @@
-### VideoDeviceViewer
+### VideoEncodeDecode
 
 This example demonstrates how to use the Video API routines to communicate with a video device, and encode/decode the data.
 
