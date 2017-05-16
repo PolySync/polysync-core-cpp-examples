@@ -51,6 +51,7 @@ $ cd QtImageViewer
 $ mkdir build && cd build
 $ cmake ..
 $ make
+$ mv ../res/qt.conf qt.conf
 ```
 
 #### Run
