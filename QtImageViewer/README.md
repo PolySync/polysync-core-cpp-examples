@@ -35,6 +35,7 @@ A Qt install and mesa-common-dev Debian package are required to run this example
 6. Follow the build instructions.
 
 7. After building the QtImageViewer, move a qt.conf file into the build file for the QtImageViewer. 
+ - The qt.conf file overrides the hard coded paths compiled into the QT library
 
 8. Run the node.
 
