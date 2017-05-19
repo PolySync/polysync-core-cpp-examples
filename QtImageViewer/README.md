@@ -9,7 +9,7 @@ bus and packages it for rendering in a QWidget.
 Sensors: Video Device
 
 * Note: Sensor must be configured to publish MJPEG.
- 
+
 ### Install Dependencies
 
 A Qt install and mesa-common-dev Debian package are required to run this example.
@@ -34,10 +34,7 @@ A Qt install and mesa-common-dev Debian package are required to run this example
 
 6. Follow the build instructions.
 
-7. After building the QtImageViewer, move a qt.conf file into the build file for the QtImageViewer. 
- - The qt.conf file overrides the hard coded paths compiled into the QT library
-
-8. Run the node.
+7. Run the node.
 
 
 ### Building and running the node
@@ -45,18 +42,20 @@ A Qt install and mesa-common-dev Debian package are required to run this example
 #### Build
 
 ```bash
-# Tell cmake where to find Qt, note that the path listed below may be different (your version may not be 5.8)
-$ export CMAKE_PREFIX_PATH=/path/to/Qt/5.8/gcc_64/lib/cmake
-$ cd QtImageViewer 
+# Tell cmake where to find Qt, note that the path listed below needs to be modified, i.e. ~/Qt5.2.1/5.2.1/gcc_64
+$ export CMAKE_PREFIX_PATH=/<path>/<to>/<Qt>/<version>/gcc_64
+$ cd QtImageViewer
 $ mkdir build && cd build
 $ cmake ..
 $ make
-$ mv ../res/qt.conf qt.conf
 ```
 
 #### Run
-
-`$ ./polysync-qt-image-viewer-cpp`
+```bash
+# note that the path listed below needs to be modified, i.e. ~/Qt5.2.1/5.2.1/gcc_64/plugins/platforms
+$ export QT_QPA_PLATFORM_PLUGIN_PATH=/<path>/<to>/<Qt>/<version>/gcc_64/plugins/platforms
+$ ./polysync-qt-image-viewer-cpp
+```
 
 
 For more API examples, visit the "Tutorials" and "Development" sections in the PolySync Help Center [here](https://help.polysync.io/articles/).
