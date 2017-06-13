@@ -42,8 +42,8 @@ A Qt install and mesa-common-dev Debian package are required to run this example
 #### Build
 
 ```bash
-# Tell cmake where to find Qt, note that the path listed below needs to be modified, i.e. ~/Qt5.2.1/5.2.1/gcc_64
-$ export CMAKE_PREFIX_PATH=/<path>/<to>/<Qt>/<version>/gcc_64
+# Tell cmake where to find Qt, note that the path listed below may need to be modified if Qt is not in the default location or is a different version
+$ export CMAKE_PREFIX_PATH=~/Qt5.8.0/5.8/gcc_64
 $ cd QtImageViewer
 $ mkdir build && cd build
 $ cmake ..
@@ -52,8 +52,8 @@ $ make
 
 #### Run
 ```bash
-# note that the path listed below needs to be modified, i.e. ~/Qt5.2.1/5.2.1/gcc_64/plugins/platforms
-$ export QT_QPA_PLATFORM_PLUGIN_PATH=/<path>/<to>/<Qt>/<version>/gcc_64/plugins/platforms
+# Note that the path listed below may need to be modified if Qt is not in the default location or is a different version
+$ export QT_QPA_PLATFORM_PLUGIN_PATH=~/Qt5.8.0/5.8/gcc_64/plugins/platforms
 $ ./polysync-qt-image-viewer-cpp
 ```
 
