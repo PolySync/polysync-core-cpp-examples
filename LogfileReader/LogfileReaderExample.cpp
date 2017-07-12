@@ -163,7 +163,7 @@ void LogfileReaderNode::messageEvent(
 {
     if( message )
     {
-        if( message->getMessageTypeString() == "ps_byte_array_msg" )
+        if( message->getHeaderTypeString() == "ps_byte_array_msg" )
         {
             ++_numMessagesRead;
 

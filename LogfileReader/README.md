@@ -6,7 +6,7 @@ Even though it depends on a file in the `/tmp/` directory, it can still be easil
 
 Steps to run: 
 
-   1. Update the file `src/logfile_reader.c` on line 74 to point to an existing `plog` file, (point to new rnr_logs location)
+   1. Update the file `LogfileReaderExample.hpp` on line 108 to point to an existing `plog` file, (point to new rnr_logs location)
    2. Compile
    3. Run
 
