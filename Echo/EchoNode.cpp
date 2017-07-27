@@ -106,7 +106,7 @@ void PolySyncEcho::tryCatchRegisterAMessageListener( std::string messageName )
 void PolySyncEcho::messageEvent( std::shared_ptr< polysync::Message > message )
 {
     if( ( message->getHeaderSrcGuid() == getGuid() ) &&
-        _inputHandler.ignoreSelfWasRequested()  )
+        _inputHandler.ignoreSelfWasRequested() )
     {
         return;
     }
