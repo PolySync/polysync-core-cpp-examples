@@ -32,12 +32,13 @@
 
 
 SessionExportExample::SessionExportExample(
-        int sessionId,
+        ps_rnr_session_id sessionId,
         const std::string & sessionPath )
     :
     _sessionId( sessionId ),
     _sessionPath( sessionPath ),
-    _exporter()
+    _exporter(),
+    _transferComplete( false )
 {
     // Subscribe to ApplicationEventMessage to determine when
     // the application connects to the PolySync bus.
@@ -56,7 +57,9 @@ void SessionExportExample::handleEvent(
     if( auto event = polysync::datamodel::getSubclass<
                 polysync::ApplicationEventMessage >( message ) )
     {
-        if( event->getEventKind() == polysync::EventKind::Init )
+        auto eventKind = event->getEventKind();
+
+        if( eventKind == polysync::EventKind::Init )
         {
             // This is the actual usage of the export API.
             _exporter = std::unique_ptr< polysync::LogSessionExport >{
@@ -69,6 +72,11 @@ void SessionExportExample::handleEvent(
             _exporter->start(
                     this,
                     &SessionExportExample::handleTransferStatus );
+        }
+        else if( eventKind == polysync::EventKind::Ok and _transferComplete )
+        {
+            _exporter.reset();
+            polysync::Application::getInstance()->disconnectPolySync();
         }
     }
 }
@@ -87,6 +95,7 @@ void SessionExportExample::handleTransferStatus(
             break;
         case polysync::LogSessionTransferState::Error:
             std::cout << "Error" << std::endl;
+            polysync::Application::getInstance()->disconnectPolySync();            
             break;
         case polysync::LogSessionTransferState::Initial:
             std::cout << "Initial" << std::endl;
@@ -104,11 +113,11 @@ void SessionExportExample::handleTransferStatus(
             std::cout << "TransferringLogfiles" << std::endl;
             break;
         case polysync::LogSessionTransferState::Complete:
-            std::cout << "Complete" << std::endl;
-            polysync::Application::getInstance()->disconnectPolySync();
+            std::cout << "Complete" << std::endl;            
+            _transferComplete = true;
             break;
         default:
             std::cout << "Unknown polysync::LogSessionTransferState"
-                      << std::endl;
+                << std::endl;
     }
 }

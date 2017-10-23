@@ -46,7 +46,8 @@ class SessionExportExample : public polysync::DataSubscriber
 public:
 
     SessionExportExample(
-            int sessionId, const std::string & sessionPath = {} );
+            ps_rnr_session_id sessionId,
+            const std::string & sessionPath = {} );
 
 private:
 
@@ -62,6 +63,7 @@ private:
 
     std::unique_ptr< polysync::LogSessionExport > _exporter;
 
+    bool _transferComplete;
 };
 
 
