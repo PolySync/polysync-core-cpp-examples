@@ -156,10 +156,7 @@ void PolySyncEcho::printToFile(
     }
     else
     {
-        if( ! _inputHandler.fileWasSpecifiedNoStdOut() )
-        {
-            message->print( _openUserFile );
-        }
+        message->print( _openUserFile );
     }
 }
 
