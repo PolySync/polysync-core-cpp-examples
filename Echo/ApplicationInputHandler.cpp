@@ -13,6 +13,7 @@ ApplicationInputHandler::ApplicationInputHandler()
     _filteredForMessagesFlag( false ),
     _echoMessageHeadersOnlyFlag( false ),
     _echoMessageToFileFlag( false ),
+    _echoMessageToFileNoStdOutFlag( false ),
     _getOptHelpFlag( false ),
     _durationSpecifiedFlag( false ),
     _filteredMessageNames( {} )
@@ -32,7 +33,7 @@ bool ApplicationInputHandler::optionsParse( const int argc, char * argv[] )
 
     opterr = 0;
 
-    while ( ( optionIndex = getopt( argc, argv, "t:o:f:hH::a::i::") ) != -1 )
+    while ( ( optionIndex = getopt( argc, argv, "t:o:O:f:hH::a::i::") ) != -1 )
     {
         switch( optionIndex )
         {
@@ -94,6 +95,32 @@ bool ApplicationInputHandler::optionsParse( const int argc, char * argv[] )
                     _userFileName = optarg;
 
                     _echoMessageToFileFlag = true;
+                }
+
+                break;
+
+            case 'O':
+
+                if( ( *argv[ optind - 1 ] )
+                     && ( *argv[ optind - 1 ] == '-' ) )
+                {
+                    std::cout << std::endl << std::endl
+                         << "Invalid usage for option -O external file:"
+                         << std::endl
+                         << "-O should be followed by a filename "
+                         << "yourfile.txt, not by another -option."
+                         << std::endl << std::endl
+                         << "A usage guide follows."
+                         << std::endl;
+
+                    _getOptHelpFlag = true;
+                }
+                else
+                {
+                    _userFileName = optarg;
+
+                    _echoMessageToFileFlag = true;
+                    _echoMessageToFileNoStdOutFlag = true;
                 }
 
                 break;
@@ -186,6 +213,10 @@ bool ApplicationInputHandler::fileWasSpecified() const
     return _echoMessageToFileFlag;
 }
 
+bool ApplicationInputHandler::fileWasSpecifiedNoStdOut() const
+{
+    return _echoMessageToFileNoStdOutFlag;
+}
 
 bool ApplicationInputHandler::helpWasRequested() const
 {
