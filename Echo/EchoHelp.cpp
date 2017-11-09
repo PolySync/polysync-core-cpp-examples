@@ -13,6 +13,7 @@ std::vector< std::string > EchoHelp::getHelpFlags() const
     cmdLineFlagsHelp.emplace_back( "-f <MESSAGE_TYPE>" );
     cmdLineFlagsHelp.emplace_back( "-H" );
     cmdLineFlagsHelp.emplace_back( "-o <FILE_NAME>" );
+    cmdLineFlagsHelp.emplace_back( "-O <FILE_NAME>" );
     cmdLineFlagsHelp.emplace_back( "-t <ECHO_DURATION [sec]>" );
 
     return cmdLineFlagsHelp;
@@ -65,6 +66,14 @@ std::vector< std::string > EchoHelp::getHelpDescriptions() const
         " in addition to standard output [optional]. \n"
         " Usage Example: print only headers for single message type to file: \n"
         " $ polysync-echo -f ps_lidar_points_msg -H -o yourFileName.txt \n\n"
+        " Note: Unless you specify a new file each time, each session will \n"
+        " append to the end of your specified file.");
+
+    flagDescriptionsHelp.emplace_back
+        ( " Specify an external output file for printed message data \n"
+        " and forgo standard output [optional]. \n"
+        " Usage Example: print only headers for single message type to file: \n"
+        " $ polysync-echo -O yourFileName.txt \n\n"
         " Note: Unless you specify a new file each time, each session will \n"
         " append to the end of your specified file.");
 

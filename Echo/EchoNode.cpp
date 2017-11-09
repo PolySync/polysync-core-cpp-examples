@@ -23,7 +23,10 @@ void PolySyncEcho::initStateEvent()
         registerListenerToAllMessageTypes();
     }
 
-    std::cout << "{\"polysync-echo\":[";
+    if( ! _inputHandler.fileWasSpecifiedNoStdOut() )
+    {
+        std::cout << "{\"polysync-echo\":[";
+    }
 
     if( _inputHandler.fileWasSpecified() )
     {
@@ -32,6 +35,14 @@ void PolySyncEcho::initStateEvent()
         if( _openUserFile )
         {
             _openUserFile << "{\"polysync-echo\":[";
+        }
+        else
+        {
+            std::cerr <<
+            "Unable to open '_inputHandler.getFileName()' for writing" <<
+            std::endl;
+
+            activateFault( DTC_IOERR, NODE_STATE_FATAL);
         }
     }
 }
@@ -64,14 +75,16 @@ void PolySyncEcho::okStateEvent()
 
 void PolySyncEcho::releaseStateEvent()
 {
-    std::cout << "]}" << std::endl;
+    if( ! _inputHandler.fileWasSpecifiedNoStdOut() )
+    {
+        std::cout << "]}" << std::endl;
+    }
 
     if( _openUserFile )
     {
         _openUserFile << "]}" << std::endl;
+        _openUserFile.close();
     }
-
-    _openUserFile.close();
 }
 
 
@@ -116,7 +129,10 @@ void PolySyncEcho::messageEvent( std::shared_ptr< polysync::Message > message )
         printToFile( message );
     }
 
-    printMessage( message );
+    if( ! _inputHandler.fileWasSpecifiedNoStdOut() )
+    {
+        printMessage( message );
+    }
 }
 
 
@@ -140,7 +156,10 @@ void PolySyncEcho::printToFile(
     }
     else
     {
-        message->print( _openUserFile );
+        if( ! _inputHandler.fileWasSpecifiedNoStdOut() )
+        {
+            message->print( _openUserFile );
+        }
     }
 }
 
@@ -156,7 +175,10 @@ void PolySyncEcho::printMessage(
     }
     else
     {
-        std::cout << ",";
+        if( ! _inputHandler.fileWasSpecifiedNoStdOut() )
+        {
+            std::cout << ",";
+        }
     }
 
     if( _inputHandler.headersWereRequested() )

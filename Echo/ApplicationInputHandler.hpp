@@ -75,6 +75,13 @@ public:
     /**
      * @brief Member variable getter for command line getopt handling.
      *
+     * @return Returns boolean: true if user specified external file for output
+     * and does wants to forgo reporting to stdout.
+     */
+    bool fileWasSpecifiedNoStdOut() const;
+    /**
+     * @brief Member variable getter for command line getopt handling.
+     *
      * @return Returns boolean: true if user either requested help directly,
      *          or user entered invalid options/arguments on command line.
      *
@@ -127,6 +134,8 @@ private:
     bool _echoMessageHeadersOnlyFlag;
 
     bool _echoMessageToFileFlag;
+
+    bool _echoMessageToFileNoStdOutFlag;
 
     bool _getOptHelpFlag;
 
