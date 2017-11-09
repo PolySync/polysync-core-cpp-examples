@@ -7,6 +7,7 @@
 
 ApplicationInputHandler::ApplicationInputHandler()
     :
+    _userFileName( {} ),
     _activeMessagesFlag( false ),
     _ignoreSelfFlag( false ),
     _filteredForMessagesFlag( false ),
