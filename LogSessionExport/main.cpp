@@ -37,7 +37,7 @@ int main( int argc, char * argv[] )
         return -1;
     }
 
-    auto sessionId = std::atoi( argv[1] );
+    auto sessionId = std::stoull( argv[1] );
 
     std::unique_ptr< SessionExportExample > exportExample;
 

@@ -31,7 +31,8 @@
 SessionImportExample::SessionImportExample( const std::string & sessionPath )
     :
     _sessionPath( sessionPath ),
-    _importer()
+    _importer(),
+    _transferComplete( false )
 {
     // Subscribe to ApplicationEventMessage to determine when
     // the application connects to the PolySync bus.
@@ -90,6 +91,11 @@ void SessionImportExample::handleEvent(
                     this,
                     &SessionImportExample::handleTransferStatus );
         }
+        else if( eventKind == polysync::EventKind::Ok && _transferComplete )
+        {
+            _importer.reset();
+            polysync::Application::getInstance()->disconnectPolySync();
+        }
     }
 }
 
@@ -107,6 +113,7 @@ void SessionImportExample::handleTransferStatus(
             break;
         case polysync::LogSessionTransferState::Error :
             std::cout << "Error" << std::endl;
+            polysync::Application::getInstance()->disconnectPolySync();                        
             break;
         case polysync::LogSessionTransferState::Initial :
             std::cout << "Initial" << std::endl;
@@ -125,7 +132,7 @@ void SessionImportExample::handleTransferStatus(
             break;
         case polysync::LogSessionTransferState::Complete :
             std::cout << "Complete" << std::endl;
-            polysync::Application::getInstance()->disconnectPolySync();
+            _transferComplete = true;
             break;
         default:
             std::cout << "Unknown" << std::endl;

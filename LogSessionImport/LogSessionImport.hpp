@@ -63,7 +63,8 @@ private:
     const std::string _sessionPath;
 
     std::unique_ptr< polysync::LogSessionImport > _importer;
-
+    
+    bool _transferComplete;
 };
 
 
